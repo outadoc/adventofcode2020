@@ -4,7 +4,7 @@ val masses = "121656\n110933\n80850\n137398\n76307\n50450\n124691\n86449\n145386
         .filter { it.isNotBlank() }
         .map { it.toDouble() }
 
-fun fuelNeededForMass(mass: Double) = floor(mass / 3) - 2
+fun fuelNeededForMass(mass: Double) = Math.floor(mass / 3) - 2
 
 fun step1(): Long = masses
         .map { mass -> fuelNeededForMass(mass) }

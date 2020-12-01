@@ -14,7 +14,7 @@ fun IntArray.findThreeSum(sum: Int): Int? {
     forEachIndexed { i, a ->
         takeLast(size - i).forEachIndexed { j, b ->
             val c = takeLast(size - j)
-                .find { c -> a + b + c == sum }
+                    .find { c -> a + b + c == sum }
             if (c != null) {
                 return a * b * c
             }
