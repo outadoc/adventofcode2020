@@ -27,5 +27,5 @@ fun IntArray.findThreeSum(sum: Int): Int? {
     return null
 }
 
-println(input.sortedArray().findTwoSum(2020))
-println(input.sortedArray().findThreeSum(2020))
+input.sortedArray().findTwoSum(2020) // 786811
+input.sortedArray().findThreeSum(2020) // 199068980

@@ -31,7 +31,7 @@ fun step1(): Int {
     return parse(input).count { entry -> isValid(entry) }
 }
 
-step1()
+assert(step1() == 591)
 
 fun step2(): Int {
     fun isValid(entry: PasswordEntry): Boolean {
@@ -43,4 +43,4 @@ fun step2(): Int {
     return parse(input).count { entry -> isValid(entry) }
 }
 
-step2()
+step2() // 335
