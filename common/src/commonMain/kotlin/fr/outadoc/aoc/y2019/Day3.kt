@@ -1,3 +1,6 @@
+package fr.outadoc.aoc.y2019
+
+/*
 import java.awt.Canvas
 import java.awt.Color
 import java.awt.Graphics
@@ -271,3 +274,4 @@ fun step1() {
 }
 
 step1()
+*/
