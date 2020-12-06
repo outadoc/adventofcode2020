@@ -34,6 +34,5 @@ class Day1 : Day(Year._2019) {
             .map { mass -> fuelNeededForMassAndFuel(mass) }
             .sum()
             .toLong()
-
     }
 }

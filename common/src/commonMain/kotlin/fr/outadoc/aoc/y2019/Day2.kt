@@ -28,7 +28,7 @@ class Day2 : Day(Year._2019) {
         return output
     }
 
-    tailrec fun run(input: IntArray, i: Int = 0): IntArray {
+    private tailrec fun run(input: IntArray, i: Int = 0): IntArray {
         //println("running i=$i on ${input.joinToString()}")
         return when (val opCode = input[i]) {
             OP_ADD -> run(paramOpCode(input, i) { a, b -> a + b }, i + INSTR_SIZE)

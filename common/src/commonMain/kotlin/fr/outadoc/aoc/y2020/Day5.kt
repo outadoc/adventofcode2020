@@ -9,7 +9,7 @@ class Day5 : Day(Year._2020) {
     private val input = readDayInput().lineSequence()
 
     companion object {
-        const val ROW_CHAR_COUNT: Int = 7
+        const val ROW_CHAR_COUNT = 7
         const val COL_CHAR_COUNT = 3
 
         const val FRONT = 'F'
