@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-jvm:
+  test-jvm:
     runs-on: ubuntu-latest
 
     steps:
