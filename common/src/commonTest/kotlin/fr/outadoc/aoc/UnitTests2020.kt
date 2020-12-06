@@ -33,7 +33,7 @@ class UnitTests2020 {
                 assertEquals(
                     expected = test.step2,
                     actual = it,
-                    message = "${test.day::class.simpleName} step 2 result"
+                    message = "${test.day::class.simpleName} step 2"
                 )
             }
         }
