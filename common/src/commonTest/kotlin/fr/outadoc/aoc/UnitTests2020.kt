@@ -1,6 +1,7 @@
-package fr.outadoc.aoc.y2020
+package fr.outadoc.aoc
 
 import fr.outadoc.aoc.scaffold.Day
+import fr.outadoc.aoc.y2020.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -24,7 +25,7 @@ class UnitTests2020 {
                 assertEquals(
                     expected = test.step1,
                     actual = it,
-                    message = "${test.day::class.simpleName} step 1 result was $it, but expected ${test.step1}"
+                    message = "${test.day::class.simpleName} step 1"
                 )
             }
 
@@ -32,7 +33,7 @@ class UnitTests2020 {
                 assertEquals(
                     expected = test.step2,
                     actual = it,
-                    message = "${test.day::class.simpleName} step 2 result was $it, but expected ${test.step2}"
+                    message = "${test.day::class.simpleName} step 2 result"
                 )
             }
         }
