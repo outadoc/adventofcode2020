@@ -6,9 +6,9 @@ import fr.outadoc.aoc.scaffold.Year
 class Day7 : Day(Year._2020) {
 
     private val bags = readDayInput()
-            .lineSequence()
-            .filterNot { it.isEmpty() }
-            .parse()
+        .lineSequence()
+        .filterNot { it.isEmpty() }
+        .parse()
 
     private val containerRegex = Regex("^([a-z ]+) bags contain .+$")
     private val contentsRegex = Regex(" ([0-9]+) ([a-z ]+) bags?[,.]")
@@ -21,13 +21,13 @@ class Day7 : Day(Year._2020) {
             val nameResult = containerRegex.find(rule)!!
             val contentsResult = contentsRegex.findAll(rule)
             Bag(
-                    bagColor = nameResult.groupValues[1],
-                    contents = contentsResult.map { res ->
-                        BagContent(
-                                bagColor = res.groupValues[2],
-                                count = res.groupValues[1].toInt()
-                        )
-                    }.toList()
+                bagColor = nameResult.groupValues[1],
+                contents = contentsResult.map { res ->
+                    BagContent(
+                        bagColor = res.groupValues[2],
+                        count = res.groupValues[1].toInt()
+                    )
+                }.toList()
             )
         }
     }
@@ -35,12 +35,19 @@ class Day7 : Day(Year._2020) {
     private val String.asBag: Bag
         get() = bags.first { it.bagColor == this }
 
+    // I'm not proud of this, but it's good enough
+    private val containsCacheMap = mutableMapOf<Pair<String, String>, Boolean>()
+
     private fun Bag.contains(bagColor: String): Boolean {
+        val cachedValue = containsCacheMap[this.bagColor to bagColor]
         return when {
+            cachedValue != null -> cachedValue
             contents.any { it.bagColor == bagColor } -> true
             else -> contents.any { contents ->
                 contents.bagColor.asBag.contains(bagColor)
             }
+        }.also { containsColor ->
+            containsCacheMap[this.bagColor to bagColor] = containsColor
         }
     }
 
