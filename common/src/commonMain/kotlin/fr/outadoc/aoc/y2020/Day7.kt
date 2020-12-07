@@ -5,62 +5,76 @@ import fr.outadoc.aoc.scaffold.Year
 
 class Day7 : Day(Year._2020) {
 
-    private val bags = readDayInput()
+    private val containerRegex = Regex("^([a-z ]+) bags contain .+$")
+    private val contentsRegex = Regex(" ([0-9]+) ([a-z ]+) bags?[,.]")
+
+    private val rules = readDayInput()
         .lineSequence()
         .filterNot { it.isEmpty() }
         .parse()
 
-    private val containerRegex = Regex("^([a-z ]+) bags contain .+$")
-    private val contentsRegex = Regex(" ([0-9]+) ([a-z ]+) bags?[,.]")
-
-    data class Bag(val bagColor: String, val contents: List<BagContent>)
-    data class BagContent(val bagColor: String, val count: Int)
-
-    private fun Sequence<String>.parse(): Sequence<Bag> {
-        return map { rule ->
-            val nameResult = containerRegex.find(rule)!!
-            val contentsResult = contentsRegex.findAll(rule)
-            Bag(
-                bagColor = nameResult.groupValues[1],
-                contents = contentsResult.map { res ->
-                    BagContent(
-                        bagColor = res.groupValues[2],
-                        count = res.groupValues[1].toInt()
-                    )
-                }.toList()
-            )
-        }
+    data class Rule(val color: String, val contents: List<Content>) {
+        data class Content(val count: Int, val color: String)
     }
 
-    private val String.asBag: Bag
-        get() = bags.first { it.bagColor == this }
+    private fun Sequence<String>.parse(): Sequence<Rule> = map { rule ->
+        val nameResult = containerRegex.find(rule)!!
+        val contentsResult = contentsRegex.findAll(rule)
 
-    // I'm not proud of this, but it's good enough
-    private val containsCacheMap = mutableMapOf<Pair<String, String>, Boolean>()
+        Rule(
+            color = nameResult.groupValues[1],
+            contents = contentsResult.map { res ->
+                Rule.Content(
+                    count = res.groupValues[1].toInt(),
+                    color = res.groupValues[2]
+                )
+            }.toList()
+        )
+    }
 
-    private fun Bag.contains(bagColor: String): Boolean {
-        val cachedValue = containsCacheMap[this.bagColor to bagColor]
-        return when {
-            cachedValue != null -> cachedValue
-            contents.any { it.bagColor == bagColor } -> true
-            else -> contents.any { contents ->
-                contents.bagColor.asBag.contains(bagColor)
+    data class Bag(val color: String, var contents: List<Content> = emptyList()) {
+        data class Content(val count: Int, val bag: Bag)
+
+        val size: Long
+            get() = 1 + contents.sumOf { (count, bag) ->
+                count * bag.size
             }
-        }.also { containsColor ->
-            containsCacheMap[this.bagColor to bagColor] = containsColor
+
+        fun contains(bag: Bag): Boolean = when {
+            contents.any { (_, containedBag) -> containedBag == bag } -> true
+            else -> contents.any { (_, containedBag) ->
+                containedBag.contains(bag)
+            }
         }
     }
 
-    private val Bag.size: Long
-        get() = 1 + contents.sumOf { content ->
-            content.bagColor.asBag.size * content.count
+    private val bags = rules.map { rule ->
+        rule.color to Bag(color = rule.color)
+    }.toMap()
+
+    private fun bagByName(name: String): Bag = bags[name]!!
+
+    init {
+        // Initialize bag contents
+        rules.forEach { rule ->
+            bagByName(rule.color).apply {
+                contents = rule.contents.map { (count, bagName) ->
+                    Bag.Content(
+                        count = count,
+                        bag = bagByName(bagName)
+                    )
+                }
+            }
         }
+    }
 
     override fun step1(): Long {
-        return bags.count { bag -> bag.contains("shiny gold") }.toLong()
+        val target = bagByName("shiny gold")
+        return bags.values.count { bag -> bag.contains(target) }.toLong()
     }
 
     override fun step2(): Long {
-        return "shiny gold".asBag.size - 1
+        val target = bagByName("shiny gold")
+        return target.size - 1
     }
 }
