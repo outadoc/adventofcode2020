@@ -52,16 +52,16 @@ class Day7 : Day(Year._2020) {
         rule.color to Bag(color = rule.color)
     }.toMap()
 
-    private fun bagByName(name: String): Bag = bags[name]!!
+    private fun bagByColor(color: String): Bag = bags[color]!!
 
     init {
         // Initialize bag contents
         rules.forEach { rule ->
-            bagByName(rule.color).apply {
-                contents = rule.contents.map { (count, bagName) ->
+            bagByColor(rule.color).apply {
+                contents = rule.contents.map { (count, color) ->
                     Bag.Content(
                         count = count,
-                        bag = bagByName(bagName)
+                        bag = bagByColor(color)
                     )
                 }
             }
@@ -69,12 +69,12 @@ class Day7 : Day(Year._2020) {
     }
 
     override fun step1(): Long {
-        val target = bagByName("shiny gold")
+        val target = bagByColor("shiny gold")
         return bags.values.count { bag -> bag.contains(target) }.toLong()
     }
 
     override fun step2(): Long {
-        val target = bagByName("shiny gold")
+        val target = bagByColor("shiny gold")
         return target.size - 1
     }
 }
