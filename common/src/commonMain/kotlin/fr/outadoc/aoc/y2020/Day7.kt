@@ -13,53 +13,64 @@ class Day7 : Day(Year._2020) {
         .filterNot { it.isEmpty() }
         .parse()
 
+    data class Rule(val color: String, val contents: List<Content>) {
+        data class Content(val count: Int, val color: String)
+    }
+
     private fun Sequence<String>.parse(): Sequence<Rule> = map { rule ->
         val nameResult = containerRegex.find(rule)!!
         val contentsResult = contentsRegex.findAll(rule)
+
         Rule(
-            bagName = nameResult.groupValues[1],
+            color = nameResult.groupValues[1],
             contents = contentsResult.map { res ->
-                res.groupValues[1].toInt() to res.groupValues[2]
+                Rule.Content(
+                    count = res.groupValues[1].toInt(),
+                    color = res.groupValues[2]
+                )
             }.toList()
         )
     }
 
-    data class Rule(val bagName: String, val contents: List<Pair<Int, String>>)
-    data class Bag(val bagName: String, var contents: List<Pair<Int, Bag>>) {
+    data class Bag(val color: String, var contents: List<Content> = emptyList()) {
+        data class Content(val count: Int, val bag: Bag)
 
         val size: Long
             get() = 1 + contents.sumOf { (count, bag) ->
                 count * bag.size
             }
+
+        fun contains(bag: Bag): Boolean = when {
+            contents.any { (_, containedBag) -> containedBag == bag } -> true
+            else -> contents.any { (_, containedBag) ->
+                containedBag.contains(bag)
+            }
+        }
     }
 
-    private val bagMap = rules.map { rule ->
-        rule.bagName to Bag(rule.bagName, emptyList())
+    private val bags = rules.map { rule ->
+        rule.color to Bag(color = rule.color)
     }.toMap()
 
-    private fun bagByName(name: String): Bag = bagMap[name]!!
+    private fun bagByName(name: String): Bag = bags[name]!!
 
     init {
         // Initialize bag contents
         rules.forEach { rule ->
-            bagByName(rule.bagName).apply {
+            bagByName(rule.color).apply {
                 contents = rule.contents.map { (count, bagName) ->
-                    count to bagByName(bagName)
+                    Bag.Content(
+                        count = count,
+                        bag = bagByName(bagName)
+                    )
                 }
             }
         }
     }
 
-    private fun Bag.contains(bag: Bag): Boolean = when {
-        contents.any { (_, containedBag) -> containedBag == bag } -> true
-        else -> contents.any { (_, containedBag) ->
-            containedBag.contains(bag)
-        }
-    }
-
     override fun step1(): Long {
         val target = bagByName("shiny gold")
-        return bagMap.values.count { bag -> bag.contains(target) }.toLong()
+        return bags.values.count { bag -> bag.contains(target) }.toLong()
     }
 
     override fun step2(): Long {
