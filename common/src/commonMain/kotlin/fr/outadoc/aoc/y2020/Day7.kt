@@ -13,17 +13,15 @@ class Day7 : Day(Year._2020) {
         .filterNot { it.isEmpty() }
         .parse()
 
-    private fun Sequence<String>.parse(): Sequence<Rule> {
-        return map { rule ->
-            val nameResult = containerRegex.find(rule)!!
-            val contentsResult = contentsRegex.findAll(rule)
-            Rule(
-                bagName = nameResult.groupValues[1],
-                contents = contentsResult.map { res ->
-                    res.groupValues[1].toInt() to res.groupValues[2]
-                }.toList()
-            )
-        }
+    private fun Sequence<String>.parse(): Sequence<Rule> = map { rule ->
+        val nameResult = containerRegex.find(rule)!!
+        val contentsResult = contentsRegex.findAll(rule)
+        Rule(
+            bagName = nameResult.groupValues[1],
+            contents = contentsResult.map { res ->
+                res.groupValues[1].toInt() to res.groupValues[2]
+            }.toList()
+        )
     }
 
     data class Rule(val bagName: String, val contents: List<Pair<Int, String>>)
@@ -52,18 +50,10 @@ class Day7 : Day(Year._2020) {
         }
     }
 
-    private val containsCacheMap = mutableMapOf<Pair<Bag, Bag>, Boolean>()
-
-    private fun Bag.contains(bag: Bag): Boolean {
-        val cachedValue = containsCacheMap[this to bag]
-        return when {
-            cachedValue != null -> cachedValue
-            contents.any { (_, containedBag) -> containedBag == bag } -> true
-            else -> contents.any { (_, containedBag) ->
-                containedBag.contains(bag)
-            }
-        }.also { containsColor ->
-            containsCacheMap[this to bag] = containsColor
+    private fun Bag.contains(bag: Bag): Boolean = when {
+        contents.any { (_, containedBag) -> containedBag == bag } -> true
+        else -> contents.any { (_, containedBag) ->
+            containedBag.contains(bag)
         }
     }
 
