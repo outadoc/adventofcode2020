@@ -1,5 +1,6 @@
 package fr.outadoc.aoc.scaffold
 
 enum class Year(val id: String) {
-    _2019("2019"), _2020("2020")
+    TwentyNineteen("2019"),
+    TwentyTwenty("2020")
 }

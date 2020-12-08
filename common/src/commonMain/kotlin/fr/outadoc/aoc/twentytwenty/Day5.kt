@@ -1,10 +1,10 @@
-package fr.outadoc.aoc.y2020
+package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
 import kotlin.math.pow
 
-class Day5 : Day(Year._2020) {
+class Day5 : Day(Year.TwentyTwenty) {
 
     private val registeredSeats: Sequence<Seat> =
         readDayInput()

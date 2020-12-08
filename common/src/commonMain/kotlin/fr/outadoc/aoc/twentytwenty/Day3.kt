@@ -1,9 +1,9 @@
-package fr.outadoc.aoc.y2020
+package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
 
-class Day3 : Day(Year._2020) {
+class Day3 : Day(Year.TwentyTwenty) {
 
     private val map: Array<CharArray> =
         readDayInput()

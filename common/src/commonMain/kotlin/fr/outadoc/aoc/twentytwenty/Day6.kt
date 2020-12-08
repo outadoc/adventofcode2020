@@ -1,10 +1,10 @@
-package fr.outadoc.aoc.y2020
+package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
 import fr.outadoc.aoc.scaffold.toSortedSetCommon
 
-class Day6 : Day(Year._2020) {
+class Day6 : Day(Year.TwentyTwenty) {
 
     private val input: List<Group> =
         readDayInput().parse()

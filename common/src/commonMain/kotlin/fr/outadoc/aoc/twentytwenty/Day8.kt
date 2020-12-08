@@ -1,9 +1,9 @@
-package fr.outadoc.aoc.y2020
+package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
 
-class Day8 : Day(Year._2020) {
+class Day8 : Day(Year.TwentyTwenty) {
 
     data class Instruction(val op: Operation, val arg: Int)
 

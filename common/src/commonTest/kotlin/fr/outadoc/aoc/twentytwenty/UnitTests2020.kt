@@ -1,4 +1,4 @@
-package fr.outadoc.aoc.y2020
+package fr.outadoc.aoc.twentytwenty
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -1,6 +1,6 @@
-package fr.outadoc.aoc.y2019
+package fr.outadoc.aoc.twentynineteen
 
-import fr.outadoc.aoc.y2019.Day3.Point
+import fr.outadoc.aoc.twentynineteen.Day3.Point
 import java.awt.Canvas
 import java.awt.Color
 import java.awt.Graphics
