@@ -95,32 +95,32 @@ class Day3 : Day(Year._2019) {
             wires.map { w ->
                 w.segments.map { s ->
                     min(s.a.x, s.b.x)
-                }.min() ?: 0
-            }.min() ?: 0
+                }.minOrNull() ?: 0
+            }.minOrNull() ?: 0
         }
 
         val maxX: Int by lazy {
             wires.map { w ->
                 w.segments.map { s ->
                     max(s.a.x, s.b.x)
-                }.max() ?: 0
-            }.max() ?: 0
+                }.maxOrNull() ?: 0
+            }.maxOrNull() ?: 0
         }
 
         val minY: Int by lazy {
             wires.map { w ->
                 w.segments.map { s ->
                     min(s.a.y, s.b.y)
-                }.min() ?: 0
-            }.min() ?: 0
+                }.minOrNull() ?: 0
+            }.minOrNull() ?: 0
         }
 
         val maxY: Int by lazy {
             wires.map { w ->
                 w.segments.map { s ->
                     max(s.a.y, s.b.y)
-                }.max() ?: 0
-            }.max() ?: 0
+                }.maxOrNull() ?: 0
+            }.maxOrNull() ?: 0
         }
 
         private fun checkIntersectionAt(x: Int, y: Int): Boolean {
@@ -191,8 +191,9 @@ class Day3 : Day(Year._2019) {
 
         // Day3Debug().display(c)
 
-        val closest = intersect.map { p -> p.distance(Point(0, 0)) }.min()!!
-        return closest.toLong()
+        return intersect.map { p -> p.distance(Point(0, 0)) }
+            .minOrNull()!!
+            .toLong()
     }
 
     override fun step2(): Long {
