@@ -6,11 +6,12 @@ import kotlin.math.floor
 
 class Day1 : Day(Year._2019) {
 
-    private val masses = readDayInput()
-        .lines()
-        .asSequence()
-        .filter { it.isNotBlank() }
-        .map { it.toDouble() }
+    private val masses: Sequence<Double> =
+        readDayInput()
+            .lines()
+            .asSequence()
+            .filter { it.isNotBlank() }
+            .map { it.toDouble() }
 
     private fun fuelNeededForMass(mass: Double) = floor(mass / 3) - 2
 

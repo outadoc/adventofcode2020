@@ -5,9 +5,8 @@ import fr.outadoc.aoc.scaffold.Year
 
 class Day3 : Day(Year._2020) {
 
-    private val input = readDayInput()
-
-    private val map: Array<CharArray> = input
+    private val map: Array<CharArray> =
+        readDayInput()
         .lines()
         .map { line -> line.toCharArray() }
         .toTypedArray()

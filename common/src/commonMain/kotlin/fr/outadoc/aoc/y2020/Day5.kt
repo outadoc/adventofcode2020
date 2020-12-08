@@ -6,7 +6,10 @@ import kotlin.math.pow
 
 class Day5 : Day(Year._2020) {
 
-    private val input = readDayInput().lineSequence()
+    private val registeredSeats: Sequence<Seat> =
+        readDayInput()
+            .lineSequence()
+            .map { it.parseSeat() }
 
     companion object {
         const val ROW_CHAR_COUNT = 7
@@ -57,8 +60,7 @@ class Day5 : Day(Year._2020) {
     }
 
     override fun step1(): Long {
-        return input
-            .map { it.parseSeat() }
+        return registeredSeats
             .maxOf { it.id }
             .toLong()
     }
@@ -69,8 +71,6 @@ class Day5 : Day(Year._2020) {
                 Seat(row, col)
             }
         }.flatten()
-
-        val registeredSeats = input.map { it.parseSeat() }
 
         val minId = registeredSeats.minOf { it.id }
         val maxId = registeredSeats.maxOf { it.id }

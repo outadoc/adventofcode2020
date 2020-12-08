@@ -10,7 +10,6 @@ class Day7 : Day(Year._2020) {
 
     private val rules = readDayInput()
         .lineSequence()
-        .filterNot { it.isEmpty() }
         .parse()
 
     data class Rule(val color: String, val contents: List<Content>) {

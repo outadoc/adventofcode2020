@@ -5,10 +5,11 @@ import fr.outadoc.aoc.scaffold.Year
 
 class Day2 : Day(Year._2019) {
 
-    private val program = readDayInput()
-        .lines()
-        .map { it.toInt() }
-        .toIntArray()
+    private val program: IntArray =
+        readDayInput()
+            .lines()
+            .map { it.toInt() }
+            .toIntArray()
 
     companion object {
         const val OP_ADD = 1

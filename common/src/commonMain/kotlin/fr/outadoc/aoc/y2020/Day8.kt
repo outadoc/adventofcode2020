@@ -18,15 +18,15 @@ class Day8 : Day(Year._2020) {
         else -> throw IllegalArgumentException()
     }
 
-    private val program = readDayInput()
-        .lines()
-        .filterNot { it.isEmpty() }
-        .map { line ->
-            Instruction(
-                op = line.takeWhile { it != ' ' }.toOperation(),
-                arg = line.takeLastWhile { it != ' ' }.toInt()
-            )
-        }
+    private val program: List<Instruction> =
+        readDayInput()
+            .lines()
+            .map { line ->
+                Instruction(
+                    op = line.takeWhile { it != ' ' }.toOperation(),
+                    arg = line.takeLastWhile { it != ' ' }.toInt()
+                )
+            }
 
     class InfiniteLoopException(val acc: Long) : Exception()
 

@@ -9,17 +9,16 @@ class Day4 : Day(Year._2020) {
         private val knownProperties = listOf("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid")
     }
 
-    private val input = readDayInput()
+    private val input: List<PassportCandidate> =
+        readDayInput().parse()
 
     data class PassportCandidate(val properties: Map<String, String>)
 
     private fun String.parse(): List<PassportCandidate> {
         return split("\n\n")
-            .filterNot { it.isEmpty() }
             .map { entry ->
                 PassportCandidate(
                     properties = entry.split(' ', '\n')
-                        .filterNot { it.isEmpty() }
                         .map { prop ->
                             val components = prop.split(':')
                             components[0] to components[1]
@@ -66,13 +65,13 @@ class Day4 : Day(Year._2020) {
         }
 
     override fun step1(): Long {
-        return input.parse().count { candidate ->
+        return input.count { candidate ->
             candidate.checkPropertiesPresent
         }.toLong()
     }
 
     override fun step2(): Long {
-        return input.parse().count { candidate ->
+        return input.count { candidate ->
             candidate.checkPropertiesPresent && candidate.checkPropertiesValid
         }.toLong()
     }

@@ -5,11 +5,12 @@ import fr.outadoc.aoc.scaffold.Year
 
 class Day1 : Day(Year._2020) {
 
-    private val input = readDayInput()
-        .lineSequence()
-        .map { it.toInt() }
-        .toList()
-        .toIntArray()
+    private val input: IntArray =
+        readDayInput()
+            .lineSequence()
+            .map { it.toInt() }
+            .toList()
+            .toIntArray()
 
     private fun IntArray.findTwoSum(sum: Int): Int? {
         forEachIndexed { i, a ->

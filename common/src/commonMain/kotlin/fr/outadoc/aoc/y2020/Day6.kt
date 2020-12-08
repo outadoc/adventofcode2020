@@ -6,7 +6,8 @@ import fr.outadoc.aoc.scaffold.toSortedSetCommon
 
 class Day6 : Day(Year._2020) {
 
-    private val input = readDayInput()
+    private val input: List<Group> =
+        readDayInput().parse()
 
     data class Person(val yesAnswers: List<Char>)
 
@@ -31,15 +32,13 @@ class Day6 : Day(Year._2020) {
     }
 
     override fun step1(): Long {
-        val parsed = input.parse()
-        return parsed.sumBy { group ->
+        return input.sumBy { group ->
             group.answeredYesByAnyone.size
         }.toLong()
     }
 
     override fun step2(): Long {
-        val parsed = input.parse()
-        return parsed.sumBy { group ->
+        return input.sumBy { group ->
             group.answeredYesByEverybody.size
         }.toLong()
     }

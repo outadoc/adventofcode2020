@@ -8,7 +8,8 @@ import kotlin.math.min
 
 class Day3 : Day(Year._2019) {
 
-    private val input = readDayInput().lines()
+    private val input: List<String> =
+        readDayInput().lines()
 
     data class Point(val x: Int, val y: Int) {
 

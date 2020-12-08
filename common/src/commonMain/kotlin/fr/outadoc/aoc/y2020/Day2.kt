@@ -5,7 +5,10 @@ import fr.outadoc.aoc.scaffold.Year
 
 class Day2 : Day(Year._2020) {
 
-    private val input = readDayInput().lineSequence()
+    private val input: Sequence<PasswordEntry> =
+        readDayInput()
+            .lineSequence()
+            .parse()
 
     data class Policy(val first: Int, val second: Int, val letter: Char)
     data class PasswordEntry(val policy: Policy, val password: String)
@@ -31,7 +34,7 @@ class Day2 : Day(Year._2020) {
             return letterCount in entry.policy.first..entry.policy.second
         }
 
-        return input.parse().count { entry -> isValid(entry) }.toLong()
+        return input.count { entry -> isValid(entry) }.toLong()
     }
 
     override fun step2(): Long {
@@ -41,6 +44,6 @@ class Day2 : Day(Year._2020) {
             return isFirstLetterOk xor isSecondLetterOk
         }
 
-        return input.parse().count { entry -> isValid(entry) }.toLong()
+        return input.count { entry -> isValid(entry) }.toLong()
     }
 }
