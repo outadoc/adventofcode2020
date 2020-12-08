@@ -2,7 +2,6 @@ package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
-import fr.outadoc.aoc.scaffold.toSortedSetCommon
 
 class Day6 : Day(Year.TwentyTwenty) {
 
@@ -15,7 +14,7 @@ class Day6 : Day(Year.TwentyTwenty) {
         val answeredYesByAnyone: Set<Char>
             get() = people.map { person ->
                 person.yesAnswers
-            }.flatten().toSortedSetCommon()
+            }.flatten().toSet()
 
         val answeredYesByEverybody: Set<Char>
             get() = people.fold(answeredYesByAnyone) { acc, person ->
