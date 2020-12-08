@@ -5,14 +5,25 @@ import fr.outadoc.aoc.scaffold.Year
 
 class Day8 : Day(Year._2020) {
 
-    data class Instruction(val ins: String, val arg: Int)
+    data class Instruction(val op: Operation, val arg: Int)
+
+    enum class Operation {
+        ACC, JMP, NOP
+    }
+
+    private fun String.toOperation() = when (this) {
+        "acc" -> Operation.ACC
+        "jmp" -> Operation.JMP
+        "nop" -> Operation.NOP
+        else -> throw IllegalArgumentException()
+    }
 
     private val program = readDayInput()
         .lines()
         .filterNot { it.isEmpty() }
         .map { line ->
             Instruction(
-                ins = line.takeWhile { it != ' ' },
+                op = line.takeWhile { it != ' ' }.toOperation(),
                 arg = line.takeLastWhile { it != ' ' }.toInt()
             )
         }
@@ -41,18 +52,17 @@ class Day8 : Day(Year._2020) {
 
             instructionStepCount[pc]++
 
-            when (ins.ins) {
-                "acc" -> {
+            when (ins.op) {
+                Operation.ACC -> {
                     acc += ins.arg
                     pc++
                 }
-                "jmp" -> {
+                Operation.JMP -> {
                     pc += ins.arg
                 }
-                "nop" -> {
+                Operation.NOP -> {
                     pc++
                 }
-                else -> throw IllegalArgumentException()
             }
 
             // Normal stop condition
@@ -75,21 +85,23 @@ class Day8 : Day(Year._2020) {
     }
 
     override fun step2(): Long {
-        for (ins in program) {
-            val patch = program.map {
-                if (it == ins) {
-                    // This is the instruction we want to patch
-                    when (ins.ins) {
-                        "jmp" -> ins.copy(ins = "nop")
-                        "nop" -> ins.copy(ins = "jmp")
-                        else -> ins
+        for (insToPatch in program) {
+            val patch = program.map { currentIns ->
+                // Check if this is the instruction we want to patch (by reference)
+                if (currentIns === insToPatch) {
+                    when (currentIns.op) {
+                        Operation.JMP -> currentIns.copy(op = Operation.NOP)
+                        Operation.NOP -> currentIns.copy(op = Operation.JMP)
+                        else -> currentIns
                     }
-                } else it
+
+                } else currentIns
             }
 
             try {
                 return CPU(patch).execute()
             } catch (e: InfiniteLoopException) {
+                // This wasn't the right patch, retry
             }
         }
 
