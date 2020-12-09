@@ -20,22 +20,26 @@ kotlin {
     }
 
     macosX64()
-
     linuxX64()
+    mingwX64()
 
     sourceSets {
         val commonMain by sourceSets.getting
 
-        val desktopMain by creating {
+        val posixMain by creating {
             dependsOn(commonMain)
         }
 
         val linuxX64Main by getting {
-            dependsOn(desktopMain)
+            dependsOn(posixMain)
         }
 
         val macosX64Main by getting {
-            dependsOn(desktopMain)
+            dependsOn(posixMain)
+        }
+
+        val mingwX64Main by getting {
+            dependsOn(posixMain)
         }
 
         val commonTest by getting {

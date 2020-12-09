@@ -31,3 +31,12 @@ jobs:
 
       - name: Run Linux tests
         run: ./gradlew linuxX64Test
+
+  test-window:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run Windows tests
+        run: ./gradlew mingwX64Test
