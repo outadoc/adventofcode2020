@@ -21,7 +21,6 @@ kotlin {
 
     macosX64()
     linuxX64()
-    mingwX64()
 
     sourceSets {
         val commonMain by sourceSets.getting
@@ -35,10 +34,6 @@ kotlin {
         }
 
         val macosX64Main by getting {
-            dependsOn(posixMain)
-        }
-
-        val mingwX64Main by getting {
             dependsOn(posixMain)
         }
 
