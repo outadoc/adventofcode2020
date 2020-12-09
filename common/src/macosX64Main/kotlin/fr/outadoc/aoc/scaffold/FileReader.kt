@@ -3,28 +3,28 @@ package fr.outadoc.aoc.scaffold
 import kotlinx.cinterop.*
 import platform.Foundation.*
 
-actual class FileReader actual constructor() {
+actual class FileReader {
 
     companion object {
         const val BASE_DIR = "src/commonTest/resources"
     }
 
-    actual fun readInput(filename: String): String {
+    actual fun readInput(filename: String): String = memScoped {
         val path = "$BASE_DIR/$filename"
 
-        val nsFileManager = NSFileManager()
-        if (!nsFileManager.fileExistsAtPath(path)) {
-            throw Exception("File does not exist: $path, current dir = ${nsFileManager.currentDirectoryPath}")
+        NSFileManager().apply {
+            if (!fileExistsAtPath(path)) {
+                throw Exception("File does not exist: $path, current dir = $currentDirectoryPath")
+            }
         }
 
-        val nsError = nativeHeap.alloc<ObjCObjectVar<NSError?>>()
+        val nsError = alloc<ObjCObjectVar<NSError?>>()
         return NSString.stringWithContentsOfFile(
             path = path,
             encoding = NSUTF8StringEncoding,
             error = nsError.ptr
         ).let { content ->
             val error = nsError.value
-            nativeHeap.free(nsError)
             if (content == null) throw NSErrorException(error)
             content
         }
