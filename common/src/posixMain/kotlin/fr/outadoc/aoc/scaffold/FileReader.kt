@@ -9,27 +9,11 @@ actual class FileReader {
         private const val BASE_DIR = "src/commonTest/resources"
     }
 
-    actual fun readInput(filename: String): String {
+    actual fun readInput(filename: String): String = memScoped {
         val path = "$BASE_DIR/$filename"
 
         // Open file
-        return fopen(path, "r").use { f ->
-            f.readToString()
-        }
-    }
-
-    private fun <T> CPointer<FILE>?.use(block: (CPointer<FILE>) -> T): T {
-        checkNotNull(this) {
-            "Unable to open file. errno = $errno"
-        }
-
-        return block(this).also {
-            fclose(this)
-        }
-    }
-
-    private fun CPointer<FILE>.readToString(): String = memScoped {
-        val f = this@readToString
+        val f = fopen(path, "r")
 
         // Count bytes
         fseek(f, 0, SEEK_END)
