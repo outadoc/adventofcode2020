@@ -19,17 +19,9 @@ kotlin {
         }
     }
 
+    macosX64()
+
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-            }
-        }
-
-        val jvmMain by getting {
-            dependencies {
-            }
-        }
-
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test-common"))
