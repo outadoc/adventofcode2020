@@ -24,6 +24,20 @@ kotlin {
     linuxX64()
 
     sourceSets {
+        val commonMain by sourceSets.getting
+
+        val desktopMain by creating {
+            dependsOn(commonMain)
+        }
+
+        val linuxX64Main by getting {
+            dependsOn(desktopMain)
+        }
+
+        val macosX64Main by getting {
+            dependsOn(desktopMain)
+        }
+
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test-common"))
