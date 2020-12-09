@@ -32,11 +32,11 @@ jobs:
       - name: Run Linux tests
         run: ./gradlew linuxX64Test
 
-  test-windows:
-    runs-on: windows-latest
+  test-macos:
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Run Windows tests
-        run: ./gradlew mingwX64Test
+      - name: Run macOS tests
+        run: ./gradlew macosX64Test
