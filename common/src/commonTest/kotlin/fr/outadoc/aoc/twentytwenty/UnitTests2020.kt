@@ -92,6 +92,6 @@ class UnitTests2020 {
 
     @Test
     fun testDay9Step2() {
-        assertEquals(null, Day9().step2())
+        assertEquals(2980044, Day9().step2())
     }
 }
