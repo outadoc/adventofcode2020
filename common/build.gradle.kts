@@ -21,6 +21,8 @@ kotlin {
 
     macosX64()
 
+    linuxX64()
+
     sourceSets {
         val commonTest by getting {
             dependencies {
