@@ -6,10 +6,11 @@ import kotlin.math.pow
 
 class Day5 : Day(Year.TwentyTwenty) {
 
-    private val registeredSeats: Sequence<Seat> =
+    private val registeredSeats: List<Seat> =
         readDayInput()
             .lineSequence()
             .map { it.parseSeat() }
+            .toList()
 
     companion object {
         const val ROW_CHAR_COUNT = 7
