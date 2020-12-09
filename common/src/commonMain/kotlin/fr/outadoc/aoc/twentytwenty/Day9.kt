@@ -24,7 +24,7 @@ class Day9 : Day(Year.TwentyTwenty) {
         }
     }
 
-    private fun findContiguousSum(chunk: List<Long>, n: Long): Pair<Long, Long>? {
+    private tailrec fun findContiguousSum(chunk: List<Long>, n: Long): Pair<Long, Long> {
         var sum = 0L
         var i = 0
 
@@ -39,7 +39,7 @@ class Day9 : Day(Year.TwentyTwenty) {
                 val range = chunk.subList(0, i)
                 range.minOrNull()!! to range.maxOrNull()!!
             }
-            else -> null
+            else -> findContiguousSum(chunk.drop(1), n)
         }
     }
 
@@ -63,14 +63,8 @@ class Day9 : Day(Year.TwentyTwenty) {
             .toList()
             .reversed()
 
-        var chunk = interval
-        var answer: Pair<Long, Long>? = null
-
-        while (answer == null) {
-            answer = findContiguousSum(chunk, n)
-            chunk = chunk.drop(1)
+        return findContiguousSum(interval, n).let { res ->
+            res.first + res.second
         }
-
-        return answer.first + answer.second
     }
 }
