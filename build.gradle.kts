@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -23,6 +25,7 @@ allprojects {
         testLogging {
             events("passed", "skipped", "failed")
             showStandardStreams = true
+            exceptionFormat = TestExceptionFormat.FULL
         }
     }
 }
