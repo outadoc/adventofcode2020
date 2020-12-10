@@ -60,13 +60,13 @@ class Day10 : Day(Year.TwentyTwenty) {
             OUTLET_JOLTS to 1L
         )
 
-        val res = adapterList.fold(initial) { acc, value ->
+        val res = adapterList.fold(initial) { acc, adapter ->
             acc.toMutableMap()
                 .withDefault { 0L }
                 .apply {
-                    this[value] = getValue(value - 3) +
-                            getValue(value - 2) +
-                            getValue(value - 1)
+                    this[adapter] = ADAPTER_TOLERANCE.sumOf { difference ->
+                        getValue(adapter - difference)
+                    }
                 }
         }
 
