@@ -17,7 +17,7 @@ class Day10 : Day(Year.TwentyTwenty) {
             .map { it.toLong() }
             .sorted()
 
-    private val buildInAdapterJolts = input.maxOrNull()!! + BUILT_IN_ADAPTER_JOLTS_DIFFERENCE
+    private val builtInAdapterJolts = input.maxOrNull()!! + BUILT_IN_ADAPTER_JOLTS_DIFFERENCE
 
     private val adapterList: List<Long> =
         input
@@ -27,7 +27,7 @@ class Day10 : Day(Year.TwentyTwenty) {
         currentChain: List<Long> = listOf(OUTLET_JOLTS)
     ): List<Long> {
         return if (remainingAdapters.isEmpty()) {
-            currentChain + buildInAdapterJolts
+            currentChain + builtInAdapterJolts
         } else {
             val tail = currentChain.last()
             val nextAdapter: Long = remainingAdapters
@@ -39,30 +39,6 @@ class Day10 : Day(Year.TwentyTwenty) {
                 currentChain = currentChain + nextAdapter
             )
         }
-    }
-
-    private fun countPossibleChains(
-        remainingAdapters: List<Long>,
-        currentChain: List<Long> = listOf(OUTLET_JOLTS)
-    ): Int {
-        val tail = currentChain.last()
-
-        //println("checking $tail")
-
-        if (buildInAdapterJolts - tail in ADAPTER_TOLERANCE) {
-            // This is a good chain
-            //println("good chain: $currentChain")
-            return 1
-        }
-
-        return remainingAdapters
-            .filter { it - tail in ADAPTER_TOLERANCE }
-            .sumBy { nextAdapterCandidate ->
-                countPossibleChains(
-                    remainingAdapters = remainingAdapters - nextAdapterCandidate,
-                    currentChain = currentChain + nextAdapterCandidate
-                )
-            }
     }
 
     private fun List<Long>.countDifferences(n: Long): Long {
@@ -77,6 +53,14 @@ class Day10 : Day(Year.TwentyTwenty) {
     }
 
     override fun step2(): Long {
-        return countPossibleChains(adapterList).toLong()
+        val res = adapterList.fold(mapOf(OUTLET_JOLTS to 1L)) { acc, value ->
+            acc.toMutableMap().apply {
+                this[value] = getOrElse(value - 3) { 0L } +
+                        getOrElse(value - 2) { 0L } +
+                        getOrElse(value - 1) { 0L }
+            }
+        }
+
+        return res[input.maxOrNull()!!]!!.toLong()
     }
 }
