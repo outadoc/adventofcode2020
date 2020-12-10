@@ -8,13 +8,14 @@ class Day10 : Day(Year.TwentyTwenty) {
     companion object {
         const val OUTLET_JOLTS = 0L
         const val BUILT_IN_ADAPTER_JOLTS_DIFFERENCE = 3
-        val ADAPTER_TOLERANCE = 1..3
+        val ADAPTER_TOLERANCE: IntRange = 1..3
     }
 
     private val input: List<Long> =
         readDayInput()
             .lines()
             .map { it.toLong() }
+            .sorted()
 
     private val buildInAdapterJolts = input.maxOrNull()!! + BUILT_IN_ADAPTER_JOLTS_DIFFERENCE
 
@@ -42,37 +43,31 @@ class Day10 : Day(Year.TwentyTwenty) {
 
     private fun countPossibleChains(
         remainingAdapters: List<Long>,
-        currentChain: List<Long> = listOf(OUTLET_JOLTS),
-        count: Long = 0
-    ): Long {
-        if (buildInAdapterJolts - currentChain.last() in ADAPTER_TOLERANCE) {
+        currentChain: List<Long> = listOf(OUTLET_JOLTS)
+    ): Int {
+        val tail = currentChain.last()
+
+        //println("checking $tail")
+
+        if (buildInAdapterJolts - tail in ADAPTER_TOLERANCE) {
             // This is a good chain
-            // println("good chain: $currentChain")
-            return count + 1
+            //println("good chain: $currentChain")
+            return 1
         }
 
-        val tail = currentChain.last()
-        val possibleChains: Long = remainingAdapters
+        return remainingAdapters
             .filter { it - tail in ADAPTER_TOLERANCE }
-            .map { nextAdapterCandidate ->
+            .sumBy { nextAdapterCandidate ->
                 countPossibleChains(
                     remainingAdapters = remainingAdapters - nextAdapterCandidate,
-                    currentChain = currentChain + nextAdapterCandidate,
-                    count = count
+                    currentChain = currentChain + nextAdapterCandidate
                 )
-            }.sum()
-
-        return count + possibleChains
+            }
     }
 
     private fun List<Long>.countDifferences(n: Long): Long {
         return windowed(size = 2)
-            .map {
-                val a = it[0]
-                val b = it[1]
-                b - a
-            }
-            .count { it == n }
+            .count { it[1] - it[0] == n }
             .toLong()
     }
 
@@ -82,6 +77,6 @@ class Day10 : Day(Year.TwentyTwenty) {
     }
 
     override fun step2(): Long {
-        return countPossibleChains(adapterList)
+        return countPossibleChains(adapterList).toLong()
     }
 }
