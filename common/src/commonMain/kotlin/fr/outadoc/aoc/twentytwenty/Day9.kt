@@ -2,6 +2,8 @@ package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.max
+import fr.outadoc.aoc.scaffold.min
 
 class Day9 : Day(Year.TwentyTwenty) {
 
@@ -61,7 +63,7 @@ class Day9 : Day(Year.TwentyTwenty) {
             .reversed()
 
         return findContiguousSum(interval, n).let { res ->
-            res.minOrNull()!! + res.maxOrNull()!!
+            res.min() + res.max()
         }
     }
 }

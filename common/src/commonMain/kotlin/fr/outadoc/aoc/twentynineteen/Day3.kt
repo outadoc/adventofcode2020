@@ -2,6 +2,8 @@ package fr.outadoc.aoc.twentynineteen
 
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.max
+import fr.outadoc.aoc.scaffold.min
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -95,32 +97,32 @@ class Day3 : Day(Year.TwentyNineteen) {
             wires.map { w ->
                 w.segments.map { s ->
                     min(s.a.x, s.b.x)
-                }.minOrNull() ?: 0
-            }.minOrNull() ?: 0
+                }.min()
+            }.min()
         }
 
         val maxX: Int by lazy {
             wires.map { w ->
                 w.segments.map { s ->
                     max(s.a.x, s.b.x)
-                }.maxOrNull() ?: 0
-            }.maxOrNull() ?: 0
+                }.max()
+            }.max()
         }
 
         val minY: Int by lazy {
             wires.map { w ->
                 w.segments.map { s ->
                     min(s.a.y, s.b.y)
-                }.minOrNull() ?: 0
-            }.minOrNull() ?: 0
+                }.min()
+            }.min()
         }
 
         val maxY: Int by lazy {
             wires.map { w ->
                 w.segments.map { s ->
                     max(s.a.y, s.b.y)
-                }.maxOrNull() ?: 0
-            }.maxOrNull() ?: 0
+                }.max()
+            }.max()
         }
 
         private fun checkIntersectionAt(x: Int, y: Int): Boolean {
@@ -192,7 +194,7 @@ class Day3 : Day(Year.TwentyNineteen) {
         // Day3Debug().display(c)
 
         return intersect.map { p -> p.distance(Point(0, 0)) }
-            .minOrNull()!!
+            .min()
             .toLong()
     }
 

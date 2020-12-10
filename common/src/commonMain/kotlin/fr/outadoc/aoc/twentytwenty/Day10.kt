@@ -2,6 +2,8 @@ package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.max
+import fr.outadoc.aoc.scaffold.min
 
 class Day10 : Day(Year.TwentyTwenty) {
 
@@ -17,7 +19,7 @@ class Day10 : Day(Year.TwentyTwenty) {
             .map { it.toLong() }
             .sorted()
 
-    private val builtInAdapterJolts = input.maxOrNull()!! + BUILT_IN_ADAPTER_JOLTS_DIFFERENCE
+    private val builtInAdapterJolts = input.max() + BUILT_IN_ADAPTER_JOLTS_DIFFERENCE
 
     private val adapterList: List<Long> =
         input
@@ -32,7 +34,7 @@ class Day10 : Day(Year.TwentyTwenty) {
             val tail = currentChain.last()
             val nextAdapter: Long = remainingAdapters
                 .filter { it - tail in ADAPTER_TOLERANCE }
-                .minOrNull()!!
+                .min()
 
             makeAdapterChain(
                 remainingAdapters = remainingAdapters - nextAdapter,
@@ -61,6 +63,6 @@ class Day10 : Day(Year.TwentyTwenty) {
             }
         }
 
-        return res[input.maxOrNull()!!]!!.toLong()
+        return res[input.max()]!!.toLong()
     }
 }
