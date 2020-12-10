@@ -28,9 +28,9 @@ class Day10 : Day(Year.TwentyTwenty) {
         return if (remainingAdapters.isEmpty()) {
             currentChain + buildInAdapterJolts
         } else {
-            val head = currentChain.last()
+            val tail = currentChain.last()
             val nextAdapter: Long = remainingAdapters
-                .filter { it - head in ADAPTER_TOLERANCE }
+                .filter { it - tail in ADAPTER_TOLERANCE }
                 .minOrNull()!!
 
             makeAdapterChain(
@@ -38,6 +38,31 @@ class Day10 : Day(Year.TwentyTwenty) {
                 currentChain = currentChain + nextAdapter
             )
         }
+    }
+
+    private fun countPossibleChains(
+        remainingAdapters: List<Long>,
+        currentChain: List<Long> = listOf(OUTLET_JOLTS),
+        count: Long = 0
+    ): Long {
+        if (buildInAdapterJolts - currentChain.last() in ADAPTER_TOLERANCE) {
+            // This is a good chain
+            // println("good chain: $currentChain")
+            return count + 1
+        }
+
+        val tail = currentChain.last()
+        val possibleChains: Long = remainingAdapters
+            .filter { it - tail in ADAPTER_TOLERANCE }
+            .map { nextAdapterCandidate ->
+                countPossibleChains(
+                    remainingAdapters = remainingAdapters - nextAdapterCandidate,
+                    currentChain = currentChain + nextAdapterCandidate,
+                    count = count
+                )
+            }.sum()
+
+        return count + possibleChains
     }
 
     private fun List<Long>.countDifferences(n: Long): Long {
@@ -57,6 +82,6 @@ class Day10 : Day(Year.TwentyTwenty) {
     }
 
     override fun step2(): Long {
-        TODO("Not yet implemented")
+        return countPossibleChains(adapterList)
     }
 }
