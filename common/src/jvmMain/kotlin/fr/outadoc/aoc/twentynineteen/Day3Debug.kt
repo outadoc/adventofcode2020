@@ -1,5 +1,6 @@
 package fr.outadoc.aoc.twentynineteen
 
+import fr.outadoc.aoc.scaffold.min
 import fr.outadoc.aoc.twentynineteen.Day3.Point
 import java.awt.Canvas
 import java.awt.Color
