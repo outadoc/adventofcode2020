@@ -13,34 +13,38 @@ class Day10 : Day(Year.TwentyTwenty) {
         val ADAPTER_TOLERANCE: IntRange = 1..3
     }
 
-    private val adapterList: List<Long> =
+    private val input: List<Long> =
         readDayInput()
             .lines()
             .map { it.toLong() }
             .sorted()
 
-    private val highestJoltAdapter: Long =
-        adapterList.max()
+    private val maxAdapterJolts: Long =
+        input.max()
 
     private val builtInAdapterJolts: Long =
-        highestJoltAdapter + BUILT_IN_ADAPTER_JOLTS_DIFFERENCE
+        maxAdapterJolts + BUILT_IN_ADAPTER_JOLTS_DIFFERENCE
+
+    private val adapterList: List<Long> =
+        input + builtInAdapterJolts
 
     private tailrec fun makeAdapterChain(
         remainingAdapters: List<Long>,
         currentChain: List<Long> = listOf(OUTLET_JOLTS)
     ): List<Long> {
-        return if (remainingAdapters.isEmpty()) {
-            currentChain + builtInAdapterJolts
-        } else {
-            val tail = currentChain.last()
-            val nextAdapter: Long = remainingAdapters
-                .filter { it - tail in ADAPTER_TOLERANCE }
-                .min()
+        return when {
+            remainingAdapters.isEmpty() -> currentChain
+            else -> {
+                val tail = currentChain.last()
+                val nextAdapter: Long = remainingAdapters
+                    .filter { it - tail in ADAPTER_TOLERANCE }
+                    .min()
 
-            makeAdapterChain(
-                remainingAdapters = remainingAdapters - nextAdapter,
-                currentChain = currentChain + nextAdapter
-            )
+                makeAdapterChain(
+                    remainingAdapters = remainingAdapters - nextAdapter,
+                    currentChain = currentChain + nextAdapter
+                )
+            }
         }
     }
 
@@ -60,16 +64,22 @@ class Day10 : Day(Year.TwentyTwenty) {
             OUTLET_JOLTS to 1L
         )
 
-        val res = adapterList.fold(initial) { acc, adapter ->
-            acc.toMutableMap()
-                .withDefault { 0L }
-                .apply {
-                    this[adapter] = ADAPTER_TOLERANCE.sumOf { difference ->
-                        getValue(adapter - difference)
+        // For each adapter, count the number of chains that use it.
+        val res = adapterList
+            .fold(initial) { acc, adapter ->
+                acc.toMutableMap()
+                    .withDefault { 0L }
+                    .apply {
+                        // For this adapter, increment the number of chains
+                        // for possible *previous* elements in the chain
+                        this[adapter] = ADAPTER_TOLERANCE.sumOf { difference ->
+                            getValue(adapter - difference)
+                        }
                     }
-                }
-        }
+            }
 
-        return res.getValue(highestJoltAdapter).toLong()
+        // Since every *possible* chain ends at the built-in adapter, the maximum
+        // value in the map contains the number of possible chains.
+        return res.getValue(builtInAdapterJolts).toLong()
     }
 }
