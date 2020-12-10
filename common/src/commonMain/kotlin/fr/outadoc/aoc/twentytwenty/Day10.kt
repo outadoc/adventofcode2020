@@ -13,16 +13,17 @@ class Day10 : Day(Year.TwentyTwenty) {
         val ADAPTER_TOLERANCE: IntRange = 1..3
     }
 
-    private val input: List<Long> =
+    private val adapterList: List<Long> =
         readDayInput()
             .lines()
             .map { it.toLong() }
             .sorted()
 
-    private val builtInAdapterJolts = input.max() + BUILT_IN_ADAPTER_JOLTS_DIFFERENCE
+    private val highestJoltAdapter: Long =
+        adapterList.max()
 
-    private val adapterList: List<Long> =
-        input
+    private val builtInAdapterJolts: Long =
+        highestJoltAdapter + BUILT_IN_ADAPTER_JOLTS_DIFFERENCE
 
     private tailrec fun makeAdapterChain(
         remainingAdapters: List<Long>,
@@ -43,26 +44,32 @@ class Day10 : Day(Year.TwentyTwenty) {
         }
     }
 
-    private fun List<Long>.countDifferences(n: Long): Long {
-        return windowed(size = 2)
-            .count { it[1] - it[0] == n }
-            .toLong()
+    private fun List<Long>.countDifferences(n: Long): Int {
+        // Compare the difference between each consecutive pair of items in the list
+        return windowed(size = 2).count { it[1] - it[0] == n }
     }
 
     override fun step1(): Long {
-        val chain = makeAdapterChain(adapterList)
-        return chain.countDifferences(1) * chain.countDifferences(3)
+        return makeAdapterChain(adapterList).run {
+            countDifferences(1) * countDifferences(3)
+        }.toLong()
     }
 
     override fun step2(): Long {
-        val res = adapterList.fold(mapOf(OUTLET_JOLTS to 1L)) { acc, value ->
-            acc.toMutableMap().apply {
-                this[value] = getOrElse(value - 3) { 0L } +
-                        getOrElse(value - 2) { 0L } +
-                        getOrElse(value - 1) { 0L }
-            }
+        val initial = mapOf(
+            OUTLET_JOLTS to 1L
+        )
+
+        val res = adapterList.fold(initial) { acc, value ->
+            acc.toMutableMap()
+                .withDefault { 0L }
+                .apply {
+                    this[value] = getValue(value - 3) +
+                            getValue(value - 2) +
+                            getValue(value - 1)
+                }
         }
 
-        return res[input.max()]!!.toLong()
+        return res.getValue(highestJoltAdapter).toLong()
     }
 }
