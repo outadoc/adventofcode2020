@@ -24,8 +24,10 @@ class Day11 : Day(Year.TwentyTwenty) {
     private data class Vector(val dx: Int, val dy: Int)
     private data class Point(val x: Int, val y: Int)
 
-    private operator fun Point.plus(vector: Vector): Point =
-        Point(x = x + vector.dx, y = y + vector.dy)
+    private operator fun Point.plus(vector: Vector) = Point(
+        x = x + vector.dx,
+        y = y + vector.dy
+    )
 
     // We check seats in every direction: horizontally, vertically,
     // and diagonally, both ways.
@@ -37,7 +39,7 @@ class Day11 : Day(Year.TwentyTwenty) {
         }.flatten() - Vector(0, 0)
 
     private fun Array<CharArray>.nextState(minOccupiedSeatsToBecomeEmpty: Int, maxDistance: Int): Array<CharArray> {
-        return this.mapIndexed { iy, line ->
+        return mapIndexed { iy, line ->
             line.mapIndexed { ix, item ->
                 // Count the number of occupied seats around the current seat
                 val occupiedSeats = possibleDirections.sumOf { vector ->
@@ -117,9 +119,9 @@ class Day11 : Day(Year.TwentyTwenty) {
     ): Array<CharArray> {
         if (PRINT_DEBUG) print(this)
 
-        val nextState = this.nextState(minOccupiedSeatsToBecomeEmpty, maxDistance)
+        val nextState = nextState(minOccupiedSeatsToBecomeEmpty, maxDistance)
         return when {
-            this.contentDeepEquals(nextState) -> nextState
+            contentDeepEquals(nextState) -> nextState
             else -> nextState.findFinalState(minOccupiedSeatsToBecomeEmpty, maxDistance)
         }
     }
