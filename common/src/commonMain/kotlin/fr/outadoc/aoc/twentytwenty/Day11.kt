@@ -34,26 +34,24 @@ class Day11 : Day(Year.TwentyTwenty) {
     }
 
     private fun countImmediatelyAdjacentOccupiedSeats(grid: Array<CharArray>, x: Int, y: Int): Int {
-        var count = 0
-        for (iy in (y - 1)..(y + 1)) {
-            for (ix in (x - 1)..(x + 1)) {
+        val verticalRange = (y - 1)..(y + 1)
+        val horizontalRange = (x - 1)..(x + 1)
+
+        return verticalRange.sumBy { iy ->
+            horizontalRange.count { ix ->
                 val widthOufOfBounds = ix !in 0 until width
                 val heightOufOfBounds = iy !in 0 until height
                 val isCurrentSeat = ix == x && iy == y
 
-                if (!(widthOufOfBounds || heightOufOfBounds || isCurrentSeat) && grid[iy][ix] == SEAT_OCCUPIED) {
-                    count++
-                }
+                !(widthOufOfBounds || heightOufOfBounds || isCurrentSeat) && grid[iy][ix] == SEAT_OCCUPIED
             }
         }
-        return count
+    }
     }
 
     private fun print(grid: Array<CharArray>) {
         grid.forEach { line ->
-            line.forEach { char ->
-                print("$char ")
-            }
+            line.forEach { char -> print("$char ") }
             println()
         }
 
@@ -62,9 +60,7 @@ class Day11 : Day(Year.TwentyTwenty) {
 
     private fun Array<CharArray>.countOccupiedSeats(): Long {
         return sumOf { line ->
-            line.count { char ->
-                char == SEAT_OCCUPIED
-            }
+            line.count { char -> char == SEAT_OCCUPIED }
         }.toLong()
     }
 
