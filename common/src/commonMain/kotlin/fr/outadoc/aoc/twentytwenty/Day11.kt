@@ -21,8 +21,11 @@ class Day11 : Day(Year.TwentyTwenty) {
     private val height = initialState.size
     private val width = initialState[0].size
 
-    data class Vector(val dx: Int, val dy: Int)
-    data class Point(val x: Int, val y: Int)
+    private data class Vector(val dx: Int, val dy: Int)
+    private data class Point(val x: Int, val y: Int)
+
+    private operator fun Point.plus(vector: Vector): Point =
+        Point(x = x + vector.dx, y = y + vector.dy)
 
     private val possibleDirections: List<Vector> =
         (-1..+1).map { dx ->
@@ -35,7 +38,11 @@ class Day11 : Day(Year.TwentyTwenty) {
         return this.mapIndexed { iy, line ->
             line.mapIndexed { ix, item ->
                 val occupiedSeats = possibleDirections.sumOf { vector ->
-                    countOccupiedSeatsVisibleFromSeat(x = ix, y = iy, vector = vector, maxDistance = maxDistance)
+                    countOccupiedSeatsVisibleFromSeat(
+                        position = Point(ix, iy),
+                        vector = vector,
+                        maxDistance = maxDistance
+                    )
                 }
 
                 when {
@@ -48,29 +55,27 @@ class Day11 : Day(Year.TwentyTwenty) {
     }
 
     private tailrec fun Array<CharArray>.countOccupiedSeatsVisibleFromSeat(
-        x: Int,
-        y: Int,
+        position: Point,
         vector: Vector,
         maxDistance: Int,
         acc: Int = 0,
         distance: Int = 1,
     ): Int {
-        val widthOufOfBounds = x !in 0 until width
-        val heightOufOfBounds = y !in 0 until height
+        val widthOufOfBounds = position.x !in 0 until width
+        val heightOufOfBounds = position.y !in 0 until height
 
         // If we've reached the limit, or we're out of bounds, return what we have
         if (widthOufOfBounds || heightOufOfBounds) {
             return acc
         }
 
-        return when (this[y][x]) {
+        return when (this[position.y][position.x]) {
             SEAT_OCCUPIED -> acc + 1
             SEAT_EMPTY -> acc
             else -> when {
                 distance >= maxDistance -> acc
                 else -> countOccupiedSeatsVisibleFromSeat(
-                    x = x + vector.dx,
-                    y = y + vector.dy,
+                    position = position + vector,
                     vector = vector,
                     acc = acc,
                     distance = distance + 1,
