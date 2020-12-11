@@ -125,4 +125,10 @@ class UnitTests2020 {
     fun `Test day 10 step 2`() {
         assertEquals(2024782584832, Day10().step2())
     }
+
+    @Test
+    @JsName("testDay11Step1")
+    fun `Test day 11 step 1`() {
+        assertEquals(2324, Day11().step1())
+    }
 }

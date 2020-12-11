@@ -37,8 +37,11 @@ class Day11 : Day(Year.TwentyTwenty) {
         var count = 0
         for (iy in (y - 1)..(y + 1)) {
             for (ix in (x - 1)..(x + 1)) {
-                if (ix !in 0..width || iy !in 0..height) continue
-                if (this[iy][ix] == SEAT_OCCUPIED) {
+                val widthOufOfBounds = ix !in 0 until width
+                val heightOufOfBounds = iy !in 0 until height
+                val isCurrentSeat = ix == x && iy == y
+
+                if (!(widthOufOfBounds || heightOufOfBounds || isCurrentSeat) && this[iy][ix] == SEAT_OCCUPIED) {
                     count++
                 }
             }
@@ -46,8 +49,37 @@ class Day11 : Day(Year.TwentyTwenty) {
         return count
     }
 
+    private fun print(grid: Array<CharArray>) {
+        grid.forEach { line ->
+            line.forEach { char ->
+                print("$char ")
+            }
+            println()
+        }
+
+        println("---------\n")
+    }
+
+    private fun Array<CharArray>.countOccupiedSeats(): Long {
+        return sumOf { line ->
+            line.count { char ->
+                char == SEAT_OCCUPIED
+            }
+        }.toLong()
+    }
+
     override fun step1(): Long {
-        TODO("Not yet implemented")
+        var previousState = initialState
+        //print(previousState)
+        while (true) {
+            previousState.nextState().let { nextState ->
+                //print(nextState)
+                if (previousState.contentDeepEquals(nextState)) {
+                    return nextState.countOccupiedSeats()
+                }
+                previousState = nextState
+            }
+        }
     }
 
     override fun step2(): Long {
