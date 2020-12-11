@@ -22,44 +22,38 @@ class Day11 : Day(Year.TwentyTwenty) {
     private val width = initialState[0].size
 
     data class Vector(val dx: Int, val dy: Int)
+    data class Point(val x: Int, val y: Int)
 
-    private val possibleDirections: List<Vector>
-        get() {
-            val vals = (-1..+1)
-            return vals.map { dx ->
-                vals.map { dy ->
-                    Vector(dx, dy)
-                }
-            }.flatten() - Vector(0, 0)
-        }
+    private val possibleDirections: List<Vector> =
+        (-1..+1).map { dx ->
+            (-1..+1).map { dy ->
+                Vector(dx, dy)
+            }
+        }.flatten() - Vector(0, 0)
 
-    private fun Array<CharArray>.nextState(minOccupiedSeatsToBecomeEmpty: Int, maxDepth: Int): Array<CharArray> {
+    private fun Array<CharArray>.nextState(minOccupiedSeatsToBecomeEmpty: Int, maxDistance: Int): Array<CharArray> {
         return this.mapIndexed { iy, line ->
             line.mapIndexed { ix, item ->
-                val occupied = countAdjacentOccupiedSeats(this, ix, iy, maxDepth)
+                val occupiedSeats = possibleDirections.sumOf { vector ->
+                    countOccupiedSeatsVisibleFromSeat(x = ix, y = iy, vector = vector, maxDistance = maxDistance)
+                }
+
                 when {
-                    item == SEAT_EMPTY && occupied == 0 -> SEAT_OCCUPIED
-                    item == SEAT_OCCUPIED && occupied >= minOccupiedSeatsToBecomeEmpty -> SEAT_EMPTY
+                    item == SEAT_EMPTY && occupiedSeats == 0 -> SEAT_OCCUPIED
+                    item == SEAT_OCCUPIED && occupiedSeats >= minOccupiedSeatsToBecomeEmpty -> SEAT_EMPTY
                     else -> item
                 }
             }.toCharArray()
         }.toTypedArray()
     }
 
-    private fun countAdjacentOccupiedSeats(grid: Array<CharArray>, x: Int, y: Int, maxDepth: Int): Int {
-        return possibleDirections.sumOf { vector ->
-            countVisibleOccupiedSeats(grid, x + vector.dx, y + vector.dy, vector, maxDepth = maxDepth)
-        }
-    }
-
-    private tailrec fun countVisibleOccupiedSeats(
-        grid: Array<CharArray>,
+    private tailrec fun Array<CharArray>.countOccupiedSeatsVisibleFromSeat(
         x: Int,
         y: Int,
         vector: Vector,
-        maxDepth: Int,
+        maxDistance: Int,
         acc: Int = 0,
-        depth: Int = 1,
+        distance: Int = 1,
     ): Int {
         val widthOufOfBounds = x !in 0 until width
         val heightOufOfBounds = y !in 0 until height
@@ -69,19 +63,18 @@ class Day11 : Day(Year.TwentyTwenty) {
             return acc
         }
 
-        return when (grid[y][x]) {
+        return when (this[y][x]) {
             SEAT_OCCUPIED -> acc + 1
             SEAT_EMPTY -> acc
             else -> when {
-                depth >= maxDepth -> acc
-                else -> countVisibleOccupiedSeats(
-                    grid = grid,
+                distance >= maxDistance -> acc
+                else -> countOccupiedSeatsVisibleFromSeat(
                     x = x + vector.dx,
                     y = y + vector.dy,
                     vector = vector,
                     acc = acc,
-                    depth = depth + 1,
-                    maxDepth = maxDepth
+                    distance = distance + 1,
+                    maxDistance = maxDistance
                 )
             }
         }
@@ -104,22 +97,22 @@ class Day11 : Day(Year.TwentyTwenty) {
 
     private tailrec fun Array<CharArray>.findFinalState(
         minOccupiedSeatsToBecomeEmpty: Int,
-        maxDepth: Int
+        maxDistance: Int
     ): Array<CharArray> {
         if (PRINT_DEBUG) print(this)
 
-        val nextState = this.nextState(minOccupiedSeatsToBecomeEmpty, maxDepth)
+        val nextState = this.nextState(minOccupiedSeatsToBecomeEmpty, maxDistance)
         return when {
             this.contentDeepEquals(nextState) -> nextState
-            else -> nextState.findFinalState(minOccupiedSeatsToBecomeEmpty, maxDepth)
+            else -> nextState.findFinalState(minOccupiedSeatsToBecomeEmpty, maxDistance)
         }
     }
 
     override fun step1() = initialState
-        .findFinalState(minOccupiedSeatsToBecomeEmpty = 4, maxDepth = 1)
+        .findFinalState(minOccupiedSeatsToBecomeEmpty = 4, maxDistance = 1)
         .countOccupiedSeats()
 
     override fun step2() = initialState
-        .findFinalState(minOccupiedSeatsToBecomeEmpty = 5, maxDepth = Int.MAX_VALUE)
+        .findFinalState(minOccupiedSeatsToBecomeEmpty = 5, maxDistance = Int.MAX_VALUE)
         .countOccupiedSeats()
 }
