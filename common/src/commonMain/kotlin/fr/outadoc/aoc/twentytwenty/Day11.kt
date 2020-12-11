@@ -20,10 +20,10 @@ class Day11 : Day(Year.TwentyTwenty) {
     private val height = initialState.size
     private val width = initialState[0].size
 
-    private fun Array<CharArray>.nextState(): Array<CharArray> {
+    private fun Array<CharArray>.nextState(adjacentSeatsLookup: (Array<CharArray>, Int, Int) -> Int): Array<CharArray> {
         return this.mapIndexed { iy, line ->
             line.mapIndexed { ix, item ->
-                val occupied = countAdjacentSeats(ix, iy)
+                val occupied = adjacentSeatsLookup(this, ix, iy)
                 when {
                     item == SEAT_EMPTY && occupied == 0 -> SEAT_OCCUPIED
                     item == SEAT_OCCUPIED && occupied >= 4 -> SEAT_EMPTY
@@ -33,7 +33,7 @@ class Day11 : Day(Year.TwentyTwenty) {
         }.toTypedArray()
     }
 
-    private fun Array<CharArray>.countAdjacentSeats(x: Int, y: Int): Int {
+    private fun countImmediatelyAdjacentSeats(grid: Array<CharArray>, x: Int, y: Int): Int {
         var count = 0
         for (iy in (y - 1)..(y + 1)) {
             for (ix in (x - 1)..(x + 1)) {
@@ -41,7 +41,7 @@ class Day11 : Day(Year.TwentyTwenty) {
                 val heightOufOfBounds = iy !in 0 until height
                 val isCurrentSeat = ix == x && iy == y
 
-                if (!(widthOufOfBounds || heightOufOfBounds || isCurrentSeat) && this[iy][ix] == SEAT_OCCUPIED) {
+                if (!(widthOufOfBounds || heightOufOfBounds || isCurrentSeat) && grid[iy][ix] == SEAT_OCCUPIED) {
                     count++
                 }
             }
@@ -68,18 +68,22 @@ class Day11 : Day(Year.TwentyTwenty) {
         }.toLong()
     }
 
-    override fun step1(): Long {
-        var previousState = initialState
-        //print(previousState)
+    private fun Array<CharArray>.findFinalState(adjacentSeatsLookup: (Array<CharArray>, Int, Int) -> Int): Array<CharArray> {
+        var previousState = this
         while (true) {
-            previousState.nextState().let { nextState ->
-                //print(nextState)
+            previousState.nextState(adjacentSeatsLookup).let { nextState ->
                 if (previousState.contentDeepEquals(nextState)) {
-                    return nextState.countOccupiedSeats()
+                    return nextState
                 }
                 previousState = nextState
             }
         }
+    }
+
+    override fun step1(): Long {
+        return initialState
+            .findFinalState(::countImmediatelyAdjacentSeats)
+            .countOccupiedSeats()
     }
 
     override fun step2(): Long {
