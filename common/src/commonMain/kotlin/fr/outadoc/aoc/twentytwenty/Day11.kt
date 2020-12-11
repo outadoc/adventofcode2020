@@ -33,7 +33,7 @@ class Day11 : Day(Year.TwentyTwenty) {
         }.toTypedArray()
     }
 
-    private fun countImmediatelyAdjacentSeats(grid: Array<CharArray>, x: Int, y: Int): Int {
+    private fun countImmediatelyAdjacentOccupiedSeats(grid: Array<CharArray>, x: Int, y: Int): Int {
         var count = 0
         for (iy in (y - 1)..(y + 1)) {
             for (ix in (x - 1)..(x + 1)) {
@@ -78,7 +78,7 @@ class Day11 : Day(Year.TwentyTwenty) {
 
     override fun step1(): Long {
         return initialState
-            .findFinalState(::countImmediatelyAdjacentSeats)
+            .findFinalState(::countImmediatelyAdjacentOccupiedSeats)
             .countOccupiedSeats()
     }
 
