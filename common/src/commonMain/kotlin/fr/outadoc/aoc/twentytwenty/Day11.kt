@@ -20,6 +20,18 @@ class Day11 : Day(Year.TwentyTwenty) {
     private val height = initialState.size
     private val width = initialState[0].size
 
+    data class Vector(val dx: Int, val dy: Int)
+
+    private val possibleDirections: List<Vector>
+        get() {
+            val vals = (-1..+1)
+            return vals.map { dx ->
+                vals.map { dy ->
+                    Vector(dx, dy)
+                }
+            }.flatten() - Vector(0, 0)
+        }
+
     private fun Array<CharArray>.nextState(adjacentSeatsLookup: (Array<CharArray>, Int, Int) -> Int): Array<CharArray> {
         return this.mapIndexed { iy, line ->
             line.mapIndexed { ix, item ->
@@ -47,6 +59,31 @@ class Day11 : Day(Year.TwentyTwenty) {
             }
         }
     }
+
+    private fun countVisibleAdjacentOccupiedSeats(grid: Array<CharArray>, x: Int, y: Int): Int {
+        val limit = 1
+        return possibleDirections.sumOf { vector ->
+            var ix = x
+            var iy = y
+
+            while (true) {
+                iy += vector.dy
+                ix += vector.dx
+
+                val widthOufOfBounds = ix !in 0 until width
+                val heightOufOfBounds = iy !in 0 until height
+
+                if (widthOufOfBounds || heightOufOfBounds) {
+                    return@sumOf 0
+                }
+
+                when (grid[iy][ix]) {
+                    SEAT_OCCUPIED -> return@sumOf 1
+                    SEAT_EMPTY -> return@sumOf 0
+                    else -> continue
+                }
+            }
+        }
     }
 
     private fun print(grid: Array<CharArray>) {
@@ -65,6 +102,7 @@ class Day11 : Day(Year.TwentyTwenty) {
     }
 
     private tailrec fun Array<CharArray>.findFinalState(adjacentSeatsLookup: (Array<CharArray>, Int, Int) -> Int): Array<CharArray> {
+        print(this)
         val nextState = this.nextState(adjacentSeatsLookup)
         return when {
             this.contentDeepEquals(nextState) -> nextState
@@ -72,13 +110,11 @@ class Day11 : Day(Year.TwentyTwenty) {
         }
     }
 
-    override fun step1(): Long {
-        return initialState
-            .findFinalState(::countImmediatelyAdjacentOccupiedSeats)
-            .countOccupiedSeats()
-    }
+    override fun step1() = initialState
+        .findFinalState(::countImmediatelyAdjacentOccupiedSeats)
+        .countOccupiedSeats()
 
-    override fun step2(): Long {
-        TODO("Not yet implemented")
-    }
+    override fun step2() = initialState
+        .findFinalState(::countVisibleAdjacentOccupiedSeats)
+        .countOccupiedSeats()
 }
