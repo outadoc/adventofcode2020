@@ -42,7 +42,7 @@ class Day11 : Day(Year.TwentyTwenty) {
                 // Count the number of occupied seats around the current seat
                 val occupiedSeats = possibleDirections.sumOf { vector ->
                     countOccupiedSeatsVisibleFromSeat(
-                        position = Point(ix, iy),
+                        position = Point(ix, iy) + vector,
                         vector = vector,
                         maxDistance = maxDistance
                     )
