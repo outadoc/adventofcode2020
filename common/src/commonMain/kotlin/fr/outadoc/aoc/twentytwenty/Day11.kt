@@ -68,15 +68,11 @@ class Day11 : Day(Year.TwentyTwenty) {
         }.toLong()
     }
 
-    private fun Array<CharArray>.findFinalState(adjacentSeatsLookup: (Array<CharArray>, Int, Int) -> Int): Array<CharArray> {
-        var previousState = this
-        while (true) {
-            previousState.nextState(adjacentSeatsLookup).let { nextState ->
-                if (previousState.contentDeepEquals(nextState)) {
-                    return nextState
-                }
-                previousState = nextState
-            }
+    private tailrec fun Array<CharArray>.findFinalState(adjacentSeatsLookup: (Array<CharArray>, Int, Int) -> Int): Array<CharArray> {
+        val nextState = this.nextState(adjacentSeatsLookup)
+        return when {
+            this.contentDeepEquals(nextState) -> nextState
+            else -> nextState.findFinalState(adjacentSeatsLookup)
         }
     }
 
