@@ -27,6 +27,8 @@ class Day11 : Day(Year.TwentyTwenty) {
     private operator fun Point.plus(vector: Vector): Point =
         Point(x = x + vector.dx, y = y + vector.dy)
 
+    // We check seats in every direction: horizontally, vertically,
+    // and diagonally, both ways.
     private val possibleDirections: List<Vector> =
         (-1..+1).map { dx ->
             (-1..+1).map { dy ->
@@ -37,6 +39,7 @@ class Day11 : Day(Year.TwentyTwenty) {
     private fun Array<CharArray>.nextState(minOccupiedSeatsToBecomeEmpty: Int, maxDistance: Int): Array<CharArray> {
         return this.mapIndexed { iy, line ->
             line.mapIndexed { ix, item ->
+                // Count the number of occupied seats around the current seat
                 val occupiedSeats = possibleDirections.sumOf { vector ->
                     countOccupiedSeatsVisibleFromSeat(
                         position = Point(ix, iy),
@@ -64,14 +67,22 @@ class Day11 : Day(Year.TwentyTwenty) {
         val widthOufOfBounds = position.x !in 0 until width
         val heightOufOfBounds = position.y !in 0 until height
 
-        // If we've reached the limit, or we're out of bounds, return what we have
+        // If we're out of bounds, return the number of seats we've found.
         if (widthOufOfBounds || heightOufOfBounds) {
             return acc
         }
 
+        // Check the seat at the current position
         return when (this[position.y][position.x]) {
+            // If it's an occupied seat, we can't see through it, and we just report it
             SEAT_OCCUPIED -> acc + 1
+
+            // If it's an empty seat, we can't see through it,
+            // so we report there's no occupied seat on this vector
             SEAT_EMPTY -> acc
+
+            // There's floor here, so we can see further.
+            // Advance one spot on our vector and check there
             else -> when {
                 distance >= maxDistance -> acc
                 else -> countOccupiedSeatsVisibleFromSeat(
