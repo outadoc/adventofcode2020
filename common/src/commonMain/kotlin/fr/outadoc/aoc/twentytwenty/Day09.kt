@@ -5,7 +5,7 @@ import fr.outadoc.aoc.scaffold.Year
 import fr.outadoc.aoc.scaffold.max
 import fr.outadoc.aoc.scaffold.min
 
-class Day9 : Day(Year.TwentyTwenty) {
+class Day09 : Day(Year.TwentyTwenty) {
 
     companion object {
         const val PREAMBLE_LENGTH = 25

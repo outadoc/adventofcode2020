@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
 
-class Day2 : Day(Year.TwentyTwenty) {
+class Day02 : Day(Year.TwentyTwenty) {
 
     private val input: Sequence<PasswordEntry> =
         readDayInput()

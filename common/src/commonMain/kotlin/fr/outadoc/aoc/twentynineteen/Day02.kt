@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentynineteen
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
 
-class Day2 : Day(Year.TwentyNineteen) {
+class Day02 : Day(Year.TwentyNineteen) {
 
     private val program: IntArray =
         readDayInput()

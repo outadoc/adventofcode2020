@@ -4,7 +4,7 @@ import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
 import kotlin.math.pow
 
-class Day5 : Day(Year.TwentyTwenty) {
+class Day05 : Day(Year.TwentyTwenty) {
 
     private val registeredSeats: List<Seat> =
         readDayInput()

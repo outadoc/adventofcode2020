@@ -1,7 +1,7 @@
 package fr.outadoc.aoc.twentynineteen
 
 import fr.outadoc.aoc.scaffold.min
-import fr.outadoc.aoc.twentynineteen.Day3.Point
+import fr.outadoc.aoc.twentynineteen.Day03.Point
 import java.awt.Canvas
 import java.awt.Color
 import java.awt.Graphics
@@ -9,7 +9,7 @@ import javax.swing.JFrame
 
 class Day3Debug {
 
-    class DebugCanvas(private val c: Day3.Circuit, private val zoomFactor: Int) : Canvas() {
+    class DebugCanvas(private val c: Day03.Circuit, private val zoomFactor: Int) : Canvas() {
 
         private fun Graphics.drawGrid() {
             color = Color.LIGHT_GRAY
@@ -74,7 +74,7 @@ class Day3Debug {
         }
     }
 
-    fun display(c: Day3.Circuit, zoomFactor: Int = 1) {
+    fun display(c: Day03.Circuit, zoomFactor: Int = 1) {
         DebugCanvas(c, zoomFactor).also { canvas ->
             canvas.setSize(1024, 1024)
 

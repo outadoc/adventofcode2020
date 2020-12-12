@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
 
-class Day7 : Day(Year.TwentyTwenty) {
+class Day07 : Day(Year.TwentyTwenty) {
 
     private val containerRegex = Regex("^([a-z ]+) bags contain .+$")
     private val contentsRegex = Regex(" ([0-9]+) ([a-z ]+) bags?[,.]")

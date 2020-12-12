@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
 
-class Day4 : Day(Year.TwentyTwenty) {
+class Day04 : Day(Year.TwentyTwenty) {
 
     companion object {
         private val knownProperties = listOf("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid")

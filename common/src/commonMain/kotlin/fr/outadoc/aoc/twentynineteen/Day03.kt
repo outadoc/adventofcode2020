@@ -8,7 +8,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class Day3 : Day(Year.TwentyNineteen) {
+class Day03 : Day(Year.TwentyNineteen) {
 
     private val input: List<String> =
         readDayInput().lines()
