@@ -35,39 +35,40 @@ class Day12 : Day(Year.TwentyTwenty) {
                 }
             }
 
+    // region Direction
+
     private enum class Direction {
         NORTH, SOUTH, EAST, WEST
     }
 
-    private tailrec fun Direction.rotate(angle: Int): Direction {
-        val newDir = when {
-            angle > 0 -> when (this) {
-                Direction.NORTH -> Direction.EAST
-                Direction.SOUTH -> Direction.WEST
-                Direction.EAST -> Direction.SOUTH
-                Direction.WEST -> Direction.NORTH
-            }
-            angle < 0 -> when (this) {
-                Direction.NORTH -> Direction.WEST
-                Direction.SOUTH -> Direction.EAST
-                Direction.EAST -> Direction.NORTH
-                Direction.WEST -> Direction.SOUTH
-            }
-            else -> return this
+    private val Direction.asPosition: Position
+        get() = when (this) {
+            Direction.NORTH -> (Position(x = 0, y = 1))
+            Direction.SOUTH -> (Position(x = 0, y = -1))
+            Direction.EAST -> (Position(x = 1, y = 0))
+            Direction.WEST -> (Position(x = -1, y = 0))
         }
 
-        val nextAngle = when {
-            angle > 0 -> angle - 90
-            else -> angle + 90
-        }
+    private fun Direction.rotate(angle: Int): Direction =
+        asPosition.rotateRelativeToOrigin(angle).asDirection
 
-        return newDir.rotate(nextAngle)
-    }
+    // endregion
+
+    // region Position
 
     private data class Position(val x: Int, val y: Int) {
         val manhattanDistance: Long
             get() = abs(x.toLong()) + abs(y.toLong())
     }
+
+    private val Position.asDirection: Direction
+        get() = when (x to y) {
+            0 to 1 -> Direction.NORTH
+            0 to -1 -> Direction.SOUTH
+            1 to 0 -> Direction.EAST
+            -1 to 0 -> Direction.WEST
+            else -> throw IllegalArgumentException()
+        }
 
     private operator fun Position.plus(other: Position): Position =
         copy(x = x + other.x, y = y + other.y)
@@ -89,6 +90,8 @@ class Day12 : Day(Year.TwentyTwenty) {
             y = (x * sin + y * cos).roundToInt()
         )
     }
+
+    // endregion
 
     private data class State1(
         val shipPosition: Position,
