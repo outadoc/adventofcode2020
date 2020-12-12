@@ -7,14 +7,9 @@ import kotlin.math.*
 class Day12 : Day(Year.TwentyTwenty) {
 
     private sealed class Action {
-        data class AddNorth(val units: Int) : Action()
-        data class AddSouth(val units: Int) : Action()
-        data class AddEast(val units: Int) : Action()
-        data class AddWest(val units: Int) : Action()
-
+        data class Add(val direction: Direction, val units: Int) : Action()
         data class TurnLeft(val angle: Int) : Action()
         data class TurnRight(val angle: Int) : Action()
-
         data class MoveForward(val units: Int) : Action()
     }
 
@@ -24,10 +19,10 @@ class Day12 : Day(Year.TwentyTwenty) {
             .map { action ->
                 val value = action.drop(1).toInt()
                 when (action.first()) {
-                    'N' -> Action.AddNorth(value)
-                    'S' -> Action.AddSouth(value)
-                    'E' -> Action.AddEast(value)
-                    'W' -> Action.AddWest(value)
+                    'N' -> Action.Add(Direction.NORTH, value)
+                    'S' -> Action.Add(Direction.SOUTH, value)
+                    'E' -> Action.Add(Direction.EAST, value)
+                    'W' -> Action.Add(Direction.WEST, value)
                     'L' -> Action.TurnLeft(value)
                     'R' -> Action.TurnRight(value)
                     'F' -> Action.MoveForward(value)
@@ -76,11 +71,6 @@ class Day12 : Day(Year.TwentyTwenty) {
     private operator fun Position.times(times: Int): Position =
         copy(x = x * times, y = y * times)
 
-    private fun Position.moveNorth(value: Int) = copy(y = y + value)
-    private fun Position.moveSouth(value: Int) = copy(y = y - value)
-    private fun Position.moveEast(value: Int) = copy(x = x + value)
-    private fun Position.moveWest(value: Int) = copy(x = x - value)
-
     private fun Position.rotateRelativeToOrigin(angle: Int): Position {
         val sin = sin(-angle * PI / 180)
         val cos = cos(-angle * PI / 180)
@@ -99,20 +89,10 @@ class Day12 : Day(Year.TwentyTwenty) {
     )
 
     private fun State1.reduce(action: Action) = when (action) {
-        is Action.AddNorth -> copy(shipPosition = shipPosition.moveNorth(action.units))
-        is Action.AddSouth -> copy(shipPosition = shipPosition.moveSouth(action.units))
-        is Action.AddEast -> copy(shipPosition = shipPosition.moveEast(action.units))
-        is Action.AddWest -> copy(shipPosition = shipPosition.moveWest(action.units))
-
+        is Action.Add -> copy(shipPosition = shipPosition + (action.direction.asPosition * action.units))
         is Action.TurnLeft -> copy(currentDirection = currentDirection.rotate(-action.angle))
         is Action.TurnRight -> copy(currentDirection = currentDirection.rotate(action.angle))
-
-        is Action.MoveForward -> when (currentDirection) {
-            Direction.NORTH -> copy(shipPosition = shipPosition.moveNorth(action.units))
-            Direction.SOUTH -> copy(shipPosition = shipPosition.moveSouth(action.units))
-            Direction.EAST -> copy(shipPosition = shipPosition.moveEast(action.units))
-            Direction.WEST -> copy(shipPosition = shipPosition.moveWest(action.units))
-        }
+        is Action.MoveForward -> copy(shipPosition = shipPosition + (currentDirection.asPosition * action.units))
     }
 
     private data class State2(
@@ -121,14 +101,9 @@ class Day12 : Day(Year.TwentyTwenty) {
     )
 
     private fun State2.reduce(action: Action) = when (action) {
-        is Action.AddNorth -> copy(waypointRelPos = waypointRelPos.moveNorth(action.units))
-        is Action.AddSouth -> copy(waypointRelPos = waypointRelPos.moveSouth(action.units))
-        is Action.AddEast -> copy(waypointRelPos = waypointRelPos.moveEast(action.units))
-        is Action.AddWest -> copy(waypointRelPos = waypointRelPos.moveWest(action.units))
-
+        is Action.Add -> copy(waypointRelPos = waypointRelPos + (action.direction.asPosition * action.units))
         is Action.TurnLeft -> copy(waypointRelPos = waypointRelPos.rotateRelativeToOrigin(-action.angle))
         is Action.TurnRight -> copy(waypointRelPos = waypointRelPos.rotateRelativeToOrigin(action.angle))
-
         is Action.MoveForward -> copy(shipPosition = shipPosition + (waypointRelPos * action.units))
     }
 
