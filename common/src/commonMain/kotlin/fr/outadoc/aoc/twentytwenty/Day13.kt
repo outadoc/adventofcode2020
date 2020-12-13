@@ -24,18 +24,35 @@ class Day13 : Day(Year.TwentyTwenty) {
     private val validBuses: List<Int> =
         buses.filterNot { it < 0 }
 
-    private fun Int.getTimeUntilNextDeparture(timestamp: Long): Long =
-        this - (timestamp % this)
+    private fun Int.getTimeUntilNextDeparture(timestamp: Long): Int {
+        return when (val mod = timestamp % this) {
+            0L -> 0
+            else -> (this - mod).toInt()
+        }
+    }
+
+    private val indexedBuses: List<Pair<Int, Int>> =
+        buses.mapIndexed { index, bus -> bus to index }
+            .filterNot { (bus, _) -> bus < 0 }
+            .sortedByDescending { (bus, _) -> bus }
+
+    private fun areBusesAlignedAtTime(timestamp: Long): Boolean {
+        return indexedBuses.all { (bus, index) ->
+            (timestamp + index) % bus == 0L
+        }
+    }
 
     override fun step1(): Long {
         val (nextBus, waitTime) = validBuses
             .map { bus -> bus to bus.getTimeUntilNextDeparture(earliestDepartureTime) }
             .minByOrNull { it.second }!!
 
-        return nextBus * waitTime
+        return (nextBus * waitTime).toLong()
     }
 
     override fun step2(): Long {
-        TODO("Not yet implemented")
+        return (100000000000000..Long.MAX_VALUE).first { timestamp ->
+            areBusesAlignedAtTime(timestamp)
+        }
     }
 }
