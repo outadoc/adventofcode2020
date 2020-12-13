@@ -14,18 +14,22 @@ class Day13 : Day(Year.TwentyTwenty) {
     private val buses: List<Int> =
         input.last()
             .split(',')
-            .filterNot { it == "x" }
-            .map { it.toInt() }
+            .map { bus ->
+                when (bus) {
+                    "x" -> -1
+                    else -> bus.toInt()
+                }
+            }
 
-    private val Int.timeSinceLastDeparture: Long
-        get() = earliestDepartureTime % this
+    private val validBuses: List<Int> =
+        buses.filterNot { it < 0 }
 
-    private val Int.timeUntilNextDeparture: Long
-        get() = this - timeSinceLastDeparture
+    private fun Int.getTimeUntilNextDeparture(timestamp: Long): Long =
+        this - (timestamp % this)
 
     override fun step1(): Long {
-        val (nextBus, waitTime) = buses
-            .map { bus -> bus to bus.timeUntilNextDeparture }
+        val (nextBus, waitTime) = validBuses
+            .map { bus -> bus to bus.getTimeUntilNextDeparture(earliestDepartureTime) }
             .minByOrNull { it.second }!!
 
         return nextBus * waitTime
