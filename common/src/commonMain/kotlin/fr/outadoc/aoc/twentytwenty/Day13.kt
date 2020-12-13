@@ -11,48 +11,48 @@ class Day13 : Day(Year.TwentyTwenty) {
     private val earliestDepartureTime: Long =
         input.first().toLong()
 
-    private val buses: List<Int> =
+    private fun Bus.getTimeUntilNextDeparture(timestamp: Long) =
+        when (val mod = timestamp % id) {
+            0L -> 0
+            else -> (id - mod).toInt()
+        }
+
+    private data class Bus(val id: Long, val index: Int)
+
+    private val buses: List<Bus> =
         input.last()
             .split(',')
             .map { bus ->
                 when (bus) {
-                    "x" -> -1
-                    else -> bus.toInt()
+                    "x" -> -1L
+                    else -> bus.toLong()
                 }
             }
+            .mapIndexed { index, bus -> Bus(bus, index) }
+            .filterNot { bus -> bus.id < 0 }
 
-    private val validBuses: List<Int> =
-        buses.filterNot { it < 0 }
-
-    private fun Int.getTimeUntilNextDeparture(timestamp: Long): Int {
-        return when (val mod = timestamp % this) {
-            0L -> 0
-            else -> (this - mod).toInt()
-        }
-    }
-
-    private val indexedBuses: List<Pair<Int, Int>> =
-        buses.mapIndexed { index, bus -> bus to index }
-            .filterNot { (bus, _) -> bus < 0 }
-            .sortedByDescending { (bus, _) -> bus }
-
-    private fun areBusesAlignedAtTime(timestamp: Long): Boolean {
-        return indexedBuses.all { (bus, index) ->
-            (timestamp + index) % bus == 0L
-        }
-    }
+    private fun Bus.doesBusPassAtTimestamp(timestamp: Long): Boolean =
+        (timestamp + index) % id == 0L
 
     override fun step1(): Long {
-        val (nextBus, waitTime) = validBuses
+        val (nextBus, waitTime) = buses
             .map { bus -> bus to bus.getTimeUntilNextDeparture(earliestDepartureTime) }
             .minByOrNull { it.second }!!
 
-        return (nextBus * waitTime).toLong()
+        return nextBus.id * waitTime
     }
 
     override fun step2(): Long {
-        return (100000000000000..Long.MAX_VALUE).first { timestamp ->
-            areBusesAlignedAtTime(timestamp)
-        }
+        val head = buses.first()
+        return buses
+            .drop(1)
+            .fold(head.id to head.id) { (t, step), bus ->
+                var t1 = t
+                while (!bus.doesBusPassAtTimestamp(t1)) {
+                    t1 += step
+                }
+                t1 to step * bus.id
+            }
+            .first
     }
 }
