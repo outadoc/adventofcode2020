@@ -20,6 +20,9 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      - name: Build
+        run: ./gradlew jvmTestClasses
+
       - name: Run JVM tests
         run: ./gradlew jvmTest
 
@@ -29,6 +32,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Build
+        run: ./gradlew linkDebugTestLinuxX64
+
       - name: Run Linux tests
         run: ./gradlew linuxX64Test
 
@@ -37,6 +43,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Build
+        run: ./gradlew linkDebugTestMacosX64
 
       - name: Run macOS tests
         run: ./gradlew macosX64Test
