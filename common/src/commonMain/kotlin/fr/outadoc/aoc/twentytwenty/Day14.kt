@@ -38,7 +38,6 @@ class Day14 : Day(Year.TwentyTwenty) {
 
         fun maskValue(value: Long): Long =
             reverseMask.foldIndexed(value) { n: Int, acc: Long, bit: Char ->
-                // Current 'bit' in mask is 'X', '0' or '1'
                 when (bit) {
                     '0' -> acc.clearBit(n)
                     '1' -> acc.setBit(n)
@@ -46,14 +45,14 @@ class Day14 : Day(Year.TwentyTwenty) {
                 }
             }
 
-        fun maskAddress(addr: Long, n: Int = 0): List<Long> {
-            if (n !in mask.indices) return listOf(addr)
-            return when (reverseMask[n]) {
-                '0' -> maskAddress(addr, n + 1)
-                '1' -> maskAddress(addr.setBit(n), n + 1)
-                else -> maskAddress(addr.setBit(n), n + 1) + maskAddress(addr.clearBit(n), n + 1)
+        fun maskAddress(addr: Long): List<Long> =
+            reverseMask.foldIndexed(listOf(addr)) { n: Int, acc: List<Long>, bit: Char ->
+                when (bit) {
+                    '0' -> acc
+                    '1' -> acc.map { addr -> addr.setBit(n) }
+                    else -> acc.map { addr -> listOf(addr.setBit(n), addr.clearBit(n)) }.flatten()
+                }
             }
-        }
     }
 
     private data class State(
