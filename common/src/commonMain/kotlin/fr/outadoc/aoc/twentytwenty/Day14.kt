@@ -51,12 +51,7 @@ class Day14 : Day(Year.TwentyTwenty) {
             return when (reverseMask[n]) {
                 '0' -> maskAddress(addr, n + 1)
                 '1' -> maskAddress(addr.setBit(n), n + 1)
-                else -> {
-                    listOf(
-                        maskAddress(addr.setBit(n), n + 1),
-                        maskAddress(addr.clearBit(n), n + 1)
-                    ).flatten()
-                }
+                else -> maskAddress(addr.setBit(n), n + 1) + maskAddress(addr.clearBit(n), n + 1)
             }
         }
     }
