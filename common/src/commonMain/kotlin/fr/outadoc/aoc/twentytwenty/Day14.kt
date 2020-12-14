@@ -29,12 +29,12 @@ class Day14 : Day(Year.TwentyTwenty) {
                 }
             }
 
-    private data class Mask(val mask: CharArray) {
+    private data class Mask(val mask: String) {
 
         fun maskValue(value: Long): Long {
             var res = 0L
             (0 until WORD_SIZE).forEach { i ->
-                val maskBit: Char = mask[mask.size - 1 - i]
+                val maskBit: Char = mask[mask.length - 1 - i]
                 val valueBit: Int = ((value shr i) and 0x1).toInt()
 
                 val bit: Int = when (maskBit) {
@@ -46,28 +46,12 @@ class Day14 : Day(Year.TwentyTwenty) {
             }
             return res
         }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other == null || this::class != other::class) return false
-
-            other as Mask
-
-            if (!mask.contentEquals(other.mask)) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            return mask.contentHashCode()
-        }
     }
 
     private data class State(
-        val mask: Mask = Mask("X".repeat(WORD_SIZE).toCharArray()),
+        val mask: Mask = Mask("X".repeat(WORD_SIZE)),
         val memory: Map<Long, Long> = mapOf()
-    ) {
-    }
+    )
 
     private sealed class Action {
         data class SetMask(val mask: String) : Action()
@@ -76,7 +60,7 @@ class Day14 : Day(Year.TwentyTwenty) {
 
     private fun State.reduce(action: Action): State {
         return when (action) {
-            is Action.SetMask -> copy(mask = Mask(action.mask.toCharArray()))
+            is Action.SetMask -> copy(mask = Mask(action.mask))
             is Action.SetValue -> copy(memory = memory.toMutableMap().apply {
                 set(action.addr, mask.maskValue(action.value))
             })
