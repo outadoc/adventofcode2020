@@ -31,21 +31,19 @@ class Day14 : Day(Year.TwentyTwenty) {
 
     private data class Mask(val mask: String) {
 
-        fun maskValue(value: Long): Long {
-            var res = 0L
-            (0 until WORD_SIZE).forEach { i ->
-                val maskBit: Char = mask[mask.length - 1 - i]
-                val valueBit: Int = ((value shr i) and 0x1).toInt()
-
-                val bit: Int = when (maskBit) {
-                    'X' -> valueBit
-                    else -> maskBit.toInt()
+        fun maskValue(value: Long): Long =
+            mask.reversed()
+                .foldIndexed(value) { n, acc, bit ->
+                    // Current 'bit' in mask is 'X', '0' or '1'
+                    when (bit) {
+                        // Set nth bit to 1
+                        '1' -> acc or (1L shl n)
+                        // Set nth bit to 0
+                        '0' -> acc and (1L shl n).inv()
+                        // Don't change anything
+                        else -> acc
+                    }
                 }
-
-                res = res xor ((bit shl i).toLong())
-            }
-            return res
-        }
     }
 
     private data class State(
@@ -58,15 +56,11 @@ class Day14 : Day(Year.TwentyTwenty) {
         data class SetValue(val addr: Long, val value: Long) : Action()
     }
 
-    private fun State.reduce(action: Action): State {
-        return when (action) {
-            is Action.SetMask -> copy(mask = Mask(action.mask))
-            is Action.SetValue -> copy(memory = memory.toMutableMap().apply {
-                set(action.addr, mask.maskValue(action.value))
-            })
-        }.also {
-            println("$action + $this -> $it")
-        }
+    private fun State.reduce(action: Action): State = when (action) {
+        is Action.SetMask -> copy(mask = Mask(action.mask))
+        is Action.SetValue -> copy(memory = memory.toMutableMap().apply {
+            set(action.addr, mask.maskValue(action.value))
+        })
     }
 
     override fun step1(): Long {
