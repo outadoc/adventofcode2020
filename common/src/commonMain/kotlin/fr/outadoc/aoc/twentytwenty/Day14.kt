@@ -6,56 +6,10 @@ import fr.outadoc.aoc.scaffold.Year
 class Day14 : Day(Year.TwentyTwenty) {
 
     companion object {
-        private const val ADDR_SIZE_BITS = 36
-        private const val MEMORY_SIZE = 1 shl ADDR_SIZE_BITS
+        private const val WORD_SIZE: Int = 36
 
         private val maskRegex = Regex("^mask = ([01X]+)$")
         private val setRegex = Regex("^mem\\[([0-9]+)] = ([0-9]+)$")
-    }
-
-    private data class Mask(val mask: CharArray) {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other == null || this::class != other::class) return false
-
-            other as Mask
-
-            if (!mask.contentEquals(other.mask)) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            return mask.contentHashCode()
-        }
-    }
-
-    private data class State(
-        val mask: Mask = Mask("X".repeat(ADDR_SIZE_BITS).toCharArray()),
-        val memory: LongArray = LongArray(MEMORY_SIZE)
-    ) {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other == null || this::class != other::class) return false
-
-            other as State
-
-            if (mask != other.mask) return false
-            if (!memory.contentEquals(other.memory)) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = mask.hashCode()
-            result = 31 * result + memory.contentHashCode()
-            return result
-        }
-    }
-
-    private sealed class Action {
-        data class SetMask(val mask: String) : Action()
-        data class SetValue(val addr: Long, val value: Long) : Action()
     }
 
     private val actions: Sequence<Action> =
@@ -75,9 +29,67 @@ class Day14 : Day(Year.TwentyTwenty) {
                 }
             }
 
+    private data class Mask(val mask: CharArray) {
+
+        fun maskValue(value: Long): Long {
+            var res = 0L
+            (0 until WORD_SIZE).forEach { i ->
+                val maskBit: Char = mask[mask.size - 1 - i]
+                val valueBit: Int = ((value shr i) and 0x1).toInt()
+
+                val bit: Int = when (maskBit) {
+                    'X' -> valueBit
+                    else -> maskBit.toInt()
+                }
+
+                res = res xor ((bit shl i).toLong())
+            }
+            return res
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other == null || this::class != other::class) return false
+
+            other as Mask
+
+            if (!mask.contentEquals(other.mask)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return mask.contentHashCode()
+        }
+    }
+
+    private data class State(
+        val mask: Mask = Mask("X".repeat(WORD_SIZE).toCharArray()),
+        val memory: Map<Long, Long> = mapOf()
+    ) {
+    }
+
+    private sealed class Action {
+        data class SetMask(val mask: String) : Action()
+        data class SetValue(val addr: Long, val value: Long) : Action()
+    }
+
+    private fun State.reduce(action: Action): State {
+        return when (action) {
+            is Action.SetMask -> copy(mask = Mask(action.mask.toCharArray()))
+            is Action.SetValue -> copy(memory = memory.toMutableMap().apply {
+                set(action.addr, mask.maskValue(action.value))
+            })
+        }.also {
+            println("$action + $this -> $it")
+        }
+    }
+
     override fun step1(): Long {
-        actions.forEach { println(it) }
-        return -1
+        val finalState = actions.fold(State()) { acc, action ->
+            acc.reduce(action)
+        }
+        return finalState.memory.values.sum()
     }
 
     override fun step2(): Long {
