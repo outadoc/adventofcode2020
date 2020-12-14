@@ -6,8 +6,6 @@ import fr.outadoc.aoc.scaffold.Year
 class Day14 : Day(Year.TwentyTwenty) {
 
     companion object {
-        private const val WORD_SIZE: Int = 36
-
         private val maskRegex = Regex("^mask = ([01X]+)$")
         private val setRegex = Regex("^mem\\[([0-9]+)] = ([0-9]+)$")
     }
@@ -50,13 +48,18 @@ class Day14 : Day(Year.TwentyTwenty) {
                 when (bit) {
                     '0' -> acc
                     '1' -> acc.map { addr -> addr.setBit(n) }
-                    else -> acc.map { addr -> listOf(addr.setBit(n), addr.clearBit(n)) }.flatten()
+                    else -> acc.map { addr ->
+                        listOf(
+                            addr.setBit(n),
+                            addr.clearBit(n)
+                        )
+                    }.flatten()
                 }
             }
     }
 
     private data class State(
-        val mask: Mask = Mask("X".repeat(WORD_SIZE)),
+        val mask: Mask = Mask(""),
         val memory: Map<Long, Long> = mapOf()
     )
 
