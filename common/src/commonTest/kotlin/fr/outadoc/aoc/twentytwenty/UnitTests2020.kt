@@ -173,4 +173,16 @@ class UnitTests2020 {
     fun `Test day 14 step 2`() {
         assertEquals(4173715962894, Day14().step2())
     }
+
+    @Test
+    @JsName("testDay15Step1")
+    fun `Test day 15 step 1`() {
+        assertEquals(1280, Day15().step1())
+    }
+
+    @Test
+    @JsName("testDay15Step2")
+    fun `Test day 15 step 2`() {
+        assertEquals(651639, Day15().step2())
+    }
 }
