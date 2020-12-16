@@ -6,7 +6,7 @@ import platform.posix.*
 actual class FileReader {
 
     companion object {
-        private const val BASE_DIR = "src/commonTest/resources"
+        private const val BASE_DIR = "src/commonMain/resources"
     }
 
     actual fun readInput(filename: String): String = memScoped {
