@@ -9,29 +9,27 @@ class Day17 : Day(Year.TwentyTwenty) {
         const val C_EMPTY = '.'
     }
 
-    data class Slice(val xOrigin: Int, val yOrigin: Int, val slice: List<List<Char>>) {
+    data class Slice(val rows: List<List<Char>>) {
 
         operator fun get(x: Int, y: Int): Char? {
-            return slice.getOrNull(yOrigin + y)?.getOrNull(xOrigin + x)
+            return rows.getOrNull(y)?.getOrNull(x)
         }
 
         fun grow(n: Int = 1): Slice {
-            val newSliceSize = (0..(slice.size + 2 * n))
-            val emptyColumn: List<Char> = newSliceSize.map { C_EMPTY }
+            val newSliceSize = (0..(rows.size + 2 * n))
+            val emptyRow: List<Char> = newSliceSize.map { C_EMPTY }
             return copy(
-                xOrigin = xOrigin + n,
-                yOrigin = yOrigin + n,
-                slice = listOf(emptyColumn) + slice + listOf(emptyColumn)
+                rows = listOf(emptyRow) + rows + listOf(emptyRow)
             )
         }
     }
 
-    data class Dimension(val zOrigin: Int, val slices: List<Slice>) {
+    data class Dimension(val xOrigin: Int, val yOrigin: Int, val zOrigin: Int, val slices: List<Slice>) {
 
         val size = slices.size
 
         operator fun get(x: Int, y: Int, z: Int): Char {
-            return slices.getOrNull(zOrigin + z)?.get(x, y) ?: C_EMPTY
+            return slices.getOrNull(zOrigin + z)?.get(xOrigin + x, yOrigin + y) ?: C_EMPTY
         }
 
         fun grow(n: Int = 1): Dimension {
@@ -39,6 +37,20 @@ class Day17 : Day(Year.TwentyTwenty) {
                 zOrigin = zOrigin + n,
                 slices = slices.map { slice -> slice.grow(n) }
             )
+        }
+    }
+
+    fun Dimension.next(): Dimension {
+        return this
+    }
+
+    fun print(dimension: Dimension) {
+        dimension.slices.forEachIndexed { index, slice ->
+            println("z = ${index + dimension.zOrigin}")
+            slice.rows.forEach { row ->
+                println(row.joinToString())
+            }
+            println("\n")
         }
     }
 
