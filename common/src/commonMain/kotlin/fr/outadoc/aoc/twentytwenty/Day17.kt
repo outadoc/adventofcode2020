@@ -28,12 +28,7 @@ class Day17 : Day(Year.TwentyTwenty) {
             get() = this in activeCubes
     }
 
-    private fun pointsInRange(
-        xRange: IntRange,
-        yRange: IntRange,
-        zRange: IntRange,
-        wRange: IntRange = 0..0
-    ): List<Point4D> {
+    private fun pointsInRange(xRange: IntRange, yRange: IntRange, zRange: IntRange, wRange: IntRange): List<Point4D> {
         return wRange.flatMap { w: Int ->
             zRange.flatMap { z: Int ->
                 yRange.flatMap { y: Int ->
@@ -45,27 +40,23 @@ class Day17 : Day(Year.TwentyTwenty) {
         }
     }
 
-    private fun Point4D.getNeighbors(dimensionCount: DimensionCount): List<Point4D> {
+    private fun Point4D.getNeighbors(dimensionCount: Int): List<Point4D> {
         val reach = 1
         return pointsInRange(
             xRange = (x - reach)..(x + reach),
             yRange = (y - reach)..(y + reach),
             zRange = (z - reach)..(z + reach),
-            wRange = if (dimensionCount == DimensionCount.FOUR) (w - reach)..(w + reach) else 0..0
+            wRange = if (dimensionCount > 3) (w - reach)..(w + reach) else 0..0
         ) - this // Remove current point from consideration
     }
 
-    enum class DimensionCount {
-        THREE, FOUR
-    }
-
-    private fun Dimension.next(dimensionCount: DimensionCount): Dimension = Dimension(
+    private fun Dimension.next(dimensionCount: Int): Dimension = Dimension(
         iteration = iteration + 1,
         activeCubes = pointsInRange(
             xRange,
             yRange,
             zRange,
-            wRange = if (dimensionCount == DimensionCount.FOUR) wRange else 0..0
+            wRange = if (dimensionCount > 3) wRange else 0..0
         ).mapNotNull { cube ->
             val isActive = cube.isActive
             val activeNeighborCount = cube
@@ -95,7 +86,7 @@ class Day17 : Day(Year.TwentyTwenty) {
         }
     )
 
-    private fun Dimension.nthIteration(dimensionCount: DimensionCount, n: Int): Dimension {
+    private fun Dimension.nthIteration(dimensionCount: Int, n: Int): Dimension {
         return (0 until n).fold(this) { dimension, _ ->
             dimension.next(dimensionCount).also {
                 if (PRINT_DEBUG) it.print()
@@ -144,10 +135,14 @@ class Day17 : Day(Year.TwentyTwenty) {
         Dimension(activeCubes = initialLayer)
 
     override fun step1(): Long {
-        return initialState.nthIteration(DimensionCount.THREE, 6).activeCubes.size.toLong()
+        return initialState
+            .nthIteration(dimensionCount = 3, n = 6)
+            .activeCubes.size.toLong()
     }
 
     override fun step2(): Long {
-        return initialState.nthIteration(DimensionCount.FOUR, 6).activeCubes.size.toLong()
+        return initialState
+            .nthIteration(dimensionCount = 4, n = 6)
+            .activeCubes.size.toLong()
     }
 }
