@@ -8,30 +8,24 @@ class Day17 : Day(Year.TwentyTwenty) {
     companion object {
         private const val C_INACTIVE = '.'
         private const val C_ACTIVE = '#'
+
+        private const val PRINT_DEBUG = false
     }
 
-    private data class Point4D(val x: Int, val y: Int, val z: Int, val w: Int = 0)
+    private data class Point4D(val x: Int, val y: Int, val z: Int, val w: Int)
 
     private data class Dimension(val iteration: Int = 0, val activeCubes: List<Point4D>) {
 
         // Add some extra room around existing cubes so that we can add new ones
         private val rangePadding = 1
 
-        val xRange: IntRange by lazy {
-            (activeCubes.minOf { point -> point.x } - rangePadding)..(activeCubes.maxOf { point -> point.x } + rangePadding)
-        }
+        private fun getRangeForAxis(axis: (Point4D) -> Int): IntRange =
+            (activeCubes.minOf(axis) - rangePadding)..(activeCubes.maxOf(axis) + rangePadding)
 
-        val yRange: IntRange by lazy {
-            (activeCubes.minOf { point -> point.y } - rangePadding)..(activeCubes.maxOf { point -> point.y } + rangePadding)
-        }
-
-        val zRange: IntRange by lazy {
-            (activeCubes.minOf { point -> point.z } - rangePadding)..(activeCubes.maxOf { point -> point.z } + rangePadding)
-        }
-
-        val wRange: IntRange by lazy {
-            (activeCubes.minOf { point -> point.w } - rangePadding)..(activeCubes.maxOf { point -> point.w } + rangePadding)
-        }
+        val xRange: IntRange by lazy { getRangeForAxis { it.x } }
+        val yRange: IntRange by lazy { getRangeForAxis { it.y } }
+        val zRange: IntRange by lazy { getRangeForAxis { it.z } }
+        val wRange: IntRange by lazy { getRangeForAxis { it.w } }
 
         fun isCubeActive(coords: Point4D): Boolean {
             return coords in activeCubes
@@ -108,7 +102,7 @@ class Day17 : Day(Year.TwentyTwenty) {
     private fun Dimension.nthIteration(dimensionCount: DimensionCount, n: Int): Dimension {
         return (0 until n).fold(this) { dimension, _ ->
             dimension.next(dimensionCount).also {
-                //it.print()
+                if (PRINT_DEBUG) it.print()
             }
         }
     }
@@ -116,23 +110,25 @@ class Day17 : Day(Year.TwentyTwenty) {
     private fun Dimension.print() {
         println("=== iteration #$iteration ===")
 
-        zRange.forEach { z ->
-            println("z = $z")
-            println("┌─${"──".repeat(xRange.count())}┐")
+        wRange.forEach { w ->
+            zRange.forEach { z ->
+                println("z = $z, w = $w")
+                println("┌─${"──".repeat(xRange.count())}┐")
 
-            yRange.forEach { y ->
-                print("│ ")
+                yRange.forEach { y ->
+                    print("│ ")
 
-                xRange.map { x ->
-                    if (isCubeActive(Point4D(x, y, z))) C_ACTIVE else C_INACTIVE
-                }.forEach { c ->
-                    print("$c ")
+                    xRange.map { x ->
+                        if (isCubeActive(Point4D(x, y, z, w))) C_ACTIVE else C_INACTIVE
+                    }.forEach { c ->
+                        print("$c ")
+                    }
+
+                    println("│")
                 }
 
-                println("│")
+                println("└─${"──".repeat(xRange.count())}┘")
             }
-
-            println("└─${"──".repeat(xRange.count())}┘")
         }
     }
 
@@ -142,7 +138,7 @@ class Day17 : Day(Year.TwentyTwenty) {
             .flatMapIndexed { y, line ->
                 line.mapIndexedNotNull { x, c ->
                     if (c == C_ACTIVE) {
-                        Point4D(x = x, y = y, z = 0)
+                        Point4D(x = x, y = y, z = 0, w = 0)
                     } else null
                 }
             }
