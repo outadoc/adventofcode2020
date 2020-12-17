@@ -55,20 +55,13 @@ class Day17 : Day(Year.TwentyTwenty) {
         }
     }
 
-    private fun Point4D.get3DNeighbors(reach: Int = 1): List<Point4D> {
-        return pointsInRange(
-            xRange = (x - reach)..(x + reach),
-            yRange = (y - reach)..(y + reach),
-            zRange = (z - reach)..(z + reach)
-        ) - this // Remove current point from consideration
-    }
-
-    private fun Point4D.get4DNeighbors(reach: Int = 1): List<Point4D> {
+    private fun Point4D.getNeighbors(dimensionCount: DimensionCount): List<Point4D> {
+        val reach = 1
         return pointsInRange(
             xRange = (x - reach)..(x + reach),
             yRange = (y - reach)..(y + reach),
             zRange = (z - reach)..(z + reach),
-            wRange = (w - reach)..(w + reach)
+            wRange = if (dimensionCount == DimensionCount.FOUR) (w - reach)..(w + reach) else 0..0
         ) - this // Remove current point from consideration
     }
 
@@ -85,12 +78,11 @@ class Day17 : Day(Year.TwentyTwenty) {
             wRange = if (dimensionCount == DimensionCount.FOUR) wRange else 0..0
         ).mapNotNull { cube ->
             val isActive = cube in activeCubes
-            val activeNeighborCount = when (dimensionCount) {
-                DimensionCount.THREE -> cube.get3DNeighbors()
-                DimensionCount.FOUR -> cube.get4DNeighbors()
-            }.count { neighbor ->
-                neighbor in activeCubes
-            }
+            val activeNeighborCount = cube
+                .getNeighbors(dimensionCount)
+                .count { neighbor ->
+                    neighbor in activeCubes
+                }
 
             when {
                 isActive && activeNeighborCount in 2..3 -> {
