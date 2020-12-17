@@ -35,12 +35,44 @@ class Day17 : Day(Year.TwentyTwenty) {
         return this
     }
 
-    private fun print(dimension: Dimension) {
+    private fun Dimension.print() {
+        zRange.forEach { z ->
+            println("z = $z")
+            println("┌─${"──".repeat(yRange.count())}┐")
 
+            yRange.forEach { y ->
+                print("│ ")
+
+                xRange.map { x ->
+                    if (isCubeActive(Point3D(x, y, z))) C_ACTIVE else C_INACTIVE
+                }.forEach { c ->
+                    print("$c ")
+                }
+
+                println("│")
+            }
+
+            println("└─${"──".repeat(yRange.count())}┘")
+        }
     }
 
+    private val initialLayer: List<Point3D> =
+        readDayInput()
+            .lines()
+            .flatMapIndexed { y, line ->
+                line.mapIndexedNotNull { x, c ->
+                    if (c == C_ACTIVE) {
+                        Point3D(x = x, y = y, z = 0)
+                    } else null
+                }
+            }
+
+    private val initialState: Dimension =
+        Dimension(activeCubes = initialLayer)
+
     override fun step1(): Long {
-        TODO("Not yet implemented")
+        initialState.print()
+        TODO()
     }
 
     override fun step2(): Long {
