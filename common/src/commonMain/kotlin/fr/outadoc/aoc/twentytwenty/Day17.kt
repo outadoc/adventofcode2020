@@ -6,9 +6,6 @@ import fr.outadoc.aoc.scaffold.Year
 class Day17 : Day(Year.TwentyTwenty) {
 
     companion object {
-        private const val C_INACTIVE = '.'
-        private const val C_ACTIVE = '#'
-
         private const val PRINT_DEBUG = false
     }
 
@@ -27,9 +24,8 @@ class Day17 : Day(Year.TwentyTwenty) {
         val zRange: IntRange by lazy { getRangeForAxis { it.z } }
         val wRange: IntRange by lazy { getRangeForAxis { it.w } }
 
-        fun isCubeActive(coords: Point4D): Boolean {
-            return coords in activeCubes
-        }
+        val Point4D.isActive: Boolean
+            get() = this in activeCubes
     }
 
     private fun pointsInRange(
@@ -71,11 +67,11 @@ class Day17 : Day(Year.TwentyTwenty) {
             zRange,
             wRange = if (dimensionCount == DimensionCount.FOUR) wRange else 0..0
         ).mapNotNull { cube ->
-            val isActive = cube in activeCubes
+            val isActive = cube.isActive
             val activeNeighborCount = cube
                 .getNeighbors(dimensionCount)
                 .count { neighbor ->
-                    neighbor in activeCubes
+                    neighbor.isActive
                 }
 
             when {
@@ -119,7 +115,7 @@ class Day17 : Day(Year.TwentyTwenty) {
                     print("│ ")
 
                     xRange.map { x ->
-                        if (isCubeActive(Point4D(x, y, z, w))) C_ACTIVE else C_INACTIVE
+                        if (Point4D(x, y, z, w).isActive) '■' else '.'
                     }.forEach { c ->
                         print("$c ")
                     }
@@ -137,9 +133,10 @@ class Day17 : Day(Year.TwentyTwenty) {
             .lines()
             .flatMapIndexed { y, line ->
                 line.mapIndexedNotNull { x, c ->
-                    if (c == C_ACTIVE) {
-                        Point4D(x = x, y = y, z = 0, w = 0)
-                    } else null
+                    when (c) {
+                        '#' -> Point4D(x = x, y = y, z = 0, w = 0)
+                        else -> null
+                    }
                 }
             }
 
