@@ -31,25 +31,57 @@ class Day17 : Day(Year.TwentyTwenty) {
         }
     }
 
+    private fun pointsInRange(xRange: IntRange, yRange: IntRange, zRange: IntRange): List<Point3D> {
+        return zRange.flatMap { z: Int ->
+            yRange.flatMap { y: Int ->
+                xRange.map { x: Int ->
+                    Point3D(x, y, z)
+                }
+            }
+        }
+    }
+
     private fun Point3D.getNeighbors(reach: Int = 1): List<Point3D> {
         val xRange = (x - reach)..(x + reach)
         val yRange = (y - reach)..(y + reach)
         val zRange = (z - reach)..(z + reach)
 
-        val list = zRange.flatMap { nz: Int ->
-            yRange.flatMap { ny: Int ->
-                xRange.map { nx: Int ->
-                    Point3D(nx, ny, nz)
-                }
-            }
-        }
-
         // Remove current point from consideration
-        return list - this
+        return pointsInRange(xRange, yRange, zRange) - this
     }
 
     private fun Dimension.next(): Dimension {
-        return this
+        val nextActiveCubes =
+            pointsInRange(xRange, yRange, zRange)
+                .mapNotNull { cube ->
+                    val isActive = cube in activeCubes
+                    val activeNeighborCount =
+                        cube.getNeighbors()
+                            .count { neighbor ->
+                                neighbor in activeCubes
+                            }
+
+                    when {
+                        isActive && activeNeighborCount in 2..3 -> {
+                            // If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active.
+                            cube
+                        }
+                        isActive -> {
+                            // Otherwise, the cube becomes inactive.
+                            null
+                        }
+                        activeNeighborCount == 3 -> {
+                            // If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active.
+                            cube
+                        }
+                        else -> {
+                            // Otherwise, the cube remains inactive.
+                            null
+                        }
+                    }
+                }
+
+        return Dimension(activeCubes = nextActiveCubes)
     }
 
     private fun Dimension.print() {
@@ -88,8 +120,14 @@ class Day17 : Day(Year.TwentyTwenty) {
         Dimension(activeCubes = initialLayer)
 
     override fun step1(): Long {
-        initialState.print()
-        TODO()
+        initialState.also {
+            it.print()
+        }.next().also {
+            it.print()
+        }.next().also {
+            it.print()
+        }
+        return 0
     }
 
     override fun step2(): Long {
