@@ -84,12 +84,20 @@ class Day17 : Day(Year.TwentyTwenty) {
             }
     )
 
+    private fun Dimension.nthIteration(n: Int): Dimension {
+        return (0 until n).fold(this) { dimension, _ ->
+            dimension.next().also {
+                it.print()
+            }
+        }
+    }
+
     private fun Dimension.print() {
         println("=== iteration #$iteration ===")
 
         zRange.forEach { z ->
             println("z = $z")
-            println("┌─${"──".repeat(yRange.count())}┐")
+            println("┌─${"──".repeat(xRange.count())}┐")
 
             yRange.forEach { y ->
                 print("│ ")
@@ -103,7 +111,7 @@ class Day17 : Day(Year.TwentyTwenty) {
                 println("│")
             }
 
-            println("└─${"──".repeat(yRange.count())}┘")
+            println("└─${"──".repeat(xRange.count())}┘")
         }
     }
 
@@ -122,14 +130,7 @@ class Day17 : Day(Year.TwentyTwenty) {
         Dimension(activeCubes = initialLayer)
 
     override fun step1(): Long {
-        initialState.also {
-            it.print()
-        }.next().also {
-            it.print()
-        }.next().also {
-            it.print()
-        }
-        return 0
+        return initialState.nthIteration(6).activeCubes.size.toLong()
     }
 
     override fun step2(): Long {
