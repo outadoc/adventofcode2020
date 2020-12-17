@@ -12,18 +12,21 @@ class Day17 : Day(Year.TwentyTwenty) {
 
     private data class Point3D(val x: Int, val y: Int, val z: Int)
 
-    private data class Dimension(val activeCubes: List<Point3D>) {
+    private data class Dimension(val iteration: Int = 0, val activeCubes: List<Point3D>) {
+
+        // Add some extra room around existing cubes so that we can add new ones
+        private val rangePadding = 1
 
         val xRange: IntRange by lazy {
-            activeCubes.minOf { point -> point.x }..activeCubes.maxOf { point -> point.x }
+            (activeCubes.minOf { point -> point.x } - rangePadding)..(activeCubes.maxOf { point -> point.x } + rangePadding)
         }
 
         val yRange: IntRange by lazy {
-            activeCubes.minOf { point -> point.y }..activeCubes.maxOf { point -> point.y }
+            (activeCubes.minOf { point -> point.y } - rangePadding)..(activeCubes.maxOf { point -> point.y } + rangePadding)
         }
 
         val zRange: IntRange by lazy {
-            activeCubes.minOf { point -> point.z }..activeCubes.maxOf { point -> point.z }
+            (activeCubes.minOf { point -> point.z } - rangePadding)..(activeCubes.maxOf { point -> point.z } + rangePadding)
         }
 
         fun isCubeActive(coords: Point3D): Boolean {
@@ -42,49 +45,48 @@ class Day17 : Day(Year.TwentyTwenty) {
     }
 
     private fun Point3D.getNeighbors(reach: Int = 1): List<Point3D> {
-        val xRange = (x - reach)..(x + reach)
-        val yRange = (y - reach)..(y + reach)
-        val zRange = (z - reach)..(z + reach)
-
-        // Remove current point from consideration
-        return pointsInRange(xRange, yRange, zRange) - this
+        return pointsInRange(
+            xRange = (x - reach)..(x + reach),
+            yRange = (y - reach)..(y + reach),
+            zRange = (z - reach)..(z + reach)
+        ) - this // Remove current point from consideration
     }
 
-    private fun Dimension.next(): Dimension {
-        val nextActiveCubes =
-            pointsInRange(xRange, yRange, zRange)
-                .mapNotNull { cube ->
-                    val isActive = cube in activeCubes
-                    val activeNeighborCount =
-                        cube.getNeighbors()
-                            .count { neighbor ->
-                                neighbor in activeCubes
-                            }
+    private fun Dimension.next(): Dimension = Dimension(
+        iteration = iteration + 1,
+        activeCubes = pointsInRange(xRange, yRange, zRange)
+            .mapNotNull { cube ->
+                val isActive = cube in activeCubes
+                val activeNeighborCount =
+                    cube.getNeighbors()
+                        .count { neighbor ->
+                            neighbor in activeCubes
+                        }
 
-                    when {
-                        isActive && activeNeighborCount in 2..3 -> {
-                            // If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active.
-                            cube
-                        }
-                        isActive -> {
-                            // Otherwise, the cube becomes inactive.
-                            null
-                        }
-                        activeNeighborCount == 3 -> {
-                            // If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active.
-                            cube
-                        }
-                        else -> {
-                            // Otherwise, the cube remains inactive.
-                            null
-                        }
+                when {
+                    isActive && activeNeighborCount in 2..3 -> {
+                        // If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active.
+                        cube
+                    }
+                    isActive -> {
+                        // Otherwise, the cube becomes inactive.
+                        null
+                    }
+                    activeNeighborCount == 3 -> {
+                        // If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active.
+                        cube
+                    }
+                    else -> {
+                        // Otherwise, the cube remains inactive.
+                        null
                     }
                 }
-
-        return Dimension(activeCubes = nextActiveCubes)
-    }
+            }
+    )
 
     private fun Dimension.print() {
+        println("=== iteration #$iteration ===")
+
         zRange.forEach { z ->
             println("z = $z")
             println("┌─${"──".repeat(yRange.count())}┐")
