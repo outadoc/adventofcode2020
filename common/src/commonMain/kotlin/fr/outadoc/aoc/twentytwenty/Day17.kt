@@ -6,8 +6,8 @@ import fr.outadoc.aoc.scaffold.Year
 class Day17 : Day(Year.TwentyTwenty) {
 
     companion object {
-        const val C_INACTIVE = '.'
-        const val C_ACTIVE = '#'
+        private const val C_INACTIVE = '.'
+        private const val C_ACTIVE = '#'
     }
 
     private data class Point3D(val x: Int, val y: Int, val z: Int)
@@ -29,6 +29,23 @@ class Day17 : Day(Year.TwentyTwenty) {
         fun isCubeActive(coords: Point3D): Boolean {
             return coords in activeCubes
         }
+    }
+
+    private fun Point3D.getNeighbors(reach: Int = 1): List<Point3D> {
+        val xRange = (x - reach)..(x + reach)
+        val yRange = (y - reach)..(y + reach)
+        val zRange = (z - reach)..(z + reach)
+
+        val list = zRange.flatMap { nz: Int ->
+            yRange.flatMap { ny: Int ->
+                xRange.map { nx: Int ->
+                    Point3D(nx, ny, nz)
+                }
+            }
+        }
+
+        // Remove current point from consideration
+        return list - this
     }
 
     private fun Dimension.next(): Dimension {
