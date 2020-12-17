@@ -6,26 +6,36 @@ import fr.outadoc.aoc.scaffold.Year
 class Day17 : Day(Year.TwentyTwenty) {
 
     companion object {
-        const val C_EMPTY = '.'
+        const val C_INACTIVE = '.'
+        const val C_ACTIVE = '#'
     }
 
-    data class Point3D(val x: Int, val y: Int, val z: Int)
+    private data class Point3D(val x: Int, val y: Int, val z: Int)
 
-    data class Dimension(val points: Map<Point3D, Char>) {
-        operator fun get(x: Int, y: Int, z: Int): Char {
-            return get(Point3D(x, y, z))
+    private data class Dimension(val activeCubes: List<Point3D>) {
+
+        val xRange: IntRange by lazy {
+            activeCubes.minOf { point -> point.x }..activeCubes.maxOf { point -> point.x }
         }
 
-        operator fun get(point: Point3D): Char {
-            return points[point] ?: C_EMPTY
+        val yRange: IntRange by lazy {
+            activeCubes.minOf { point -> point.y }..activeCubes.maxOf { point -> point.y }
+        }
+
+        val zRange: IntRange by lazy {
+            activeCubes.minOf { point -> point.z }..activeCubes.maxOf { point -> point.z }
+        }
+
+        fun isCubeActive(coords: Point3D): Boolean {
+            return coords in activeCubes
         }
     }
 
-    fun Dimension.next(): Dimension {
+    private fun Dimension.next(): Dimension {
         return this
     }
 
-    fun print(dimension: Dimension) {
+    private fun print(dimension: Dimension) {
 
     }
 
