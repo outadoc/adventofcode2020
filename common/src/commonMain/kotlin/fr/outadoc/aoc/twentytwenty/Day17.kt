@@ -24,8 +24,10 @@ class Day17 : Day(Year.TwentyTwenty) {
         val zRange: IntRange by lazy { getRangeForAxis { it.z } }
         val wRange: IntRange by lazy { getRangeForAxis { it.w } }
 
+        private val activeCubeLookup = activeCubes.map { it.hashCode() to it }.toMap()
+
         val Point4D.isActive: Boolean
-            get() = this in activeCubes
+            get() = activeCubeLookup.containsKey(hashCode())
     }
 
     private fun pointsInRange(xRange: IntRange, yRange: IntRange, zRange: IntRange, wRange: IntRange): List<Point4D> {
