@@ -72,30 +72,32 @@ class Day18 : Day(Year.TwentyTwenty) {
     }
 
     private fun prioritizeAdditionOnce(expr: Expression): Expression = when (expr) {
-        is Expression.Addition -> {
-            when {
-                expr.a is Expression.Product -> {
-                    Expression.Product(
-                        a = prioritizeAdditionOnce(expr.a.a),
-                        b = prioritizeAdditionOnce(Expression.Addition(expr.a.b, expr.b))
-                    )
-                }
-                expr.b is Expression.Product -> {
-                    Expression.Product(
-                        a = prioritizeAdditionOnce(Expression.Addition(expr.a, expr.b.a)),
-                        b = prioritizeAdditionOnce(expr.b.b)
-                    )
-                }
-                else -> expr.copy(
-                    a = prioritizeAdditionOnce(expr.a),
-                    b = prioritizeAdditionOnce(expr.b),
-                )
-            }
+        is Expression.Addition -> when {
+            expr.a is Expression.Product -> Expression.Product(
+                a = prioritizeAdditionOnce(expr.a.a),
+                b = prioritizeAdditionOnce(Expression.Addition(expr.a.b, expr.b))
+            )
+
+            expr.b is Expression.Product -> Expression.Product(
+                a = prioritizeAdditionOnce(Expression.Addition(expr.a, expr.b.a)),
+                b = prioritizeAdditionOnce(expr.b.b)
+            )
+
+            else -> expr.copy(
+                a = prioritizeAdditionOnce(expr.a),
+                b = prioritizeAdditionOnce(expr.b),
+            )
         }
-        is Expression.Product ->
-            expr.copy(a = prioritizeAdditionOnce(expr.a), b = prioritizeAdditionOnce(expr.b))
-        is Expression.Parentheses ->
-            expr.copy(a = prioritizeAdditionOnce(expr.a))
+
+        is Expression.Product -> expr.copy(
+            a = prioritizeAdditionOnce(expr.a),
+            b = prioritizeAdditionOnce(expr.b)
+        )
+
+        is Expression.Parentheses -> expr.copy(
+            a = prioritizeAdditionOnce(expr.a)
+        )
+
         is Expression.Constant -> expr
     }
 
