@@ -5,9 +5,9 @@ import fr.outadoc.aoc.scaffold.Year
 
 class Day08 : Day(Year.TwentyTwenty) {
 
-    data class Instruction(val op: Operation, val arg: Int)
+    private data class Instruction(val op: Operation, val arg: Int)
 
-    enum class Operation {
+    private enum class Operation {
         ACC, JMP, NOP
     }
 
@@ -28,9 +28,9 @@ class Day08 : Day(Year.TwentyTwenty) {
                 )
             }
 
-    class InfiniteLoopException(val acc: Long) : Exception()
+    private class InfiniteLoopException(val acc: Long) : Exception()
 
-    class CPU(private val program: List<Instruction>) {
+    private class CPU(private val program: List<Instruction>) {
 
         private var pc: Int = 0
         private var acc: Long = 0
