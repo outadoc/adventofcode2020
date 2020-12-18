@@ -1,0 +1,29 @@
+name: JVM Tests
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  test-jvm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/setup-java@v1.4.3
+        with:
+          java-version: "11"
+
+      - uses: actions/checkout@v2
+
+      - name: Build
+        run: ./gradlew jvmTestClasses
+
+      - name: Run JVM tests
+        run: ./gradlew jvmTest
+        timeout-minutes: 10
