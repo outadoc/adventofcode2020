@@ -1,7 +1,7 @@
 # outadoc's Advent of Code
 
-![JVM Tests](https://github.com/outadoc/adventofcode/workflows/JVM%20Tests/badge.svg)
-![Linux Tests](https://github.com/outadoc/adventofcode/workflows/Linux%20Tests/badge.svg)
+[![JVM Tests](https://github.com/outadoc/adventofcode/workflows/JVM%20Tests/badge.svg)](https://github.com/outadoc/adventofcode/actions?query=workflow%3A%22JVM+Tests%22)
+[![Linux Tests](https://github.com/outadoc/adventofcode/workflows/Linux%20Tests/badge.svg)](https://github.com/outadoc/adventofcode/actions?query=workflow%3A%22Linux+Tests%22)
 
 Personal Advent of Code solutions written in Kotlin, with [Kotlin/Multiplatform](https://kotlinlang.org/docs/reference/multiplatform.html) tooling.
 
@@ -17,7 +17,9 @@ They expose two steps, and their result is checked from the unit tests (there's 
 ## Running the tests
 
 ```
+# Tests for all platforms
 ./gradlew allTests
-```
 
-Or just [check the CI](https://github.com/outadoc/adventofcode/actions).
+# Just for JVM
+./gradlew jvmTest
+```
