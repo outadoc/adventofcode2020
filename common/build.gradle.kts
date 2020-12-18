@@ -22,6 +22,16 @@ kotlin {
     macosX64()
     linuxX64()
 
+    js {
+        nodejs {
+            testTask {
+                useMocha {
+                    timeout = "36000"
+                }
+            }
+        }
+    }
+
     sourceSets {
         val commonMain by sourceSets.getting
 
@@ -47,6 +57,12 @@ kotlin {
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
+            }
+        }
+
+        val jsTest by getting {
+            dependencies {
+                implementation(kotlin("test-js"))
             }
         }
     }
