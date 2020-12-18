@@ -28,14 +28,14 @@ class Day18 : Day(Year.TwentyTwenty) {
             '+' -> Expression.Addition(parse(tail), previousExpr!!)
             '*' -> Expression.Product(parse(tail), previousExpr!!)
             ')' -> {
-                val (contentInside, contentOutside) = parseInsideParens(tail)
+                val (contentInside, contentOutside) = parseParentheses(tail)
                 Expression.Parentheses(parse(contentOutside, parse(contentInside)))
             }
             else -> TODO()
         }
     }
 
-    private fun parseInsideParens(content: List<Char>): Pair<List<Char>, List<Char>> {
+    private fun parseParentheses(content: List<Char>): Pair<List<Char>, List<Char>> {
         var openParens = 0
         content.forEachIndexed { index, c ->
             when (c) {
@@ -51,24 +51,23 @@ class Day18 : Day(Year.TwentyTwenty) {
         throw IllegalArgumentException("no matching parens")
     }
 
-    private fun String.parse() = parse(toCharArray().toList().reversed())
+    private fun String.parse(): Expression =
+        parse(toCharArray().toList().reversed())
 
-    private fun Expression.solve(): Long {
-        return when (this) {
-            is Expression.Constant -> n
-            is Expression.Addition -> a.solve() + b.solve()
-            is Expression.Product -> a.solve() * b.solve()
-            is Expression.Parentheses -> a.solve()
-        }
+    private fun Expression.solve(): Long = when (this) {
+        is Expression.Constant -> n
+        is Expression.Addition -> a.solve() + b.solve()
+        is Expression.Product -> a.solve() * b.solve()
+        is Expression.Parentheses -> a.solve()
     }
 
     override fun step1(): Long {
-        input.forEach { expression ->
+        return input.sumOf { expression ->
             val parsed = expression.parse()
-            println(parsed)
-            println(parsed.solve())
+            val res = parsed.solve()
+            //println("$expression = $res")
+            res
         }
-        TODO("Not yet implemented")
     }
 
     override fun step2(): Long {
