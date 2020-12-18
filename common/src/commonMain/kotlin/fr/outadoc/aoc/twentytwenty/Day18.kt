@@ -6,16 +6,26 @@ import fr.outadoc.aoc.scaffold.Year
 class Day18 : Day(Year.TwentyTwenty) {
 
     private sealed class Expression {
-        data class Constant(val n: Long) : Expression()
-        data class Addition(val a: Expression, val b: Expression) : Expression()
-        data class Product(val a: Expression, val b: Expression) : Expression()
-        data class Parentheses(val a: Expression) : Expression()
+        data class Addition(val a: Expression, val b: Expression) : Expression() {
+            override fun toString() = "($a + $b)"
+        }
+
+        data class Product(val a: Expression, val b: Expression) : Expression() {
+            override fun toString() = "($a * $b)"
+        }
+
+        data class Parentheses(val a: Expression) : Expression() {
+            override fun toString() = "($a)"
+        }
+
+        data class Constant(val n: Long) : Expression() {
+            override fun toString() = n.toString()
+        }
     }
 
     private val input: Sequence<String> =
         readDayInput()
             .lineSequence()
-            .map { it.replace(" ", "") }
 
     private fun parse(rest: List<Char>, previousExpr: Expression? = null): Expression {
         if (rest.isEmpty()) return previousExpr!!
@@ -52,7 +62,7 @@ class Day18 : Day(Year.TwentyTwenty) {
     }
 
     private fun String.parse(): Expression =
-        parse(toCharArray().toList().reversed())
+        parse(replace(" ", "").toCharArray().toList().reversed())
 
     private fun Expression.solve(): Long = when (this) {
         is Expression.Constant -> n
@@ -61,16 +71,55 @@ class Day18 : Day(Year.TwentyTwenty) {
         is Expression.Parentheses -> a.solve()
     }
 
+    private fun prioritizeAdditionOnce(expr: Expression): Expression = when (expr) {
+        is Expression.Addition -> {
+            when {
+                expr.a is Expression.Product -> {
+                    Expression.Product(
+                        a = prioritizeAdditionOnce(expr.a.a),
+                        b = prioritizeAdditionOnce(Expression.Addition(expr.a.b, expr.b))
+                    )
+                }
+                expr.b is Expression.Product -> {
+                    Expression.Product(
+                        a = prioritizeAdditionOnce(Expression.Addition(expr.a, expr.b.a)),
+                        b = prioritizeAdditionOnce(expr.b.b)
+                    )
+                }
+                else -> expr.copy(
+                    a = prioritizeAdditionOnce(expr.a),
+                    b = prioritizeAdditionOnce(expr.b),
+                )
+            }
+        }
+        is Expression.Product ->
+            expr.copy(a = prioritizeAdditionOnce(expr.a), b = prioritizeAdditionOnce(expr.b))
+        is Expression.Parentheses ->
+            expr.copy(a = prioritizeAdditionOnce(expr.a))
+        is Expression.Constant -> expr
+    }
+
+    private fun Expression.prioritizeAddition(): Expression {
+        var lastIter: Expression = this
+        while (true) {
+            val next = prioritizeAdditionOnce(lastIter)
+            if (next == lastIter) return next
+            lastIter = next
+        }
+    }
+
     override fun step1(): Long {
         return input.sumOf { expression ->
-            val parsed = expression.parse()
-            val res = parsed.solve()
-            //println("$expression = $res")
-            res
+            expression.parse()
+                .solve()
         }
     }
 
     override fun step2(): Long {
-        TODO("Not yet implemented")
+        return input.sumOf { expression ->
+            expression.parse()
+                .prioritizeAddition()
+                .solve()
+        }
     }
 }
