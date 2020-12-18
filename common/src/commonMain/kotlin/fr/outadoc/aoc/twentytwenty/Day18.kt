@@ -9,6 +9,7 @@ class Day18 : Day(Year.TwentyTwenty) {
         data class Constant(val n: Long) : Expression()
         data class Addition(val a: Expression, val b: Expression) : Expression()
         data class Product(val a: Expression, val b: Expression) : Expression()
+        data class Parentheses(val a: Expression) : Expression()
     }
 
     private val input: Sequence<String> =
@@ -23,11 +24,31 @@ class Day18 : Day(Year.TwentyTwenty) {
         val tail = rest.drop(1)
 
         return when (head) {
+            in '0'..'9' -> parse(tail, Expression.Constant(head.toString().toLong()))
             '+' -> Expression.Addition(parse(tail), previousExpr!!)
             '*' -> Expression.Product(parse(tail), previousExpr!!)
-            in '0'..'9' -> parse(tail, Expression.Constant(head.toString().toLong()))
+            ')' -> {
+                val (contentInside, contentOutside) = parseInsideParens(tail)
+                Expression.Parentheses(parse(contentOutside, parse(contentInside)))
+            }
             else -> TODO()
         }
+    }
+
+    private fun parseInsideParens(content: List<Char>): Pair<List<Char>, List<Char>> {
+        var openParens = 0
+        content.forEachIndexed { index, c ->
+            when (c) {
+                ')' -> openParens++
+                '(' -> if (openParens == 0) {
+                    return content.subList(0, index) to content.subList(index + 1, content.size)
+                } else {
+                    openParens--
+                }
+            }
+        }
+
+        throw IllegalArgumentException("no matching parens")
     }
 
     private fun String.parse() = parse(toCharArray().toList().reversed())
@@ -37,6 +58,7 @@ class Day18 : Day(Year.TwentyTwenty) {
             is Expression.Constant -> n
             is Expression.Addition -> a.solve() + b.solve()
             is Expression.Product -> a.solve() * b.solve()
+            is Expression.Parentheses -> a.solve()
         }
     }
 
