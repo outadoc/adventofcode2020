@@ -1,7 +1,7 @@
 # outadoc's Advent of Code
 
-![JVM Tests](https://github.com/outadoc/adventofcode/workflows/JVM%20Tests/badge.svg?branch=develop)
-![Linux Tests](https://github.com/outadoc/adventofcode/workflows/Linux%20Tests/badge.svg?branch=develop)
+![JVM Tests](https://github.com/outadoc/adventofcode/workflows/JVM%20Tests/badge.svg)
+![Linux Tests](https://github.com/outadoc/adventofcode/workflows/Linux%20Tests/badge.svg)
 
 Personal Advent of Code solutions written in Kotlin, with [Kotlin/Multiplatform](https://kotlinlang.org/docs/reference/multiplatform.html) tooling.
 
