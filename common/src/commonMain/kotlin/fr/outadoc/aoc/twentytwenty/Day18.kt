@@ -41,7 +41,7 @@ class Day18 : Day(Year.TwentyTwenty) {
                 val (contentInside, contentOutside) = parseParentheses(tail)
                 parse(contentOutside, Expression.Parentheses(parse(contentInside)))
             }
-            else -> TODO()
+            else -> throw IllegalStateException()
         }
     }
 
@@ -50,10 +50,9 @@ class Day18 : Day(Year.TwentyTwenty) {
         content.forEachIndexed { index, c ->
             when (c) {
                 ')' -> openParens++
-                '(' -> if (openParens == 0) {
-                    return content.subList(0, index) to content.subList(index + 1, content.size)
-                } else {
-                    openParens--
+                '(' -> when (openParens) {
+                    0 -> return content.subList(0, index) to content.subList(index + 1, content.size)
+                    else -> openParens--
                 }
             }
         }
