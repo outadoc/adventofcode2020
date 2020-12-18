@@ -41,17 +41,3 @@ jobs:
       - name: Run Linux tests
         run: ./gradlew linuxX64Test
         timeout-minutes: 10
-
-  test-macos:
-    runs-on: macos-latest
-    timeout-minutes: 30
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Build
-        run: ./gradlew linkDebugTestMacosX64
-
-      - name: Run macOS tests
-        run: ./gradlew macosX64Test
-        timeout-minutes: 10
