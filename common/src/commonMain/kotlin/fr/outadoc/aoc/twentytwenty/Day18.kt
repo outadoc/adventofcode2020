@@ -29,7 +29,7 @@ class Day18 : Day(Year.TwentyTwenty) {
             '*' -> Expression.Product(parse(tail), previousExpr!!)
             ')' -> {
                 val (contentInside, contentOutside) = parseParentheses(tail)
-                Expression.Parentheses(parse(contentOutside, parse(contentInside)))
+                parse(contentOutside, Expression.Parentheses(parse(contentInside)))
             }
             else -> TODO()
         }
