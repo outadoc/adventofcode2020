@@ -7,7 +7,40 @@ class Day20 : Day(Year.TwentyTwenty) {
 
     private data class Position(val x: Int, val y: Int)
 
-    private data class Tile(val id: Long, val content: List<CharArray>)
+    private data class Tile(val id: Long, val content: List<CharArray>) {
+
+        private val validTransforms: Sequence<TransformationVector> =
+            (0..1).asSequence().flatMap { x ->
+                (0..1).asSequence().map { y ->
+                    TransformationVector(x, y)
+                }
+            }
+
+        private fun flipVertical(): Tile {
+            return copy(content = content.reversed())
+        }
+
+        private fun flipHorizontal(): Tile {
+            return copy(content = content.map { line ->
+                line.reversed().toCharArray()
+            })
+        }
+
+        private fun withTransform(transform: TransformationVector): Tile {
+            return when (transform) {
+                TransformationVector(0, 0) -> this
+                TransformationVector(1, 0) -> flipHorizontal()
+                TransformationVector(0, 1) -> flipVertical()
+                TransformationVector(1, 1) -> flipHorizontal().flipVertical()
+                else -> throw IllegalArgumentException("invalid vector: $transform")
+            }
+        }
+
+        val possibleVariations: Sequence<Tile> =
+            validTransforms.map { transform ->
+                withTransform(transform)
+            }
+    }
 
     private data class TransformationVector(val x: Int, val y: Int)
 
@@ -40,37 +73,6 @@ class Day20 : Day(Year.TwentyTwenty) {
     private val tileHeight = tiles.first().content.size
     private val tileWidth = tiles.first().content.first().size
 
-    private val validTransforms: Sequence<TransformationVector> =
-        (0..1).asSequence().flatMap { x ->
-            (0..1).asSequence().map { y ->
-                TransformationVector(x, y)
-            }
-        }
-
-    private val Tile.possibleVariations: Sequence<Tile>
-        get() = validTransforms.map { transform ->
-            withTransform(transform)
-        }
-
-    private fun Tile.withTransform(transform: TransformationVector): Tile {
-        return when (transform) {
-            TransformationVector(0, 0) -> this
-            TransformationVector(1, 0) -> flipHorizontal()
-            TransformationVector(0, 1) -> flipVertical()
-            TransformationVector(1, 1) -> flipHorizontal().flipVertical()
-            else -> throw IllegalArgumentException("invalid vector: $transform")
-        }
-    }
-
-    private fun Tile.flipVertical(): Tile {
-        return copy(content = content.reversed())
-    }
-
-    private fun Tile.flipHorizontal(): Tile {
-        return copy(content = content.map { line ->
-            line.reversed().toCharArray()
-        })
-    }
 
     private val Position.surrounding: List<Position>
         get() = listOf(
@@ -81,14 +83,17 @@ class Day20 : Day(Year.TwentyTwenty) {
         )
 
     private val Puzzle.remainingTiles: List<Tile>
-        get() = tiles - placedTiles.values
+        get() = tiles.filterNot { tile -> tile.id in placedTiles.values.map { it.id } }
 
     private fun Puzzle.possibleNextStates(): List<Puzzle> {
         return placedTiles.flatMap { (pos, placedTile) ->
             val currentTile = pos to placedTile
+
             pos.surrounding.filterNot { surroundingPos ->
+                // Remove positions where there already is a tile
                 surroundingPos in placedTiles.keys
             }.flatMap { surroundingPos ->
+                // Try to find a tile that can fit at this position
                 remainingTiles.flatMap { remainingTile ->
                     remainingTile.possibleVariations
                 }.filter { variation ->
@@ -168,14 +173,24 @@ class Day20 : Day(Year.TwentyTwenty) {
         }
     }
 
-    override fun step1(): Long {
-        val p = Puzzle(
-            placedTiles = mapOf(
-                Position(0, 0) to tiles.first()
-            )
-        ).complete()
+    private val initialStates: Sequence<Puzzle>
+        get() = tiles.first()
+            .possibleVariations
+            .map { tile ->
+                Puzzle(
+                    placedTiles = mapOf(
+                        Position(0, 0) to tile
+                    )
+                )
+            }
 
-        p?.print()
+    override fun step1(): Long {
+        val p = initialStates
+            .mapNotNull { it.complete() }
+            .first()
+
+        println("found final state")
+        p.print()
 
         return -1
     }
