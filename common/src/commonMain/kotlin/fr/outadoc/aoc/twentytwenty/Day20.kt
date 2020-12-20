@@ -11,7 +11,10 @@ class Day20 : Day(Year.TwentyTwenty) {
 
     private data class TransformationVector(val x: Int, val y: Int)
 
-    private data class Puzzle(val placedTiles: Map<Position, Tile>)
+    private data class Puzzle(val placedTiles: Map<Position, Tile>) {
+        val xRange: IntRange by lazy { placedTiles.keys.minOf { it.x }..placedTiles.keys.maxOf { it.x } }
+        val yRange: IntRange by lazy { placedTiles.keys.minOf { it.y }..placedTiles.keys.maxOf { it.y } }
+    }
 
     private val tiles: List<Tile> =
         readDayInput()
@@ -31,6 +34,9 @@ class Day20 : Day(Year.TwentyTwenty) {
                 Tile(id = id, content = tileContent)
             }
 
+    private val tileHeight = tiles.first().content.size
+    private val tileWidth = tiles.first().content.first().size
+
     private val validTransforms: Sequence<TransformationVector> =
         (0..1).asSequence().flatMap { x ->
             (0..1).asSequence().map { y ->
@@ -38,7 +44,7 @@ class Day20 : Day(Year.TwentyTwenty) {
             }
         }
 
-    private val Tile.possibleVariants: Sequence<Tile>
+    private val Tile.possibleVariations: Sequence<Tile>
         get() = validTransforms.map { transform ->
             withTransform(transform)
         }
@@ -61,6 +67,28 @@ class Day20 : Day(Year.TwentyTwenty) {
         return copy(content = content.map { line ->
             line.reversed().toCharArray()
         })
+    }
+
+    private fun Puzzle.placeNextTile(): Puzzle {
+        val remainingTiles: List<Tile> = tiles - placedTiles.values
+        
+    }
+
+    private fun Puzzle.print(): Puzzle {
+        yRange.forEach { tileY ->
+            (0 until tileHeight).forEach { contentY ->
+                xRange.forEach { tileX ->
+                    val tile = placedTiles[Position(tileX, tileY)]
+                    if (tile != null) {
+                        // Print tile row
+                        print(tile.content[contentY].toString() + " ")
+                    } else {
+                        // Print empty row
+                        print(" ".repeat(tileWidth + 1))
+                    }
+                }
+            }
+        }
     }
 
     override fun step1(): Long {
