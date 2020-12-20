@@ -9,13 +9,6 @@ class Day20 : Day(Year.TwentyTwenty) {
 
     private data class Tile(val id: Long, val content: List<String>) {
 
-        private val validTransforms: Sequence<TransformationVector> =
-            (0..1).asSequence().flatMap { x ->
-                (0..1).asSequence().map { y ->
-                    TransformationVector(x, y)
-                }
-            }
-
         private fun flipVertical(): Tile {
             return copy(content = content.reversed())
         }
@@ -26,20 +19,23 @@ class Day20 : Day(Year.TwentyTwenty) {
             })
         }
 
-        private fun withTransform(transform: TransformationVector): Tile {
-            return when (transform) {
-                TransformationVector(0, 0) -> this
-                TransformationVector(1, 0) -> flipHorizontal()
-                TransformationVector(0, 1) -> flipVertical()
-                TransformationVector(1, 1) -> flipHorizontal().flipVertical()
-                else -> throw IllegalArgumentException("invalid vector: $transform")
-            }
+        private fun transpose(): Tile {
+            return copy(content = content.mapIndexed { y, line ->
+                line.mapIndexed { x, _ -> content[x][y] }.joinToString(separator = "")
+            })
         }
 
-        val possibleVariations: Sequence<Tile> =
-            validTransforms.map { transform ->
-                withTransform(transform)
-            }
+        val possibleVariations: List<Tile>
+            get() = listOf(
+                this,
+                flipHorizontal(),
+                flipVertical(),
+                flipHorizontal().flipVertical(),
+                this.transpose(),
+                flipHorizontal().transpose(),
+                flipVertical().transpose(),
+                flipHorizontal().flipVertical().transpose()
+            )
 
         fun sharesRightBorderWith(other: Tile): Boolean {
             // Check if last column of this == first column of other
@@ -55,8 +51,6 @@ class Day20 : Day(Year.TwentyTwenty) {
             return content.last() == other.content.first()
         }
     }
-
-    private data class TransformationVector(val x: Int, val y: Int)
 
     private data class Puzzle(val iteration: Int = 0, val placedTiles: Map<Position, Tile>) {
         val xRange: IntRange
