@@ -12,8 +12,11 @@ class Day20 : Day(Year.TwentyTwenty) {
     private data class TransformationVector(val x: Int, val y: Int)
 
     private data class Puzzle(val iteration: Int = 0, val placedTiles: Map<Position, Tile>) {
-        val xRange: IntRange by lazy { placedTiles.keys.minOf { it.x }..placedTiles.keys.maxOf { it.x } }
-        val yRange: IntRange by lazy { placedTiles.keys.minOf { it.y }..placedTiles.keys.maxOf { it.y } }
+        val xRange: IntRange
+            get() = placedTiles.keys.minOf { it.x }..placedTiles.keys.maxOf { it.x }
+
+        val yRange: IntRange
+            get() = placedTiles.keys.minOf { it.y }..placedTiles.keys.maxOf { it.y }
     }
 
     private val tiles: List<Tile> =
@@ -80,26 +83,25 @@ class Day20 : Day(Year.TwentyTwenty) {
     private val Puzzle.remainingTiles: List<Tile>
         get() = tiles - placedTiles.values
 
-    private fun Puzzle.placeNextTile(): Puzzle {
-        placedTiles.forEach { (pos, placedTile) ->
+    private fun Puzzle.possibleNextStates(): List<Puzzle> {
+        return placedTiles.flatMap { (pos, placedTile) ->
             val currentTile = pos to placedTile
             pos.surrounding.filterNot { surroundingPos ->
                 surroundingPos in placedTiles.keys
-            }.forEach { surroundingPos ->
-                remainingTiles.forEach { remainingTile ->
-                    remainingTile.possibleVariations.forEach { variation ->
-                        if (currentTile.fits(surroundingPos to variation)) {
-                            return copy(
-                                iteration = iteration + 1,
-                                placedTiles = placedTiles + (surroundingPos to variation)
-                            )
-                        }
-                    }
+            }.flatMap { surroundingPos ->
+                remainingTiles.flatMap { remainingTile ->
+                    remainingTile.possibleVariations
+                }.filter { variation ->
+                    currentTile.fits(surroundingPos to variation)
+                }.map { variation ->
+                    // Falalalala, lala ka-ching!
+                    copy(
+                        iteration = iteration + 1,
+                        placedTiles = placedTiles + (surroundingPos to variation)
+                    )
                 }
             }
         }
-
-        throw IllegalStateException("no matching tiles found")
     }
 
     private fun Pair<Position, Tile>.fits(other: Pair<Position, Tile>): Boolean {
@@ -136,9 +138,14 @@ class Day20 : Day(Year.TwentyTwenty) {
         return content.last().contentEquals(other.content.first())
     }
 
-    private tailrec fun Puzzle.complete(): Puzzle {
-        return if (remainingTiles.isEmpty()) this
-        else placeNextTile().complete()
+    private fun Puzzle.complete(): Puzzle? {
+        print()
+        return when {
+            remainingTiles.isEmpty() -> this
+            else -> possibleNextStates()
+                .mapNotNull { next -> next.complete() }
+                .firstOrNull()
+        }
     }
 
     private fun Puzzle.print() {
@@ -167,6 +174,8 @@ class Day20 : Day(Year.TwentyTwenty) {
                 Position(0, 0) to tiles.first()
             )
         ).complete()
+
+        p?.print()
 
         return -1
     }
