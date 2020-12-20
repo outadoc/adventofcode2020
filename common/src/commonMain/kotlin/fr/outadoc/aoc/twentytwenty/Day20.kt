@@ -134,14 +134,9 @@ class Day20 : Day(Year.TwentyTwenty) {
         return content.last().contentEquals(other.content.first())
     }
 
-    private fun Puzzle.complete(): Puzzle {
-        var puzzle = this
-        puzzle.print()
-        while (remainingTiles.isNotEmpty()) {
-            puzzle = puzzle.placeNextTile()
-            puzzle.print()
-        }
-        return puzzle
+    private tailrec fun Puzzle.complete(): Puzzle {
+        return if (remainingTiles.isEmpty()) this
+        else placeNextTile().complete()
     }
 
     private fun Puzzle.print() {
