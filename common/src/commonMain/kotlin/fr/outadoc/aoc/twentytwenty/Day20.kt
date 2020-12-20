@@ -120,6 +120,15 @@ class Day20 : Day(Year.TwentyTwenty) {
                         )
                     }
                 }
+        }.also {
+            if (remainingTiles.size == 1 && it.isEmpty()) {
+                println("no suitable candidates for:")
+                print()
+                println("candidates were:")
+                candidates.map {
+                    it.print()
+                }
+            }
         }
     }
 
@@ -151,6 +160,14 @@ class Day20 : Day(Year.TwentyTwenty) {
                 .mapNotNull { next -> next.complete() }
                 .firstOrNull()
         }
+    }
+
+    private fun Tile.print() {
+        println("tile #$id")
+        content.forEach { line ->
+            println(line)
+        }
+        println()
     }
 
     private fun Puzzle.print() {
