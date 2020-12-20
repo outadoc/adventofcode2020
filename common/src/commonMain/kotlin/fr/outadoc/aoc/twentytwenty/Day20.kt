@@ -11,7 +11,7 @@ class Day20 : Day(Year.TwentyTwenty) {
 
     private data class TransformationVector(val x: Int, val y: Int)
 
-    private data class Puzzle(val placedTiles: Map<Position, Tile>) {
+    private data class Puzzle(val iteration: Int = 0, val placedTiles: Map<Position, Tile>) {
         val xRange: IntRange by lazy { placedTiles.keys.minOf { it.x }..placedTiles.keys.maxOf { it.x } }
         val yRange: IntRange by lazy { placedTiles.keys.minOf { it.y }..placedTiles.keys.maxOf { it.y } }
     }
@@ -77,13 +77,27 @@ class Day20 : Day(Year.TwentyTwenty) {
             copy(y = y - 1)  // down
         )
 
+    private val Puzzle.remainingTiles: List<Tile>
+        get() = tiles - placedTiles.values
+
     private fun Puzzle.placeNextTile(): Puzzle {
-        val remainingTiles: List<Tile> = tiles - placedTiles.values
-        if (remainingTiles.isEmpty()) {
-            throw IllegalStateException("no remaining tiles, puzzle should be done")
+        placedTiles.forEach { (pos, placedTile) ->
+            val currentTile = pos to placedTile
+            pos.surrounding.forEach { surroundingPos ->
+                remainingTiles.forEach { remainingTile ->
+                    remainingTile.possibleVariations.forEach { variation ->
+                        if (currentTile.fits(surroundingPos to variation)) {
+                            return copy(
+                                iteration = iteration + 1,
+                                placedTiles = placedTiles + (surroundingPos to variation)
+                            )
+                        }
+                    }
+                }
+            }
         }
 
-
+        throw IllegalStateException("no matching tiles found")
     }
 
     private fun Pair<Position, Tile>.fits(other: Pair<Position, Tile>): Boolean {
@@ -108,7 +122,8 @@ class Day20 : Day(Year.TwentyTwenty) {
 
     private fun Tile.sharesRightBorderWith(other: Tile): Boolean {
         // Check if last column of this == first column of other
-        return content.map { line -> line.last() }.toCharArray()
+        return content
+            .map { line -> line.last() }.toCharArray()
             .contentEquals(
                 other.content.map { line -> line.first() }.toCharArray()
             )
@@ -119,14 +134,25 @@ class Day20 : Day(Year.TwentyTwenty) {
         return content.last().contentEquals(other.content.first())
     }
 
+    private fun Puzzle.complete(): Puzzle {
+        var puzzle = this
+        puzzle.print()
+        while (remainingTiles.isNotEmpty()) {
+            puzzle = puzzle.placeNextTile()
+            puzzle.print()
+        }
+        return puzzle
+    }
+
     private fun Puzzle.print() {
+        println("iteration #$iteration")
         yRange.forEach { tileY ->
             (0 until tileHeight).forEach { contentY ->
                 xRange.forEach { tileX ->
                     val tile = placedTiles[Position(tileX, tileY)]
                     if (tile != null) {
                         // Print tile row
-                        print(tile.content[contentY].toString() + " ")
+                        print(tile.content[contentY].joinToString(separator = "") + " ")
                     } else {
                         // Print empty row
                         print(" ".repeat(tileWidth + 1))
@@ -139,7 +165,13 @@ class Day20 : Day(Year.TwentyTwenty) {
     }
 
     override fun step1(): Long {
-        TODO("Not yet implemented")
+        val p = Puzzle(
+            placedTiles = mapOf(
+                Position(0, 0) to tiles.first()
+            )
+        ).complete()
+
+        return -1
     }
 
     override fun step2(): Long {
