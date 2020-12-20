@@ -83,7 +83,9 @@ class Day20 : Day(Year.TwentyTwenty) {
     private fun Puzzle.placeNextTile(): Puzzle {
         placedTiles.forEach { (pos, placedTile) ->
             val currentTile = pos to placedTile
-            pos.surrounding.forEach { surroundingPos ->
+            pos.surrounding.filterNot { surroundingPos ->
+                surroundingPos in placedTiles.keys
+            }.forEach { surroundingPos ->
                 remainingTiles.forEach { remainingTile ->
                     remainingTile.possibleVariations.forEach { variation ->
                         if (currentTile.fits(surroundingPos to variation)) {
