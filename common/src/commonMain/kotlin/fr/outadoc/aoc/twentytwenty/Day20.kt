@@ -7,7 +7,7 @@ class Day20 : Day(Year.TwentyTwenty) {
 
     private data class Position(val x: Int, val y: Int)
 
-    private data class Tile(val id: Long, val content: List<CharArray>) {
+    private data class Tile(val id: Long, val content: List<String>) {
 
         private val validTransforms: Sequence<TransformationVector> =
             (0..1).asSequence().flatMap { x ->
@@ -22,7 +22,7 @@ class Day20 : Day(Year.TwentyTwenty) {
 
         private fun flipHorizontal(): Tile {
             return copy(content = content.map { line ->
-                line.reversed().toCharArray()
+                line.reversed()
             })
         }
 
@@ -40,6 +40,20 @@ class Day20 : Day(Year.TwentyTwenty) {
             validTransforms.map { transform ->
                 withTransform(transform)
             }
+
+        fun sharesRightBorderWith(other: Tile): Boolean {
+            // Check if last column of this == first column of other
+            return content
+                .map { line -> line.last() }.toCharArray()
+                .contentEquals(
+                    other.content.map { line -> line.first() }.toCharArray()
+                )
+        }
+
+        fun sharesBottomBorderWith(other: Tile): Boolean {
+            // Check if last row of this == first row of other
+            return content.last() == other.content.first()
+        }
     }
 
     private data class TransformationVector(val x: Int, val y: Int)
@@ -63,15 +77,12 @@ class Day20 : Day(Year.TwentyTwenty) {
                     .replace(":", "")
                     .toLong()
 
-                val tileContent = tileDescription
-                    .drop(1)
-                    .map { contentLine -> contentLine.toCharArray() }
-
+                val tileContent = tileDescription.drop(1)
                 Tile(id = id, content = tileContent)
             }
 
     private val tileHeight = tiles.first().content.size
-    private val tileWidth = tiles.first().content.first().size
+    private val tileWidth = tiles.first().content.first().length
 
 
     private val Position.surrounding: List<Position>
@@ -86,26 +97,29 @@ class Day20 : Day(Year.TwentyTwenty) {
         get() = tiles.filterNot { tile -> tile.id in placedTiles.values.map { it.id } }
 
     private fun Puzzle.possibleNextStates(): List<Puzzle> {
-        return placedTiles.flatMap { (pos, placedTile) ->
-            val currentTile = pos to placedTile
-
-            pos.surrounding.filterNot { surroundingPos ->
-                // Remove positions where there already is a tile
-                surroundingPos in placedTiles.keys
-            }.flatMap { surroundingPos ->
-                // Try to find a tile that can fit at this position
-                remainingTiles.flatMap { remainingTile ->
-                    remainingTile.possibleVariations
-                }.filter { variation ->
-                    currentTile.fits(surroundingPos to variation)
-                }.map { variation ->
-                    // Falalalala, lala ka-ching!
-                    copy(
-                        iteration = iteration + 1,
-                        placedTiles = placedTiles + (surroundingPos to variation)
-                    )
-                }
+        val candidates: List<Tile> =
+            remainingTiles.flatMap { remainingTile ->
+                remainingTile.possibleVariations
             }
+
+        return placedTiles.flatMap { (position, placedTile) ->
+            val currentTile = position to placedTile
+            position.surrounding
+                .filterNot { surroundingPos ->
+                    // Remove positions where there already is a tile
+                    surroundingPos in placedTiles.keys
+                }.flatMap { surroundingPos ->
+                    // Try to find a tile that can fit at this position
+                    candidates.filter { variation ->
+                        currentTile.fits(surroundingPos to variation)
+                    }.map { variation ->
+                        // Falalalala, lala ka-ching!
+                        copy(
+                            iteration = iteration + 1,
+                            placedTiles = placedTiles + (surroundingPos to variation)
+                        )
+                    }
+                }
         }
     }
 
@@ -129,20 +143,6 @@ class Day20 : Day(Year.TwentyTwenty) {
         }
     }
 
-    private fun Tile.sharesRightBorderWith(other: Tile): Boolean {
-        // Check if last column of this == first column of other
-        return content
-            .map { line -> line.last() }.toCharArray()
-            .contentEquals(
-                other.content.map { line -> line.first() }.toCharArray()
-            )
-    }
-
-    private fun Tile.sharesBottomBorderWith(other: Tile): Boolean {
-        // Check if last row of this == first row of other
-        return content.last().contentEquals(other.content.first())
-    }
-
     private fun Puzzle.complete(): Puzzle? {
         //print()
         return when {
@@ -161,7 +161,7 @@ class Day20 : Day(Year.TwentyTwenty) {
                     val tile = placedTiles[Position(tileX, tileY)]
                     if (tile != null) {
                         // Print tile row
-                        print(tile.content[contentY].joinToString(separator = "") + " ")
+                        print(tile.content[contentY] + " ")
                     } else {
                         // Print empty row
                         print(" ".repeat(tileWidth + 1))
