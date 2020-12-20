@@ -69,12 +69,57 @@ class Day20 : Day(Year.TwentyTwenty) {
         })
     }
 
+    private val Position.surrounding: List<Position>
+        get() = listOf(
+            copy(x = x + 1), // right
+            copy(x = x - 1), // left
+            copy(y = y + 1), // up
+            copy(y = y - 1)  // down
+        )
+
     private fun Puzzle.placeNextTile(): Puzzle {
         val remainingTiles: List<Tile> = tiles - placedTiles.values
-        
+        if (remainingTiles.isEmpty()) {
+            throw IllegalStateException("no remaining tiles, puzzle should be done")
+        }
+
+
     }
 
-    private fun Puzzle.print(): Puzzle {
+    private fun Pair<Position, Tile>.fits(other: Pair<Position, Tile>): Boolean {
+        val (pos, tile) = this
+        val (otherPos, otherTile) = other
+
+        val deltaX = otherPos.x - pos.x
+        val deltaY = otherPos.y - pos.y
+
+        return when {
+            // Other tile is right of the current one
+            deltaX == 1 -> tile.sharesRightBorderWith(otherTile)
+            // Other tile is left of the current one
+            deltaX == -1 -> otherTile.sharesRightBorderWith(tile)
+            // Other tile is on bottom of the current one
+            deltaY == 1 -> tile.sharesBottomBorderWith(otherTile)
+            // Other tile is on top of the current one
+            deltaY == -1 -> otherTile.sharesBottomBorderWith(tile)
+            else -> throw IllegalStateException("deltaX = $deltaX, deltaY = $deltaY -> invalid")
+        }
+    }
+
+    private fun Tile.sharesRightBorderWith(other: Tile): Boolean {
+        // Check if last column of this == first column of other
+        return content.map { line -> line.last() }.toCharArray()
+            .contentEquals(
+                other.content.map { line -> line.first() }.toCharArray()
+            )
+    }
+
+    private fun Tile.sharesBottomBorderWith(other: Tile): Boolean {
+        // Check if last row of this == first row of other
+        return content.last().contentEquals(other.content.first())
+    }
+
+    private fun Puzzle.print() {
         yRange.forEach { tileY ->
             (0 until tileHeight).forEach { contentY ->
                 xRange.forEach { tileX ->
@@ -87,7 +132,9 @@ class Day20 : Day(Year.TwentyTwenty) {
                         print(" ".repeat(tileWidth + 1))
                     }
                 }
+                println()
             }
+            println()
         }
     }
 
