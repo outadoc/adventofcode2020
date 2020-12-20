@@ -58,6 +58,16 @@ class Day20 : Day(Year.TwentyTwenty) {
 
         val yRange: IntRange
             get() = placedTiles.keys.minOf { it.y }..placedTiles.keys.maxOf { it.y }
+
+        val corners: List<Tile>
+            get() = listOf(
+                Position(xRange.first, yRange.first),
+                Position(xRange.last, yRange.first),
+                Position(xRange.first, yRange.last),
+                Position(xRange.last, yRange.last)
+            ).map { pos ->
+                placedTiles.getValue(pos)
+            }
     }
 
     private val tiles: List<Tile> =
@@ -77,7 +87,6 @@ class Day20 : Day(Year.TwentyTwenty) {
 
     private val tileHeight = tiles.first().content.size
     private val tileWidth = tiles.first().content.first().length
-
 
     private val Position.surrounding: List<Position>
         get() = listOf(
@@ -114,15 +123,6 @@ class Day20 : Day(Year.TwentyTwenty) {
                         )
                     }
                 }
-        }.also {
-            if (remainingTiles.size == 1 && it.isEmpty()) {
-                println("no suitable candidates for:")
-                print()
-                println("candidates were:")
-                candidates.map {
-                    it.print()
-                }
-            }
         }
     }
 
@@ -147,7 +147,6 @@ class Day20 : Day(Year.TwentyTwenty) {
     }
 
     private fun Puzzle.complete(): Puzzle? {
-        //print()
         return when {
             remainingTiles.isEmpty() -> this
             else -> possibleNextStates()
@@ -197,7 +196,9 @@ class Day20 : Day(Year.TwentyTwenty) {
         println("found final state")
         p.print()
 
-        return -1
+        return p.corners.fold(1) { acc, tile ->
+            acc * tile.id
+        }
     }
 
     override fun step2(): Long {
