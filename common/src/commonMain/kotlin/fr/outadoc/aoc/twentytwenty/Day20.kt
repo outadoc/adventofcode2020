@@ -144,7 +144,7 @@ class Day20 : Day(Year.TwentyTwenty) {
     }
 
     private fun Puzzle.complete(): Puzzle? {
-        print()
+        //print()
         return when {
             remainingTiles.isEmpty() -> this
             else -> possibleNextStates()
@@ -173,21 +173,15 @@ class Day20 : Day(Year.TwentyTwenty) {
         }
     }
 
-    private val initialStates: Sequence<Puzzle>
-        get() = tiles.first()
-            .possibleVariations
-            .map { tile ->
-                Puzzle(
-                    placedTiles = mapOf(
-                        Position(0, 0) to tile
-                    )
-                )
-            }
+    private val initialState: Puzzle =
+        Puzzle(
+            placedTiles = mapOf(
+                Position(0, 0) to tiles.first()
+            )
+        )
 
     override fun step1(): Long {
-        val p = initialStates
-            .mapNotNull { it.complete() }
-            .first()
+        val p = initialState.complete()!!
 
         println("found final state")
         p.print()
