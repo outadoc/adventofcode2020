@@ -12,6 +12,8 @@ class Day20 : Day(Year.TwentyTwenty) {
     private data class TransformationVector(val x: Int, val y: Int)
     private data class TransformedTile(val tile: Tile, val transform: TransformationVector)
 
+    private data class Puzzle(val placedTiles: Map<Position, TransformedTile>)
+
     private val tiles: List<Tile> =
         readDayInput()
             .split("\n\n")
@@ -29,6 +31,11 @@ class Day20 : Day(Year.TwentyTwenty) {
 
                 Tile(id = id, content = tileContent)
             }
+
+    private val Tile.possibleVariants: Sequence<TransformedTile>
+        get() {
+            TODO()
+        }
 
     override fun step1(): Long {
         TODO("Not yet implemented")
