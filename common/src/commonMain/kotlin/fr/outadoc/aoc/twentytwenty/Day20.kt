@@ -31,13 +31,36 @@ class Day20 : Day(Year.TwentyTwenty) {
                 Tile(id = id, content = tileContent)
             }
 
+    private val validTransforms: Sequence<TransformationVector> =
+        (0..1).asSequence().flatMap { x ->
+            (0..1).asSequence().map { y ->
+                TransformationVector(x, y)
+            }
+        }
+
     private val Tile.possibleVariants: Sequence<Tile>
-        get() {
-            TODO()
+        get() = validTransforms.map { transform ->
+            withTransform(transform)
         }
 
     private fun Tile.withTransform(transform: TransformationVector): Tile {
-        TODO()
+        return when (transform) {
+            TransformationVector(0, 0) -> this
+            TransformationVector(1, 0) -> flipHorizontal()
+            TransformationVector(0, 1) -> flipVertical()
+            TransformationVector(1, 1) -> flipHorizontal().flipVertical()
+            else -> throw IllegalArgumentException("invalid vector: $transform")
+        }
+    }
+
+    private fun Tile.flipVertical(): Tile {
+        return copy(content = content.reversed())
+    }
+
+    private fun Tile.flipHorizontal(): Tile {
+        return copy(content = content.map { line ->
+            line.reversed().toCharArray()
+        })
     }
 
     override fun step1(): Long {
