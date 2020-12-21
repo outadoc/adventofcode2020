@@ -53,10 +53,10 @@ class Day10 : Day(Year.TwentyTwenty) {
         return windowed(size = 2).count { it[1] - it[0] == n }
     }
 
-    fun step1(): Long {
+    fun step1(): Int {
         return makeAdapterChain(adapterList).run {
             countDifferences(1) * countDifferences(3)
-        }.toLong()
+        }
     }
 
     fun step2(): Long {
@@ -80,6 +80,6 @@ class Day10 : Day(Year.TwentyTwenty) {
 
         // Since every *possible* chain ends at the built-in adapter, the maximum
         // value in the map contains the number of possible chains.
-        return res.getValue(builtInAdapterJolts).toLong()
+        return res.getValue(builtInAdapterJolts)
     }
 }

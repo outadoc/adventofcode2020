@@ -30,15 +30,15 @@ class Day06 : Day(Year.TwentyTwenty) {
         }
     }
 
-    fun step1(): Long {
+    fun step1(): Int {
         return input.sumBy { group ->
             group.answeredYesByAnyone.size
-        }.toLong()
+        }
     }
 
-    fun step2(): Long {
+    fun step2(): Int {
         return input.sumBy { group ->
             group.answeredYesByEverybody.size
-        }.toLong()
+        }
     }
 }

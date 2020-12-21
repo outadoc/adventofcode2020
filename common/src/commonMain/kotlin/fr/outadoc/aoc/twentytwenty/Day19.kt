@@ -66,18 +66,17 @@ class Day19 : Day(Year.TwentyTwenty) {
         return Regex(pattern = "^$pattern$")
     }
 
-    fun step1(): Long {
+    fun step1(): Int {
         val rule0 = step1Rules.getRule(0)
         return messages.count { message ->
             rule0.matches(message)
-        }.toLong()
+        }
     }
 
-    fun step2(): Long {
+    fun step2(): Int {
         val rule0 = step2Rules.getRule(0)
-        println(rule0)
         return messages.count { message ->
             rule0.matches(message)
-        }.toLong()
+        }
     }
 }

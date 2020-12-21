@@ -111,8 +111,7 @@ class Day18 : Day(Year.TwentyTwenty) {
 
     fun step1(): Long {
         return input.sumOf { expression ->
-            expression.parse()
-                .solve()
+            expression.parse().solve()
         }
     }
 

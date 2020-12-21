@@ -107,10 +107,10 @@ class Day11 : Day(Year.TwentyTwenty) {
         println("---------\n")
     }
 
-    private fun Array<CharArray>.countOccupiedSeats(): Long {
+    private fun Array<CharArray>.countOccupiedSeats(): Int {
         return sumOf { line ->
             line.count { char -> char == SEAT_OCCUPIED }
-        }.toLong()
+        }
     }
 
     private tailrec fun Array<CharArray>.findFinalState(

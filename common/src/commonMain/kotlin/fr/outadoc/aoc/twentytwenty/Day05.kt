@@ -60,13 +60,11 @@ class Day05 : Day(Year.TwentyTwenty) {
         return getPositionFromCode(code.drop(1), newMin, newMax)
     }
 
-    fun step1(): Long {
-        return registeredSeats
-            .maxOf { it.id }
-            .toLong()
+    fun step1(): Int {
+        return registeredSeats.maxOf { it.id }
     }
 
-    fun step2(): Long {
+    fun step2(): Int {
         val allSeats = (0 until rowCount).map { row ->
             (0 until columnCount).map { col ->
                 Seat(row, col)
@@ -82,6 +80,6 @@ class Day05 : Day(Year.TwentyTwenty) {
             seat.id in (minId..maxId)
         }
 
-        return notRegistered.first().id.toLong()
+        return notRegistered.first().id
     }
 }

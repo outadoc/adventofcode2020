@@ -185,7 +185,7 @@ class Day03 : Day(Year.TwentyNineteen) {
         return Wire(segments)
     }
 
-    fun step1(): Long {
+    fun step1(): Int {
         val c = Circuit(input.map { parseWire(it) })
         val intersect = c.findIntersectionsFast()
 
@@ -193,12 +193,6 @@ class Day03 : Day(Year.TwentyNineteen) {
 
         // Day3Debug().display(c)
 
-        return intersect.map { p -> p.distance(Point(0, 0)) }
-            .min()
-            .toLong()
-    }
-
-    fun step2(): Long {
-        TODO("Not yet implemented")
+        return intersect.map { p -> p.distance(Point(0, 0)) }.min()
     }
 }

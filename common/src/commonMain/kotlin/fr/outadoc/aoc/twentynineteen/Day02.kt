@@ -50,18 +50,18 @@ class Day02 : Day(Year.TwentyNineteen) {
         return output[0]
     }
 
-    fun step1(): Long {
-        return run(program).first().toLong()
+    fun step1(): Int {
+        return run(program).first()
     }
 
-    fun step2(): Long {
+    fun step2(): Int {
         val wanted = 19690720
 
         for (noun in 0..99) {
             for (verb in 0..99) {
                 if (runWithParams(noun, verb) == wanted) {
                     println("found it! noun=$noun, verb=$verb")
-                    return (1000 * noun + verb).toLong()
+                    return (1000 * noun + verb)
                 }
             }
         }

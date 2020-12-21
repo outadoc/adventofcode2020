@@ -67,9 +67,9 @@ class Day07 : Day(Year.TwentyTwenty) {
         }
     }
 
-    fun step1(): Long {
+    fun step1(): Int {
         val target = bagByColor("shiny gold")
-        return bags.values.count { bag -> bag.contains(target) }.toLong()
+        return bags.values.count { bag -> bag.contains(target) }
     }
 
     fun step2(): Long {

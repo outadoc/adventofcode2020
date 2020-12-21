@@ -64,15 +64,15 @@ class Day04 : Day(Year.TwentyTwenty) {
             }
         }
 
-    fun step1(): Long {
+    fun step1(): Int {
         return input.count { candidate ->
             candidate.checkPropertiesPresent
-        }.toLong()
+        }
     }
 
-    fun step2(): Long {
+    fun step2(): Int {
         return input.count { candidate ->
             candidate.checkPropertiesPresent && candidate.checkPropertiesValid
-        }.toLong()
+        }
     }
 }
