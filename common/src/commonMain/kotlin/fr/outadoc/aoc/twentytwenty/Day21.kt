@@ -5,9 +5,9 @@ import fr.outadoc.aoc.scaffold.Year
 
 class Day21 : Day(Year.TwentyTwenty) {
 
-    private data class Food(val name: String, val ingredients: List<String>, val allergens: List<String>)
+    private data class Food(val ingredients: List<String>, val allergens: List<String>)
 
-    private val foodRegex = Regex("^([a-z]+) ([a-z ]+) \\(contains ([a-z, ]+)\\)$")
+    private val foodRegex = Regex("^([a-z ]+) \\(contains ([a-z, ]+)\\)$")
 
     private val foodz: List<Food> =
         readDayInput()
@@ -15,16 +15,41 @@ class Day21 : Day(Year.TwentyTwenty) {
             .map { line ->
                 foodRegex.find(line)!!.groupValues.let { groups ->
                     Food(
-                        name = groups[1],
-                        ingredients = groups[2].split(' '),
-                        allergens = groups[3].split(", ")
+                        ingredients = groups[1].split(' '),
+                        allergens = groups[2].split(", ")
                     )
                 }
             }
 
+    private val initialState = foodz.fold(State()) { state, food ->
+        state.copy(
+            possibleAllergensPerIngredient =
+            state.possibleAllergensPerIngredient +
+                food.ingredients.map { ingredient ->
+                    val possibleExistingAllergens = state.possibleAllergensPerIngredient[ingredient] ?: emptySet()
+                    val possibleNewAllergens = food.allergens.filterNot { allergen ->
+                        // Remove all allergens that are already present in a food without this ingredient
+                        foodz.any { food ->
+                            allergen in food.allergens && ingredient !in food.ingredients
+                        }
+                    }
+
+                    ingredient to (possibleExistingAllergens + possibleNewAllergens)
+                }
+        )
+    }
+
+    private data class State(
+        val possibleAllergensPerIngredient: Map<String, Set<String>> = emptyMap()
+    )
+
     override fun step1(): Long {
-        println(foodz)
-        TODO("Not yet implemented")
+        return initialState.possibleAllergensPerIngredient
+            .filterValues { allergens -> allergens.isEmpty() }
+            .map { (ingredient, _) -> ingredient }
+            .sumBy { ingredient ->
+                foodz.count { food -> ingredient in food.ingredients }
+            }.toLong()
     }
 
     override fun step2(): Long {
