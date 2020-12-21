@@ -185,7 +185,7 @@ class Day03 : Day(Year.TwentyNineteen) {
         return Wire(segments)
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         val c = Circuit(input.map { parseWire(it) })
         val intersect = c.findIntersectionsFast()
 
@@ -198,7 +198,7 @@ class Day03 : Day(Year.TwentyNineteen) {
             .toLong()
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         TODO("Not yet implemented")
     }
 }

@@ -126,11 +126,11 @@ class Day11 : Day(Year.TwentyTwenty) {
         }
     }
 
-    override fun step1() = initialState
+    fun step1() = initialState
         .findFinalState(minOccupiedSeatsToBecomeEmpty = 4, maxDistance = 1)
         .countOccupiedSeats()
 
-    override fun step2() = initialState
+    fun step2() = initialState
         .findFinalState(minOccupiedSeatsToBecomeEmpty = 5, maxDistance = Int.MAX_VALUE)
         .countOccupiedSeats()
 }

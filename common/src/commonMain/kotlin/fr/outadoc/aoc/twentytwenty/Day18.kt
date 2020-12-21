@@ -109,14 +109,14 @@ class Day18 : Day(Year.TwentyTwenty) {
         }
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         return input.sumOf { expression ->
             expression.parse()
                 .solve()
         }
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         return input.sumOf { expression ->
             expression.parse()
                 .prioritizeAddition()

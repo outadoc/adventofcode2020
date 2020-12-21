@@ -136,13 +136,13 @@ class Day17 : Day(Year.TwentyTwenty) {
     private val initialState: Dimension =
         Dimension(activeCubes = initialLayer)
 
-    override fun step1(): Long {
+    fun step1(): Long {
         return initialState
             .nthIteration(dimensionCount = 3, n = 6)
             .activeCubes.size.toLong()
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         return initialState
             .nthIteration(dimensionCount = 4, n = 6)
             .activeCubes.size.toLong()

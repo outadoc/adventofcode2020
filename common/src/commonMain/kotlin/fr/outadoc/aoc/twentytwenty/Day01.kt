@@ -35,11 +35,11 @@ class Day01 : Day(Year.TwentyTwenty) {
         return null
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         return input.sortedArray().findTwoSum(2020)!!.toLong()
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         return input.sortedArray().findThreeSum(2020)!!.toLong()
     }
 }

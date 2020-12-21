@@ -96,7 +96,7 @@ class Day16 : Day(Year.TwentyTwenty) {
         )
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         return nearbyTickets.flatMap { ticket ->
             ticket.filterNot { value ->
                 // Filter out all valid values
@@ -105,7 +105,7 @@ class Day16 : Day(Year.TwentyTwenty) {
         }.sum()
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         return myTicket.parseTicket()
             .fields
             .filter { field -> field.name.startsWith("departure") }

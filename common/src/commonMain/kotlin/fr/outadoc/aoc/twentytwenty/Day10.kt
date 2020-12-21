@@ -53,13 +53,13 @@ class Day10 : Day(Year.TwentyTwenty) {
         return windowed(size = 2).count { it[1] - it[0] == n }
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         return makeAdapterChain(adapterList).run {
             countDifferences(1) * countDifferences(3)
         }.toLong()
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         val initial = mapOf(
             OUTLET_JOLTS to 1L
         )

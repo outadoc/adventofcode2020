@@ -34,7 +34,7 @@ class Day13 : Day(Year.TwentyTwenty) {
     private fun Bus.doesBusPassAtTimestamp(timestamp: Long): Boolean =
         (timestamp + index) % id == 0L
 
-    override fun step1(): Long {
+    fun step1(): Long {
         val (nextBus, waitTime) = buses
             .map { bus -> bus to bus.getTimeUntilNextDeparture(earliestDepartureTime) }
             .minByOrNull { it.second }!!
@@ -42,7 +42,7 @@ class Day13 : Day(Year.TwentyTwenty) {
         return nextBus.id * waitTime
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         val head = buses.first()
         return buses
             .drop(1)

@@ -15,7 +15,7 @@ class Day01 : Day(Year.TwentyNineteen) {
 
     private fun fuelNeededForMass(mass: Double) = floor(mass / 3) - 2
 
-    override fun step1(): Long = masses
+    fun step1(): Long = masses
         .map { mass -> fuelNeededForMass(mass) }
         .sum()
         .toLong()
@@ -30,7 +30,7 @@ class Day01 : Day(Year.TwentyNineteen) {
         return fuelNeeded + fuelNeededForMassAndFuel(fuelNeeded)
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         return masses
             .map { mass -> fuelNeededForMassAndFuel(mass) }
             .sum()

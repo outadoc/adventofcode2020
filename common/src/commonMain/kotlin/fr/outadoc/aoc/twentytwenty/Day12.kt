@@ -107,7 +107,7 @@ class Day12 : Day(Year.TwentyTwenty) {
         is Action.MoveForward -> copy(shipPosition = shipPosition + (waypointRelPos * action.units))
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         val initialState = State1(
             shipPosition = Position(x = 0, y = 0),
             currentDirection = Direction.EAST
@@ -120,7 +120,7 @@ class Day12 : Day(Year.TwentyTwenty) {
         return finalState.shipPosition.manhattanDistance
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         val initialState = State2(
             shipPosition = Position(x = 0, y = 0),
             waypointRelPos = Position(x = 10, y = 1)
