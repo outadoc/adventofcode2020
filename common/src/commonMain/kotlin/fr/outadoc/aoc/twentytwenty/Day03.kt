@@ -41,12 +41,12 @@ class Day03 : Day(Year.TwentyTwenty) {
         return treeCount
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         val slope = 3 to 1
         return map.getNumberOfTreesOnSlope(slope)
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         val slopes = listOf(
             1 to 1,
             3 to 1,

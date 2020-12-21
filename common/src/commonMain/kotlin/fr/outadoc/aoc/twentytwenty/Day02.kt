@@ -28,7 +28,7 @@ class Day02 : Day(Year.TwentyTwenty) {
         }
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         fun isValid(entry: PasswordEntry): Boolean {
             val letterCount = entry.password.count { c -> c == entry.policy.letter }
             return letterCount in entry.policy.first..entry.policy.second
@@ -37,7 +37,7 @@ class Day02 : Day(Year.TwentyTwenty) {
         return input.count { entry -> isValid(entry) }.toLong()
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         fun isValid(entry: PasswordEntry): Boolean {
             val isFirstLetterOk = entry.password[entry.policy.first - 1] == entry.policy.letter
             val isSecondLetterOk = entry.password[entry.policy.second - 1] == entry.policy.letter

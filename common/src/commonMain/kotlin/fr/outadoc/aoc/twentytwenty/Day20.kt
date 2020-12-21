@@ -284,7 +284,7 @@ class Day20 : Day(Year.TwentyTwenty) {
         }.sum()
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         return initialState
             .complete()
             .also { finalState ->
@@ -303,7 +303,7 @@ class Day20 : Day(Year.TwentyTwenty) {
             }
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         return initialState
             .complete()
             .also { finalState ->

@@ -35,7 +35,7 @@ class Day15 : Day(Year.TwentyTwenty) {
     private fun elementAt(pos: Int): Long =
         numberSequence.elementAt(pos - 1)
 
-    override fun step1(): Long = elementAt(2020)
+    fun step1(): Long = elementAt(2020)
 
-    override fun step2(): Long = elementAt(30000000)
+    fun step2(): Long = elementAt(30000000)
 }

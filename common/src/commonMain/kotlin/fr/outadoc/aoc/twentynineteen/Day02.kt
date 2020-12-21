@@ -50,11 +50,11 @@ class Day02 : Day(Year.TwentyNineteen) {
         return output[0]
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         return run(program).first().toLong()
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         val wanted = 19690720
 
         for (noun in 0..99) {

@@ -42,7 +42,7 @@ class Day09 : Day(Year.TwentyTwenty) {
         }
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         return input
             .toList()
             // Reverse so that `windowed` takes the previous 25 instead of the next
@@ -54,7 +54,7 @@ class Day09 : Day(Year.TwentyTwenty) {
             .first { chunk -> !checkSum(chunk) }.first()
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         val n = 22477624L
 
         val interval = input

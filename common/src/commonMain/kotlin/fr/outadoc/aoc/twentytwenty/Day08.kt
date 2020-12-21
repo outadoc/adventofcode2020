@@ -74,7 +74,7 @@ class Day08 : Day(Year.TwentyTwenty) {
         }
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         try {
             CPU(program).execute()
         } catch (e: InfiniteLoopException) {
@@ -84,7 +84,7 @@ class Day08 : Day(Year.TwentyTwenty) {
         throw IllegalStateException("this should always throw an exception")
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         for (insToPatch in program) {
             val patch = program.map { currentIns ->
                 // Check if this is the instruction we want to patch (by reference)

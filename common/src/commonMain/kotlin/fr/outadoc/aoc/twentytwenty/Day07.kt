@@ -67,12 +67,12 @@ class Day07 : Day(Year.TwentyTwenty) {
         }
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         val target = bagByColor("shiny gold")
         return bags.values.count { bag -> bag.contains(target) }.toLong()
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         val target = bagByColor("shiny gold")
         return target.size - 1
     }

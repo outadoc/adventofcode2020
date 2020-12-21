@@ -43,7 +43,7 @@ class Day21 : Day(Year.TwentyTwenty) {
         val possibleAllergensPerIngredient: Map<String, Set<String>> = emptyMap()
     )
 
-    override fun step1(): Long {
+    fun step1(): Long {
         return initialState.possibleAllergensPerIngredient
             .filterValues { allergens -> allergens.isEmpty() }
             .map { (ingredient, _) -> ingredient }
@@ -74,16 +74,12 @@ class Day21 : Day(Year.TwentyTwenty) {
         return next.findFinalState()
     }
 
-    override fun step2(): Long {
-        val finalState = initialState
+    fun step2(): String {
+        return initialState
             .findFinalState()
             .possibleAllergensPerIngredient
             .mapNotNull { (ingredient, allergens) -> allergens.firstOrNull()?.let { ingredient to it } }
             .sortedBy { (_, allergen) -> allergen }
             .joinToString(separator = ",") { (ingredient, _) -> ingredient }
-
-        println(finalState)
-
-        TODO()
     }
 }

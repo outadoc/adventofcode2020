@@ -30,13 +30,13 @@ class Day06 : Day(Year.TwentyTwenty) {
         }
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         return input.sumBy { group ->
             group.answeredYesByAnyone.size
         }.toLong()
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         return input.sumBy { group ->
             group.answeredYesByEverybody.size
         }.toLong()

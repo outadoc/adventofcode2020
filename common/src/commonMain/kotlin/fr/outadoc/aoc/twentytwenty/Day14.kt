@@ -84,14 +84,14 @@ class Day14 : Day(Year.TwentyTwenty) {
         })
     }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         return actions
             .fold(State()) { acc, action -> acc.reduceV1(action) }
             .memory.values
             .sum()
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         return actions
             .fold(State()) { acc, action -> acc.reduceV2(action) }
             .memory.values

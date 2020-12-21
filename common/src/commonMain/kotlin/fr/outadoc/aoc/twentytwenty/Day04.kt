@@ -64,13 +64,13 @@ class Day04 : Day(Year.TwentyTwenty) {
             }
         }
 
-    override fun step1(): Long {
+    fun step1(): Long {
         return input.count { candidate ->
             candidate.checkPropertiesPresent
         }.toLong()
     }
 
-    override fun step2(): Long {
+    fun step2(): Long {
         return input.count { candidate ->
             candidate.checkPropertiesPresent && candidate.checkPropertiesValid
         }.toLong()
