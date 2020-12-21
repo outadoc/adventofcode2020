@@ -99,31 +99,44 @@ class Day20 : Day(Year.TwentyTwenty) {
     private val Puzzle.remainingTiles: List<Tile>
         get() = tiles.filterNot { tile -> tile.id in placedTiles.values.map { it.id } }
 
-    private fun Puzzle.possibleNextStates(): List<Puzzle> {
-        val candidates: List<Tile> =
+    private fun Puzzle.nextState(): Puzzle {
+        val candidateTiles: List<Tile> =
             remainingTiles.flatMap { remainingTile ->
                 remainingTile.possibleVariations
             }
 
-        return placedTiles.flatMap { (position, placedTile) ->
-            val currentTile = position to placedTile
+        val candidatePositions = placedTiles.flatMap { (position, _) ->
             position.surrounding
-                .filterNot { surroundingPos ->
+                .filterNot { posAdjacentToPlacedTile ->
                     // Remove positions where there already is a tile
-                    surroundingPos in placedTiles.keys
-                }.flatMap { surroundingPos ->
-                    // Try to find a tile that can fit at this position
-                    candidates.filter { variation ->
-                        currentTile.fits(surroundingPos to variation)
-                    }.map { variation ->
-                        // Falalalala, lala ka-ching!
-                        copy(
-                            iteration = iteration + 1,
-                            placedTiles = placedTiles + (surroundingPos to variation)
-                        )
-                    }
+                    posAdjacentToPlacedTile in placedTiles.keys
                 }
         }
+
+        // Find all tiles next to which there's an open spot
+        return candidatePositions.flatMap { candidatePosition ->
+            // Try to find a tile that can fit at this position
+            candidateTiles.filter { candidateTile ->
+                // Find all placed tiles around this position
+                val surroundingTiles = candidatePosition
+                    .surrounding
+                    .mapNotNull { pos ->
+                        placedTiles[pos]?.let { tile -> pos to tile }
+                    }
+
+                // Check that all placed tiles around this position can fit the candidate
+                surroundingTiles.all { existingTile ->
+                    existingTile.fits(candidatePosition to candidateTile)
+                }
+
+            }.map { variation ->
+                // Falalalala, lala ka-ching!
+                copy(
+                    iteration = iteration + 1,
+                    placedTiles = placedTiles + (candidatePosition to variation)
+                )
+            }
+        }.first()
     }
 
     private fun Pair<Position, Tile>.fits(other: Pair<Position, Tile>): Boolean {
@@ -149,9 +162,7 @@ class Day20 : Day(Year.TwentyTwenty) {
     private fun Puzzle.complete(): Puzzle? {
         return when {
             remainingTiles.isEmpty() -> this
-            else -> possibleNextStates()
-                .mapNotNull { next -> next.complete() }
-                .firstOrNull()
+            else -> nextState().complete()
         }
     }
 
