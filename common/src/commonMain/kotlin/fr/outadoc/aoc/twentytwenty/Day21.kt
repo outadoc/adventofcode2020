@@ -52,7 +52,38 @@ class Day21 : Day(Year.TwentyTwenty) {
             }.toLong()
     }
 
+    private tailrec fun State.findFinalState(): State {
+        if (possibleAllergensPerIngredient.none { (_, allergens) -> allergens.size > 1 }) return this
+
+        val listOfAlreadyKnownAllergens: Set<String> =
+            possibleAllergensPerIngredient
+                .filterValues { allergens -> allergens.size == 1 }
+                .values
+                .map { it.first() }
+                .toSet()
+
+        val next = copy(
+            possibleAllergensPerIngredient = possibleAllergensPerIngredient
+                .mapValues { (_, allergens) ->
+                    if (allergens.size > 1) {
+                        allergens - listOfAlreadyKnownAllergens
+                    } else allergens
+                }
+        )
+
+        return next.findFinalState()
+    }
+
     override fun step2(): Long {
-        TODO("Not yet implemented")
+        val finalState = initialState
+            .findFinalState()
+            .possibleAllergensPerIngredient
+            .mapNotNull { (ingredient, allergens) -> allergens.firstOrNull()?.let { ingredient to it } }
+            .sortedBy { (_, allergen) -> allergen }
+            .joinToString(separator = ",") { (ingredient, _) -> ingredient }
+
+        println(finalState)
+
+        TODO()
     }
 }
