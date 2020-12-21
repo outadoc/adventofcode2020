@@ -159,7 +159,7 @@ class Day20 : Day(Year.TwentyTwenty) {
         }
     }
 
-    private fun Puzzle.complete(): Puzzle? {
+    private fun Puzzle.complete(): Puzzle {
         return when {
             remainingTiles.isEmpty() -> this
             else -> nextState().complete()
@@ -201,18 +201,92 @@ class Day20 : Day(Year.TwentyTwenty) {
             )
         )
 
+    private fun Puzzle.toImage(): Tile {
+        val tileContent: List<String> =
+            yRange.flatMap { tileY ->
+                (0 until tileHeight).map { contentY ->
+                    xRange.joinToString(separator = "") { tileX ->
+                        val tile = placedTiles.getValue(Position(tileX, tileY))
+                        tile.content[contentY]
+                    }
+                }
+            }
+
+        val trimmed = tileContent
+            .drop(1)
+            .dropLast(1)
+            .map { line -> line.drop(1).dropLast(1) }
+
+        return Tile(id = -1, content = trimmed)
+    }
+
+    private val seaMonster = "                  # \n" +
+        "#    ##    ##    ###\n" +
+        " #  #  #  #  #  #   "
+
+    private val seaMonsterLength = seaMonster.lines().first().length
+    private val seaRegexes = seaMonster.lines().map { line ->
+        Regex("^" + line.replace(' ', '.') + "$")
+    }
+
     override fun step1(): Long {
-        val p = initialState.complete()!!
+        return initialState
+            .complete()
+            .corners
+            .fold(1) { acc, tile ->
+                acc * tile.id
+            }
+    }
 
-        println("found final state")
-        p.print()
-
-        return p.corners.fold(1) { acc, tile ->
-            acc * tile.id
-        }
+    private fun Tile.countSeaMonsters(): Long {
+        print()
+        return content
+            .dropLast(seaRegexes.size - 1)
+            .mapIndexed { lineIdx, line ->
+                // For each line in the picture
+                (0..(line.length - seaMonsterLength)).map { startIdx ->
+                    // Extract substrings that might match the monster in length
+                    startIdx to line.substring(startIdx, startIdx + seaMonsterLength)
+                }.filter { (_, possibleMonsterChunk) ->
+                    // Find occurrences of the monster's first line!
+                    val regex = seaRegexes.first()
+                    regex.matches(possibleMonsterChunk)
+                }.filter { (startIdx, _) ->
+                    // We've found that there might be a monster at startIdx — or at least its first line.
+                    seaRegexes.drop(1)
+                        .mapIndexed { regexIdx, regex -> regexIdx to regex }
+                        .all { (regexIdx, regex) ->
+                            // For each next line of the monster, check if it matches the corresponding regex
+                            val nextLineIdx = lineIdx + regexIdx + 1
+                            val checkedString = content[nextLineIdx].substring(startIdx, startIdx + seaMonsterLength)
+                            regex.matches(checkedString).also { matches ->
+                                if (matches) {
+                                    println("${regex.pattern} matches        $checkedString")
+                                } else {
+                                    println("${regex.pattern} does NOT match $checkedString")
+                                }
+                            }
+                        }
+                }.count()
+            }.sum().toLong()
     }
 
     override fun step2(): Long {
-        TODO("Not yet implemented")
+        val bigAssTile = initialState
+            .complete()
+            .toImage()
+
+        val seaMonsterHashes = seaMonster.count { it == '#' }
+        val totalHashes = bigAssTile.content
+            .joinToString(separator = "")
+            .count { it == '#' }
+
+        return bigAssTile.possibleVariations.map { variation ->
+            variation.countSeaMonsters().let { seaMonsterCount ->
+                if (seaMonsterCount > 0) {
+                    totalHashes - seaMonsterHashes * seaMonsterCount
+                } else 0
+            }
+        }.sum()
     }
 }
