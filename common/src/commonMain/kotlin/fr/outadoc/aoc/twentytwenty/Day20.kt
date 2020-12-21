@@ -59,6 +59,12 @@ class Day20 : Day(Year.TwentyTwenty) {
         val yRange: IntRange
             get() = placedTiles.keys.minOf { it.y }..placedTiles.keys.maxOf { it.y }
 
+        val tileHeight: Int
+            get() = placedTiles.values.first().content.size
+
+        val tileWidth: Int
+            get() = placedTiles.values.first().content.first().length
+
         val corners: List<Tile>
             get() = listOf(
                 Position(xRange.first, yRange.first),
@@ -84,9 +90,6 @@ class Day20 : Day(Year.TwentyTwenty) {
                 val tileContent = tileDescription.drop(1)
                 Tile(id = id, content = tileContent)
             }
-
-    private val tileHeight = tiles.first().content.size
-    private val tileWidth = tiles.first().content.first().length
 
     private val Position.surrounding: List<Position>
         get() = listOf(
@@ -201,6 +204,18 @@ class Day20 : Day(Year.TwentyTwenty) {
             )
         )
 
+    private fun Puzzle.trimmed(): Puzzle {
+        return copy(
+            placedTiles = placedTiles.map { (pos, tile) ->
+                pos to tile.copy(content = tile.content
+                    .drop(1)
+                    .dropLast(1)
+                    .map { line -> line.drop(1).dropLast(1) }
+                )
+            }.toMap()
+        )
+    }
+
     private fun Puzzle.toImage(): Tile {
         val tileContent: List<String> =
             yRange.flatMap { tileY ->
@@ -212,12 +227,7 @@ class Day20 : Day(Year.TwentyTwenty) {
                 }
             }
 
-        val trimmed = tileContent
-            .drop(1)
-            .dropLast(1)
-            .map { line -> line.drop(1).dropLast(1) }
-
-        return Tile(id = -1, content = trimmed)
+        return Tile(id = -1, content = tileContent)
     }
 
     private val seaMonster = "                  # \n" +
@@ -239,7 +249,7 @@ class Day20 : Day(Year.TwentyTwenty) {
     }
 
     private fun Tile.countSeaMonsters(): Long {
-        print()
+        //print()
         return content
             .dropLast(seaRegexes.size - 1)
             .mapIndexed { lineIdx, line ->
@@ -261,9 +271,9 @@ class Day20 : Day(Year.TwentyTwenty) {
                             val checkedString = content[nextLineIdx].substring(startIdx, startIdx + seaMonsterLength)
                             regex.matches(checkedString).also { matches ->
                                 if (matches) {
-                                    println("${regex.pattern} matches        $checkedString")
+                                    //println("${regex.pattern} matches        $checkedString")
                                 } else {
-                                    println("${regex.pattern} does NOT match $checkedString")
+                                    //println("${regex.pattern} does NOT match $checkedString")
                                 }
                             }
                         }
@@ -272,9 +282,11 @@ class Day20 : Day(Year.TwentyTwenty) {
     }
 
     override fun step2(): Long {
-        val bigAssTile = initialState
-            .complete()
-            .toImage()
+        val finalState = initialState.complete()
+        val bigAssTile = finalState.trimmed().toImage()
+
+        finalState.print()
+        bigAssTile.print()
 
         val seaMonsterHashes = seaMonster.count { it == '#' }
         val totalHashes = bigAssTile.content
