@@ -5,6 +5,10 @@ import fr.outadoc.aoc.scaffold.Year
 
 class Day20 : Day(Year.TwentyTwenty) {
 
+    companion object {
+        private const val PRINT_DEBUG = false
+    }
+
     private data class Position(val x: Int, val y: Int)
 
     private data class Tile(val id: Long, val content: List<String>) {
@@ -239,17 +243,7 @@ class Day20 : Day(Year.TwentyTwenty) {
         Regex("^" + line.replace(' ', '.') + "$")
     }
 
-    override fun step1(): Long {
-        return initialState
-            .complete()
-            .corners
-            .fold(1) { acc, tile ->
-                acc * tile.id
-            }
-    }
-
     private fun Tile.countSeaMonsters(): Long {
-        //print()
         return content
             .dropLast(seaRegexes.size - 1)
             .mapIndexed { lineIdx, line ->
@@ -269,36 +263,60 @@ class Day20 : Day(Year.TwentyTwenty) {
                             // For each next line of the monster, check if it matches the corresponding regex
                             val nextLineIdx = lineIdx + regexIdx + 1
                             val checkedString = content[nextLineIdx].substring(startIdx, startIdx + seaMonsterLength)
-                            regex.matches(checkedString).also { matches ->
-                                if (matches) {
-                                    //println("${regex.pattern} matches        $checkedString")
-                                } else {
-                                    //println("${regex.pattern} does NOT match $checkedString")
-                                }
-                            }
+                            regex.matches(checkedString)
                         }
                 }.count()
             }.sum().toLong()
     }
 
-    override fun step2(): Long {
-        val finalState = initialState.complete()
-        val bigAssTile = finalState.trimmed().toImage()
-
-        finalState.print()
-        bigAssTile.print()
-
+    private fun Tile.getWaterRoughness(): Long {
         val seaMonsterHashes = seaMonster.count { it == '#' }
-        val totalHashes = bigAssTile.content
+        val totalHashes = content
             .joinToString(separator = "")
             .count { it == '#' }
 
-        return bigAssTile.possibleVariations.map { variation ->
+        return possibleVariations.map { variation ->
             variation.countSeaMonsters().let { seaMonsterCount ->
                 if (seaMonsterCount > 0) {
                     totalHashes - seaMonsterHashes * seaMonsterCount
                 } else 0
             }
         }.sum()
+    }
+
+    override fun step1(): Long {
+        return initialState
+            .complete()
+            .also { finalState ->
+                if (PRINT_DEBUG) {
+                    finalState.print()
+                }
+            }
+            .corners
+            .also { corners ->
+                if (PRINT_DEBUG) {
+                    println(corners)
+                }
+            }
+            .fold(1) { acc, tile ->
+                acc * tile.id
+            }
+    }
+
+    override fun step2(): Long {
+        return initialState
+            .complete()
+            .also { finalState ->
+                if (PRINT_DEBUG) {
+                    finalState.print()
+                }
+            }
+            .trimmed()
+            .toImage()
+            .also { bigAssTile ->
+                if (PRINT_DEBUG) {
+                    bigAssTile.print()
+                }
+            }.getWaterRoughness()
     }
 }
