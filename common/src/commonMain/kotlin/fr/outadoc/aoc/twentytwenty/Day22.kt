@@ -5,64 +5,35 @@ import fr.outadoc.aoc.scaffold.Year
 
 class Day22 : Day(Year.TwentyTwenty) {
 
-    private data class PlayerState(val playerName: String, val deck: List<Long>)
-    private data class Round(val iteration: Int, val players: List<PlayerState>)
+    private data class Player(val name: String, val deck: List<Int>)
+    private data class Round(val players: List<Player>)
 
-    private data class RoundResult(val round: Round, val winner: PlayerState? = null)
-    private data class GameResult(val winner: PlayerState?)
+    private data class RoundResult(val round: Round, val winner: Player? = null)
+    private data class GameResult(val winner: Player?)
 
     private val initialRound: Round =
         readDayInput()
             .split("\n\n")
             .map { it.lines() }
             .map { playerDeck ->
-                PlayerState(
-                    playerName = playerDeck.first().replace(":", ""),
-                    deck = playerDeck.drop(1).map { it.toLong() }
+                Player(
+                    name = playerDeck.first().replace(":", ""),
+                    deck = playerDeck.drop(1).map { it.toInt() }
                 )
             }
             .let { players ->
-                Round(iteration = 0, players = players)
+                Round(players = players)
             }
 
-    private fun PlayerState.play(): Pair<Long?, PlayerState> {
+    private fun Player.play(): Pair<Int?, Player> {
         return when (val card = deck.firstOrNull()) {
             null -> null to this
             else -> card to copy(deck = deck.drop(1))
         }
     }
 
-    private val PlayerState.score: Long
-        get() = deck.reversed().mapIndexed { index, card -> (index + 1) * card }.sum()
-
-    private fun Round.playRound(): RoundResult {
-        val decksAfterPlay = players.map { player -> player.play() }
-
-        val winner = decksAfterPlay.maxByOrNull { (hand, _) -> hand ?: Long.MIN_VALUE }!!.second
-
-        val cardsInPlay: List<Long> = decksAfterPlay
-            .mapNotNull { (hand, _) -> hand }
-            .sortedDescending()
-
-        val playersNewDeck = decksAfterPlay
-            .map { (_, player) -> player }
-            .map { state ->
-                when (state) {
-                    winner -> state.copy(deck = state.deck + cardsInPlay)
-                    else -> state
-                }
-            }
-
-        val winnerNewDeck = playersNewDeck.first { it.playerName == winner.playerName }
-
-        return RoundResult(
-            winner = winnerNewDeck,
-            round = copy(
-                iteration = iteration + 1,
-                players = playersNewDeck
-            )
-        )
-    }
+    private val Player.score: Long
+        get() = deck.reversed().mapIndexed { index, card -> (index + 1) * card.toLong() }.sum()
 
     private tailrec fun RoundResult.findGameResult(): GameResult {
         round.print()
@@ -70,13 +41,66 @@ class Day22 : Day(Year.TwentyTwenty) {
         if (round.players.count { player -> player.deck.isEmpty() } == round.players.size - 1)
             return GameResult(winner = winner)
 
-        return round.playRound().findGameResult()
+        return round.playRound(recursive = false).findGameResult()
+    }
+
+    private fun Round.playRound(recursive: Boolean): RoundResult {
+        val decksAfterPlay = players.map { player -> player.play() }
+
+        decksAfterPlay.forEach { (card, player) ->
+            println("${player.name} plays: $card")
+        }
+
+        val enoughCardsToRecurse = decksAfterPlay.all { (card, player) ->
+            card != null && player.deck.size >= card
+        }
+
+        val winner = if (recursive && enoughCardsToRecurse) {
+            val recursiveRound = Round(players = decksAfterPlay.map { (card, player) ->
+                player.copy(deck = player.deck.take(card!!.toInt()))
+            })
+
+            RoundResult(round = recursiveRound).findRecursiveGameResult().winner!!
+        } else {
+            decksAfterPlay.maxByOrNull { (hand, _) -> hand ?: Int.MIN_VALUE }!!.second
+        }
+
+        println("${winner.name} wins round")
+
+        val cardsInPlay: List<Int> = decksAfterPlay
+            .sortedBy { (card, player) -> if (player.name == winner.name) Int.MIN_VALUE else Int.MAX_VALUE }
+            .mapNotNull { (card, _) -> card }
+
+        val playersNewDeck = decksAfterPlay
+            .map { (_, player) -> player }
+            .map { state ->
+                when (state.name) {
+                    winner.name -> state.copy(deck = state.deck + cardsInPlay)
+                    else -> state
+                }
+            }
+
+        val winnerNewDeck = playersNewDeck.first { it.name == winner.name }
+
+        return RoundResult(
+            winner = winnerNewDeck,
+            round = copy(players = playersNewDeck)
+        )
+    }
+
+    private tailrec fun RoundResult.findRecursiveGameResult(previousRounds: List<RoundResult> = emptyList()): GameResult {
+        round.print()
+
+        if (this in previousRounds || round.players.count { player -> player.deck.isEmpty() } == round.players.size - 1)
+            return GameResult(winner = winner)
+
+        return round.playRound(recursive = true)
+            .findRecursiveGameResult(previousRounds + this)
     }
 
     private fun Round.print() {
-        println("round #$iteration")
         players.forEach { player ->
-            println("${player.playerName}'s deck: ${player.deck}")
+            println("${player.name}'s deck: ${player.deck}")
         }
         println()
     }
@@ -86,6 +110,6 @@ class Day22 : Day(Year.TwentyTwenty) {
     }
 
     fun step2(): Long {
-        TODO()
+        return RoundResult(round = initialRound).findRecursiveGameResult().winner!!.score
     }
 }
