@@ -36,8 +36,6 @@ class Day22 : Day(Year.TwentyTwenty) {
         get() = deck.reversed().mapIndexed { index, card -> (index + 1) * card.toLong() }.sum()
 
     private tailrec fun RoundResult.findGameResult(): GameResult {
-        round.print()
-
         if (round.players.count { player -> player.deck.isEmpty() } == round.players.size - 1)
             return GameResult(winner = winner)
 
@@ -82,12 +80,15 @@ class Day22 : Day(Year.TwentyTwenty) {
         )
     }
 
-    private tailrec fun RoundResult.findRecursiveGameResult(previousRounds: List<RoundResult> = emptyList()): GameResult {
-        if (this in previousRounds || round.players.count { player -> player.deck.isEmpty() } == round.players.size - 1)
-            return GameResult(winner = winner)
+    private tailrec fun RoundResult.findRecursiveGameResult(previousRoundHashes: List<Int> = emptyList()): GameResult {
+        if (hashCode() in previousRoundHashes)
+            return GameResult(winner = round.players.first { player -> player.name == "Player 1" })
+
+        val hasAPlayerWon = round.players.count { player -> player.deck.isEmpty() } == round.players.size - 1
+        if (hasAPlayerWon) return GameResult(winner = winner)
 
         return round.playRound(recursive = true)
-            .findRecursiveGameResult(previousRounds + this)
+            .findRecursiveGameResult(previousRoundHashes + hashCode())
     }
 
     private fun Round.print() {
