@@ -7,63 +7,58 @@ import fr.outadoc.aoc.scaffold.min
 
 class Day23 : Day(Year.TwentyTwenty) {
 
-    private data class State(val cups: List<Int>, val currentCupIndex: Int)
+    private data class State(val cups: List<Int>)
 
     private val initialState: State =
         readDayInput()
             .lines()
             .first()
             .map { it.toString().toInt() }
-            .let { State(cups = it, currentCupIndex = 0) }
+            .let { State(cups = it) }
 
     private fun List<Int>.cupAtIndex(index: Int): Int =
         this[index % size]
 
     private fun State.next(): State {
+        // Current cup is always the first one
+        val currentCup = cups.first()
+
         val cupStr = cups.joinToString(separator = " ") { cup ->
-            if (cup == cups[currentCupIndex]) "($cup)"
+            if (cup == currentCup) "($cup)"
             else "$cup"
         }
 
         println("cups: $cupStr")
 
-        val currentCup = cups.cupAtIndex(currentCupIndex)
-
-        val pickedCups = (currentCupIndex + 1..currentCupIndex + 3)
-            .fold(emptyList<Int>()) { acc, index ->
-                acc + cups.cupAtIndex(index)
-            }
+        // Pick up 3 cups after the current cup
+        val pickedCups = cups.drop(1).take(3)
 
         println("picked up: $pickedCups")
 
-        val nextCups = cups.subList(0, currentCupIndex + 1) +
-            cups.subList(currentCupIndex + 4, cups.size)
+        val remainingCups = listOf(currentCup) + cups.drop(4)
 
-        println("remaining: $nextCups")
+        println("remaining: $remainingCups")
 
-        val destinationCup = ((currentCup - 1) downTo nextCups.min()).firstOrNull { cup ->
-            cup in nextCups
-        } ?: nextCups.max()
+        // Select the destination cup
+        val destinationCup = ((currentCup - 1) downTo remainingCups.min())
+            .firstOrNull { cup -> cup in remainingCups } ?: remainingCups.max()
 
-        val destinationIndex = nextCups.indexOf(destinationCup)
+        println("destination: $destinationCup")
 
-        println("destination: $destinationCup (idx $destinationIndex)")
+        // Move cups to the right position
+        val withPickedCups: List<Int> =
+            remainingCups.takeWhile { it != destinationCup } +
+                destinationCup +
+                pickedCups +
+                remainingCups.takeLastWhile { it != destinationCup }
 
-        val final = nextCups.toMutableList()
-
-        pickedCups.forEachIndexed { index, cup ->
-            val targetIndex = (destinationIndex + index + 1) % cups.size
-            println("inserting $cup at $index")
-            final.add(targetIndex, cup)
-        }
+        // Place the current cup at the back of the list
+        val final = withPickedCups.drop(1) + withPickedCups.first()
 
         println("final: $final")
         println()
 
-        return State(
-            cups = final,
-            currentCupIndex = (currentCupIndex + 1) % final.size
-        )
+        return State(cups = final)
     }
 
     private fun State.nthIteration(n: Int): State {
@@ -72,9 +67,15 @@ class Day23 : Day(Year.TwentyTwenty) {
         }
     }
 
-    fun step1(): Long {
-        val finalState = initialState.nthIteration(100)
-        TODO()
+    private fun State.toStateString(): String {
+        val reordered = cups.takeWhile { it != 1 } + cups.takeLastWhile { it != 1 }
+        return reordered.joinToString(separator = "")
+    }
+
+    fun step1(): String {
+        return initialState
+            .nthIteration(100)
+            .toStateString()
     }
 
     fun step2(): Long {
