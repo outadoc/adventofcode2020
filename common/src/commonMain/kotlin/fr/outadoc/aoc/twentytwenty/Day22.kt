@@ -47,10 +47,6 @@ class Day22 : Day(Year.TwentyTwenty) {
     private fun Round.playRound(recursive: Boolean): RoundResult {
         val decksAfterPlay = players.map { player -> player.play() }
 
-        decksAfterPlay.forEach { (card, player) ->
-            println("${player.name} plays: $card")
-        }
-
         val enoughCardsToRecurse = decksAfterPlay.all { (card, player) ->
             card != null && player.deck.size >= card
         }
@@ -65,10 +61,8 @@ class Day22 : Day(Year.TwentyTwenty) {
             decksAfterPlay.maxByOrNull { (hand, _) -> hand ?: Int.MIN_VALUE }!!.second
         }
 
-        println("${winner.name} wins round")
-
         val cardsInPlay: List<Int> = decksAfterPlay
-            .sortedBy { (card, player) -> if (player.name == winner.name) Int.MIN_VALUE else Int.MAX_VALUE }
+            .sortedBy { (_, player) -> if (player.name == winner.name) Int.MIN_VALUE else Int.MAX_VALUE }
             .mapNotNull { (card, _) -> card }
 
         val playersNewDeck = decksAfterPlay
@@ -89,8 +83,6 @@ class Day22 : Day(Year.TwentyTwenty) {
     }
 
     private tailrec fun RoundResult.findRecursiveGameResult(previousRounds: List<RoundResult> = emptyList()): GameResult {
-        round.print()
-
         if (this in previousRounds || round.players.count { player -> player.deck.isEmpty() } == round.players.size - 1)
             return GameResult(winner = winner)
 
