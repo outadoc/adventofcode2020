@@ -8,6 +8,9 @@ class Day22 : Day(Year.TwentyTwenty) {
     private data class PlayerState(val playerName: String, val deck: List<Long>)
     private data class Round(val iteration: Int, val players: List<PlayerState>)
 
+    private data class RoundResult(val round: Round, val winner: PlayerState? = null)
+    private data class GameResult(val winner: PlayerState?)
+
     private val initialRound: Round =
         readDayInput()
             .split("\n\n")
@@ -32,31 +35,42 @@ class Day22 : Day(Year.TwentyTwenty) {
     private val PlayerState.score: Long
         get() = deck.reversed().mapIndexed { index, card -> (index + 1) * card }.sum()
 
-    private fun Round.next(): Round {
+    private fun Round.playRound(): RoundResult {
         val decksAfterPlay = players.map { player -> player.play() }
+
         val winner = decksAfterPlay.maxByOrNull { (hand, _) -> hand ?: Long.MIN_VALUE }!!.second
 
         val cardsInPlay: List<Long> = decksAfterPlay
             .mapNotNull { (hand, _) -> hand }
             .sortedDescending()
 
-        return copy(
-            iteration = iteration + 1,
-            players = decksAfterPlay
-                .map { (_, player) -> player }
-                .map { state ->
-                    when (state) {
-                        winner -> state.copy(deck = state.deck + cardsInPlay)
-                        else -> state
-                    }
+        val playersNewDeck = decksAfterPlay
+            .map { (_, player) -> player }
+            .map { state ->
+                when (state) {
+                    winner -> state.copy(deck = state.deck + cardsInPlay)
+                    else -> state
                 }
+            }
+
+        val winnerNewDeck = playersNewDeck.first { it.playerName == winner.playerName }
+
+        return RoundResult(
+            winner = winnerNewDeck,
+            round = copy(
+                iteration = iteration + 1,
+                players = playersNewDeck
+            )
         )
     }
 
-    private tailrec fun Round.findLastRound(): Round {
-        print()
-        if (players.count { player -> player.deck.isEmpty() } == players.size - 1) return this
-        return next().findLastRound()
+    private tailrec fun RoundResult.findGameResult(): GameResult {
+        round.print()
+
+        if (round.players.count { player -> player.deck.isEmpty() } == round.players.size - 1)
+            return GameResult(winner = winner)
+
+        return round.playRound().findGameResult()
     }
 
     private fun Round.print() {
@@ -68,10 +82,7 @@ class Day22 : Day(Year.TwentyTwenty) {
     }
 
     fun step1(): Long {
-        val lastRound = initialRound.findLastRound()
-        lastRound.print()
-        val winner = lastRound.players.first { player -> player.deck.isNotEmpty() }
-        return winner.score
+        return RoundResult(round = initialRound).findGameResult().winner!!.score
     }
 
     fun step2(): Long {
