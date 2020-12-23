@@ -68,14 +68,15 @@ class Day23 : Day(Year.TwentyTwenty) {
     }
 
     private fun State.toStateString(): String {
-        val reordered = cups.takeWhile { it != 1 } + cups.takeLastWhile { it != 1 }
+        val reordered = cups.takeLastWhile { it != 1 } + cups.takeWhile { it != 1 }
         return reordered.joinToString(separator = "")
     }
 
-    fun step1(): String {
+    fun step1(): Long {
         return initialState
             .nthIteration(100)
             .toStateString()
+            .toLong()
     }
 
     fun step2(): Long {
