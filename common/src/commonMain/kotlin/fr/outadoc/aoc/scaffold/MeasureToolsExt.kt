@@ -4,11 +4,11 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
 @ExperimentalTime
-fun <T : Any, U : Any> T.measure(block: T.() -> U): U {
+fun <T : Any, U : Any> T.measure(tag: String? = null, block: T.() -> U): U {
     return measureTimedValue {
         block()
     }.let {
-        println(it.duration.toString())
+        println("=== $tag: ${it.duration}")
         it.value
     }
 }
