@@ -101,6 +101,7 @@ class Day23 : Day(Year.TwentyTwenty) {
         )
 
         val finalState = bigCrabBigStakes.nthIteration(10_000_000)
+        println(finalState.cups.joinToString())
         val indexOfCup1 = finalState.cups.indexOf(1)
         return finalState.cups[indexOfCup1 + 1].toLong() * finalState.cups[indexOfCup1 + 2].toLong()
     }
