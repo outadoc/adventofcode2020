@@ -10,7 +10,7 @@ class Day23 : Day(Year.TwentyTwenty) {
         private const val PRINT_DEBUG = false
     }
 
-    private data class State(val cups: List<Int>) {
+    private data class State(val cups: ArrayDeque<Int>) {
         val lookup: Map<Int, Int> = cups.zip(cups.indices).toMap()
     }
 
@@ -19,17 +19,22 @@ class Day23 : Day(Year.TwentyTwenty) {
             .lines()
             .first()
             .map { it.toString().toInt() }
-            .let { State(cups = it) }
+            .let { State(cups = ArrayDeque(it)) }
 
     private fun State.next(): State {
+        val deque = ArrayDeque(cups)
+
         // Current cup is always the first one
-        val currentCup = cups.first()
+        val currentCup = deque[0]
 
         // Pick up 3 cups after the current cup
-        val pickedCups = cups.subList(1, 4)
+        val pickedCups = deque.slice(1..3)
+
+        repeat(3) {
+            deque.removeAt(1)
+        }
 
         // What remains of the cups without the ones we picked up
-        val remainingCups = listOf(currentCup) + cups.drop(4)
         val maxRemainingCup = (cups.size downTo cups.size - 3).first { cup ->
             cup !in pickedCups
         }
@@ -41,13 +46,11 @@ class Day23 : Day(Year.TwentyTwenty) {
         val destinationCupIndex = lookup.getValue(destinationCup) - 3
 
         // Move cups to the right position
-        val withPickedCups: List<Int> =
-            remainingCups.subList(0, destinationCupIndex + 1) +
-                pickedCups +
-                remainingCups.subList(destinationCupIndex + 1, remainingCups.size)
+        deque.addAll(destinationCupIndex + 1, pickedCups)
 
         // Place the current cup at the back of the list
-        val final = withPickedCups.drop(1) + withPickedCups.first()
+        deque.removeFirst()
+        deque.addLast(currentCup)
 
         if (PRINT_DEBUG) {
             val cupStr = cups.joinToString(separator = " ") { cup ->
@@ -57,18 +60,18 @@ class Day23 : Day(Year.TwentyTwenty) {
 
             println("cups: $cupStr")
             println("picked up: $pickedCups")
-            println("remaining: $remainingCups")
             println("destination: $destinationCup")
-            println("final: $final")
+            println("final: $deque")
             println()
         }
 
-        return State(cups = final)
+        return State(cups = deque)
     }
 
     private fun State.nthIteration(n: Int): State {
         return (0 until n).foldIndexed(this) { index, state, _ ->
-            println("${index.toFloat() / n.toFloat() * 100f} %")
+            val progress = index.toFloat() / n.toFloat() * 100f
+            println("$progress %")
             state.next()
         }
     }
@@ -87,7 +90,7 @@ class Day23 : Day(Year.TwentyTwenty) {
 
     fun step2(): Long {
         val bigCrabBigStakes = initialState.copy(
-            cups = initialState.cups + (initialState.cups.max() until 1_000_000)
+            cups = ArrayDeque(initialState.cups + (initialState.cups.max() until 1_000_000))
         )
 
         val finalState = bigCrabBigStakes.nthIteration(10_000_000)
