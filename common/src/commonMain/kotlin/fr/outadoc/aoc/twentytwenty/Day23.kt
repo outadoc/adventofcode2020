@@ -3,7 +3,10 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
 import fr.outadoc.aoc.scaffold.max
+import fr.outadoc.aoc.scaffold.measure
+import kotlin.time.ExperimentalTime
 
+@ExperimentalTime
 class Day23 : Day(Year.TwentyTwenty) {
 
     companion object {
@@ -11,7 +14,7 @@ class Day23 : Day(Year.TwentyTwenty) {
     }
 
     private data class State(val cups: ArrayDeque<Int>) {
-        val lookup: Map<Int, Int> = cups.zip(cups.indices).toMap()
+        val range: IntRange = 1..cups.size
     }
 
     private val initialState: State =
@@ -22,50 +25,63 @@ class Day23 : Day(Year.TwentyTwenty) {
             .let { State(cups = ArrayDeque(it)) }
 
     private fun State.next(): State {
-        val deque = ArrayDeque(cups)
+        return measure("COMPLETE") {
+            // Current cup is always the first one
+            val currentCup = cups[0]
 
-        // Current cup is always the first one
-        val currentCup = deque[0]
+            if (PRINT_DEBUG) {
+                val cupStr = cups.joinToString(separator = " ") { cup ->
+                    if (cup == currentCup) "($cup)"
+                    else "$cup"
+                }
 
-        // Pick up 3 cups after the current cup
-        val pickedCups = deque.slice(1..3)
-
-        repeat(3) {
-            deque.removeAt(1)
-        }
-
-        // What remains of the cups without the ones we picked up
-        val maxRemainingCup = (cups.size downTo cups.size - 3).first { cup ->
-            cup !in pickedCups
-        }
-
-        // Select the destination cup
-        val destinationCup = ((currentCup - 1) downTo 1)
-            .firstOrNull { cup -> cup !in pickedCups } ?: maxRemainingCup
-
-        val destinationCupIndex = lookup.getValue(destinationCup) - 3
-
-        // Move cups to the right position
-        deque.addAll(destinationCupIndex + 1, pickedCups)
-
-        // Place the current cup at the back of the list
-        deque.removeFirst()
-        deque.addLast(currentCup)
-
-        if (PRINT_DEBUG) {
-            val cupStr = cups.joinToString(separator = " ") { cup ->
-                if (cup == currentCup) "($cup)"
-                else "$cup"
+                println("cups: $cupStr")
             }
 
-            println("cups: $cupStr")
-            println("picked up: $pickedCups")
-            println("destination: $destinationCup")
-            println("final: $deque")
-            println()
-        }
+            // Pick up 3 cups after the current cup
+            val pickedCups = cups.slice(1..3)
 
-        return State(cups = deque)
+            repeat(3) {
+                cups.removeAt(1)
+            }
+
+            val maxRemainingCup = measure("REMAINING_CUP") {
+                // What remains of the cups without the ones we picked up
+                (range.last downTo range.last - 3).first { cup ->
+                    cup !in pickedCups
+                }
+            }
+
+            // Select the destination cup
+            val destinationCup = measure("DESTINATION_CUP") {
+                ((currentCup - 1) downTo range.first)
+                    .firstOrNull { cup -> cup !in pickedCups } ?: maxRemainingCup
+            }
+
+            val destinationCupIndex = measure("LOOKUP") {
+                cups.indexOf(destinationCup)
+            }
+
+            measure("MOVE") {
+                // Move cups to the right position
+                cups.addAll(destinationCupIndex + 1, pickedCups)
+
+                // Place the current cup at the back of the list
+                cups.removeFirst()
+                cups.addLast(currentCup)
+            }
+
+            if (PRINT_DEBUG) {
+                println("picked up: $pickedCups")
+                println("destination: $destinationCup")
+                println("final: $cups")
+                println()
+            }
+
+            measure("FINISH") {
+                State(cups = cups)
+            }
+        }
     }
 
     private fun State.nthIteration(n: Int): State {

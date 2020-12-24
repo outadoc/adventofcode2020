@@ -3,7 +3,9 @@ package fr.outadoc.aoc.twentytwenty
 import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class Day23Tests {
 
     @Test
