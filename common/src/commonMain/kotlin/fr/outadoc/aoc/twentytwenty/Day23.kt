@@ -3,10 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
 import fr.outadoc.aoc.scaffold.max
-import fr.outadoc.aoc.scaffold.measure
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 class Day23 : Day(Year.TwentyTwenty) {
 
     companion object {
@@ -25,69 +22,63 @@ class Day23 : Day(Year.TwentyTwenty) {
             .let { State(cups = ArrayDeque(it)) }
 
     private fun State.next(): State {
-        return measure("COMPLETE") {
-            // Current cup is always the first one
-            val currentCup = cups[0]
+        // Current cup is always the first one
+        val currentCup = cups[0]
 
-            if (PRINT_DEBUG) {
-                val cupStr = cups.joinToString(separator = " ") { cup ->
-                    if (cup == currentCup) "($cup)"
-                    else "$cup"
-                }
-
-                println("cups: $cupStr")
+        if (PRINT_DEBUG) {
+            val cupStr = cups.joinToString(separator = " ") { cup ->
+                if (cup == currentCup) "($cup)"
+                else "$cup"
             }
 
-            // Pick up 3 cups after the current cup
-            val pickedCups = cups.slice(1..3)
-
-            repeat(3) {
-                cups.removeAt(1)
-            }
-
-            val maxRemainingCup = measure("REMAINING_CUP") {
-                // What remains of the cups without the ones we picked up
-                (range.last downTo range.last - 3).first { cup ->
-                    cup !in pickedCups
-                }
-            }
-
-            // Select the destination cup
-            val destinationCup = measure("DESTINATION_CUP") {
-                ((currentCup - 1) downTo range.first)
-                    .firstOrNull { cup -> cup !in pickedCups } ?: maxRemainingCup
-            }
-
-            val destinationCupIndex = measure("LOOKUP") {
-                cups.indexOf(destinationCup)
-            }
-
-            measure("MOVE") {
-                // Move cups to the right position
-                cups.addAll(destinationCupIndex + 1, pickedCups)
-
-                // Place the current cup at the back of the list
-                cups.removeFirst()
-                cups.addLast(currentCup)
-            }
-
-            if (PRINT_DEBUG) {
-                println("picked up: $pickedCups")
-                println("destination: $destinationCup")
-                println("final: $cups")
-                println()
-            }
-
-            measure("FINISH") {
-                State(cups = cups)
-            }
+            println("cups: $cupStr")
         }
+
+        // Pick up 3 cups after the current cup
+        val pickedCups = cups.slice(1..3)
+
+        repeat(3) {
+            cups.removeAt(1)
+        }
+
+        // What remains of the cups without the ones we picked up
+        val maxRemainingCup =
+            (range.last downTo range.last - 3).first { cup ->
+                cup !in pickedCups
+            }
+
+        // Select the destination cup
+        val destinationCup =
+            ((currentCup - 1) downTo range.first)
+                .firstOrNull { cup -> cup !in pickedCups } ?: maxRemainingCup
+
+        val destinationCupIndex = cups.indexOf(destinationCup)
+
+
+        // Move cups to the right position
+        cups.addAll(destinationCupIndex + 1, pickedCups)
+
+        // Place the current cup at the back of the list
+        cups.removeFirst()
+        cups.addLast(currentCup)
+
+        if (PRINT_DEBUG) {
+            println("picked up: $pickedCups")
+            println("destination: $destinationCup")
+            println("final: $cups")
+            println()
+        }
+
+        return State(cups = cups)
     }
 
     private fun State.nthIteration(n: Int): State {
         return (0 until n).foldIndexed(this) { index, state, _ ->
-            val progress = index.toFloat() / n.toFloat() * 100f
-            println("$progress %")
+            if (index % 100 == 0) {
+                val progress = index.toFloat() / n.toFloat() * 100f
+                println("$progress %")
+            }
+
             state.next()
         }
     }
