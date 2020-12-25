@@ -54,7 +54,6 @@ class Day23 : Day(Year.TwentyTwenty) {
 
         val destinationCupIndex = cups.indexOf(destinationCup)
 
-
         // Move cups to the right position
         cups.addAll(destinationCupIndex + 1, pickedCups)
 
@@ -84,8 +83,8 @@ class Day23 : Day(Year.TwentyTwenty) {
     }
 
     private fun State.toStateString(): String {
-        val reordered = cups.takeLastWhile { it != 1 } + cups.takeWhile { it != 1 }
-        return reordered.joinToString(separator = "")
+        return (cups.takeLastWhile { it != 1 } + cups.takeWhile { it != 1 })
+            .joinToString(separator = "")
     }
 
     fun step1(): Long {
@@ -96,13 +95,14 @@ class Day23 : Day(Year.TwentyTwenty) {
     }
 
     fun step2(): Long {
-        val bigCrabBigStakes = initialState.copy(
-            cups = ArrayDeque(initialState.cups + (initialState.cups.max() until 1_000_000))
+        return initialState.copy(
+            cups = ArrayDeque(initialState.cups + (initialState.cups.max() + 1 until 1_000_000))
         )
-
-        val finalState = bigCrabBigStakes.nthIteration(10_000_000)
-        println(finalState.cups.joinToString())
-        val indexOfCup1 = finalState.cups.indexOf(1)
-        return finalState.cups[indexOfCup1 + 1].toLong() * finalState.cups[indexOfCup1 + 2].toLong()
+            .nthIteration(10_000_000)
+            .run {
+                println(cups.joinToString())
+                val indexOfCup1 = cups.indexOf(1)
+                cups[indexOfCup1 + 1].toLong() * cups[indexOfCup1 + 2].toLong()
+            }
     }
 }
