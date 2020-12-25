@@ -3,9 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
 import fr.outadoc.aoc.scaffold.max
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 class Day23 : Day(Year.TwentyTwenty) {
 
     /**
@@ -63,12 +61,6 @@ class Day23 : Day(Year.TwentyTwenty) {
 
     private fun State.nthIteration(n: Int): State {
         return (0 until n).foldIndexed(this) { index, state, _ ->
-            if (index % 100 == 0) {
-                val progress = index.toFloat() / n.toFloat() * 100f
-                println("$progress %")
-            }
-
-            // println(state.cups.toList(1))
             state.next()
         }
     }
