@@ -43,21 +43,20 @@ class Day23 : Day(Year.TwentyTwenty) {
         val c2 = cups.getValue(c1)
         val c3 = cups.getValue(c2)
 
-        val pickedCups = listOf(c1, c2, c3)
+        val rangeForCupLowerThanCurrent = (currentCup - 1) downTo range.first
+        val rangeForHighestCup = range.last downTo range.last - 3
 
         // Select the destination cup
         val destinationCup: Int =
-            ((currentCup - 1) downTo range.first)
-                .firstOrNull { cup -> cup !in pickedCups }
-                ?: (range.last downTo range.last - 3)
-                    .minus(pickedCups)
-                    .first()
+            rangeForCupLowerThanCurrent.firstOrNull { cup -> cup != c1 && cup != c2 && cup != c3 }
+                ?: rangeForHighestCup.first { cup -> cup != c1 && cup != c2 && cup != c3 }
 
         // Move cups to the right position by inserting c1, c2, c3 between destinationCup and its next
-        val oldNextCupDest = cups.getValue(destinationCup)
-        cups[currentCup] = cups.getValue(c3)
-        cups[destinationCup] = c1
-        cups[c3] = oldNextCupDest
+        cups.getValue(destinationCup).let { oldDestinationNextCup ->
+            cups[currentCup] = cups.getValue(c3)
+            cups[destinationCup] = c1
+            cups[c3] = oldDestinationNextCup
+        }
 
         return copy(currentCup = cups.getValue(currentCup))
     }
