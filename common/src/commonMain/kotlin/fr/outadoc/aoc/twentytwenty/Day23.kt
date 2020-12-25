@@ -6,69 +6,63 @@ import fr.outadoc.aoc.scaffold.max
 
 class Day23 : Day(Year.TwentyTwenty) {
 
-    companion object {
-        private const val PRINT_DEBUG = false
-    }
-
-    private data class State(val cups: ArrayDeque<Int>) {
+    /**
+     * @param cups map of cup value to next cup value in the cyclic list
+     */
+    private data class State(val cups: Map<Int, Int>, val currentCup: Int) {
         val range: IntRange = 1..cups.size
     }
 
-    private val initialState: State =
+    private val input: List<Int> =
         readDayInput()
             .lines()
             .first()
             .map { it.toString().toInt() }
-            .let { State(cups = ArrayDeque(it)) }
+
+    private fun List<Int>.toQuickMap(): Map<Int, Int> =
+        mapIndexed { index, cup ->
+            val next = if (index == size - 1) this[0] else this[index + 1]
+            cup to next
+        }.toMap()
+
+    private val step1State = State(
+        cups = input.toQuickMap(),
+        currentCup = input.first()
+    )
+
+    private val step2State = State(
+        cups = (input + (input.max() + 1 until 1_000_000)).toQuickMap(),
+        currentCup = input.first()
+    )
 
     private fun State.next(): State {
-        // Current cup is always the first one
-        val currentCup = cups[0]
-
-        if (PRINT_DEBUG) {
-            val cupStr = cups.joinToString(separator = " ") { cup ->
-                if (cup == currentCup) "($cup)"
-                else "$cup"
-            }
-
-            println("cups: $cupStr")
-        }
+        val newCups = cups.toMutableMap()
 
         // Pick up 3 cups after the current cup
-        val pickedCups = cups.slice(1..3)
+        val c1 = cups.getValue(currentCup)
+        val c2 = cups.getValue(c1)
+        val c3 = cups.getValue(c2)
 
-        repeat(3) {
-            cups.removeAt(1)
-        }
-
-        // What remains of the cups without the ones we picked up
-        val maxRemainingCup =
-            (range.last downTo range.last - 3).first { cup ->
-                cup !in pickedCups
-            }
+        val pickedCups = listOf(c1, c2, c3)
 
         // Select the destination cup
-        val destinationCup =
+        val destinationCup: Int =
             ((currentCup - 1) downTo range.first)
-                .firstOrNull { cup -> cup !in pickedCups } ?: maxRemainingCup
+                .firstOrNull { cup -> cup !in pickedCups }
+                ?: (range.last downTo range.last - 3)
+                    .minus(pickedCups)
+                    .first()
 
-        val destinationCupIndex = cups.indexOf(destinationCup)
+        // Move cups to the right position by inserting c1, c2, c3 between destinationCup and its next
+        val oldNextCupDest = cups.getValue(destinationCup)
+        newCups[currentCup] = cups.getValue(c3)
+        newCups[destinationCup] = c1
+        newCups[c3] = oldNextCupDest
 
-        // Move cups to the right position
-        cups.addAll(destinationCupIndex + 1, pickedCups)
-
-        // Place the current cup at the back of the list
-        cups.removeFirst()
-        cups.addLast(currentCup)
-
-        if (PRINT_DEBUG) {
-            println("picked up: $pickedCups")
-            println("destination: $destinationCup")
-            println("final: $cups")
-            println()
-        }
-
-        return State(cups = cups)
+        return copy(
+            cups = newCups,
+            currentCup = newCups.getValue(currentCup)
+        )
     }
 
     private fun State.nthIteration(n: Int): State {
@@ -78,31 +72,37 @@ class Day23 : Day(Year.TwentyTwenty) {
                 println("$progress %")
             }
 
+            // println(state.cups.toList(1))
             state.next()
         }
     }
 
+    private fun Map<Int, Int>.toList(startingCup: Int): List<Int> {
+        var cup: Int = getValue(startingCup)
+        val list = mutableListOf<Int>()
+        do {
+            list.add(cup)
+            cup = getValue(cup)
+        } while (cup != startingCup)
+        return list
+    }
+
     private fun State.toStateString(): String {
-        return (cups.takeLastWhile { it != 1 } + cups.takeWhile { it != 1 })
-            .joinToString(separator = "")
+        return cups.toList(startingCup = 1).joinToString(separator = "")
     }
 
     fun step1(): Long {
-        return initialState
+        return step1State
             .nthIteration(100)
             .toStateString()
             .toLong()
     }
 
     fun step2(): Long {
-        return initialState.copy(
-            cups = ArrayDeque(initialState.cups + (initialState.cups.max() + 1 until 1_000_000))
-        )
+        return step2State
             .nthIteration(10_000_000)
-            .run {
-                println(cups.joinToString())
-                val indexOfCup1 = cups.indexOf(1)
-                cups[indexOfCup1 + 1].toLong() * cups[indexOfCup1 + 2].toLong()
-            }
+            .cups.toList(startingCup = 1)
+            .take(2)
+            .fold(1L) { acc, cup -> acc * cup.toLong() }
     }
 }
