@@ -33,7 +33,7 @@ class Day23 : Day(Year.TwentyTwenty) {
     )
 
     private val step2State = State(
-        cups = (input + (input.max() + 1 until 1_000_000)).toQuickMap().toMutableMap(),
+        cups = (input + (input.max() + 1..1_000_000)).toQuickMap().toMutableMap(),
         currentCup = input.first()
     )
 
