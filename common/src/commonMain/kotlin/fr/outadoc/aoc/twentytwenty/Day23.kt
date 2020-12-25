@@ -3,13 +3,15 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.Year
 import fr.outadoc.aoc.scaffold.max
+import kotlin.time.ExperimentalTime
 
+@ExperimentalTime
 class Day23 : Day(Year.TwentyTwenty) {
 
     /**
      * @param cups map of cup value to next cup value in the cyclic list
      */
-    private data class State(val cups: Map<Int, Int>, val currentCup: Int) {
+    private data class State(val cups: MutableMap<Int, Int>, val currentCup: Int) {
         val range: IntRange = 1..cups.size
     }
 
@@ -26,18 +28,16 @@ class Day23 : Day(Year.TwentyTwenty) {
         }.toMap()
 
     private val step1State = State(
-        cups = input.toQuickMap(),
+        cups = input.toQuickMap().toMutableMap(),
         currentCup = input.first()
     )
 
     private val step2State = State(
-        cups = (input + (input.max() + 1 until 1_000_000)).toQuickMap(),
+        cups = (input + (input.max() + 1 until 1_000_000)).toQuickMap().toMutableMap(),
         currentCup = input.first()
     )
 
     private fun State.next(): State {
-        val newCups = cups.toMutableMap()
-
         // Pick up 3 cups after the current cup
         val c1 = cups.getValue(currentCup)
         val c2 = cups.getValue(c1)
@@ -55,13 +55,13 @@ class Day23 : Day(Year.TwentyTwenty) {
 
         // Move cups to the right position by inserting c1, c2, c3 between destinationCup and its next
         val oldNextCupDest = cups.getValue(destinationCup)
-        newCups[currentCup] = cups.getValue(c3)
-        newCups[destinationCup] = c1
-        newCups[c3] = oldNextCupDest
+        cups[currentCup] = cups.getValue(c3)
+        cups[destinationCup] = c1
+        cups[c3] = oldNextCupDest
 
         return copy(
-            cups = newCups,
-            currentCup = newCups.getValue(currentCup)
+            cups = cups,
+            currentCup = cups.getValue(currentCup)
         )
     }
 
