@@ -48,8 +48,7 @@ class Day23 : Day(Year.TwentyTwenty) {
         // Select the destination cup
         val destinationCup: Int =
             ((currentCup - 1) downTo range.first)
-                .minus(pickedCups)
-                .firstOrNull()
+                .firstOrNull { cup -> cup !in pickedCups }
                 ?: (range.last downTo range.last - 3)
                     .minus(pickedCups)
                     .first()
