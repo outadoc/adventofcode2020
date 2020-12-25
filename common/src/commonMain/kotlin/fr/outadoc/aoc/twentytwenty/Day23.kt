@@ -48,7 +48,8 @@ class Day23 : Day(Year.TwentyTwenty) {
         // Select the destination cup
         val destinationCup: Int =
             ((currentCup - 1) downTo range.first)
-                .firstOrNull { cup -> cup !in pickedCups }
+                .minus(pickedCups)
+                .firstOrNull()
                 ?: (range.last downTo range.last - 3)
                     .minus(pickedCups)
                     .first()
@@ -59,10 +60,7 @@ class Day23 : Day(Year.TwentyTwenty) {
         cups[destinationCup] = c1
         cups[c3] = oldNextCupDest
 
-        return copy(
-            cups = cups,
-            currentCup = cups.getValue(currentCup)
-        )
+        return copy(currentCup = cups.getValue(currentCup))
     }
 
     private fun State.nthIteration(n: Int): State {
