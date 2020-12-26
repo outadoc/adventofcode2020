@@ -55,9 +55,14 @@ class Day24 : Day(Year.TwentyTwenty) {
             Direction.NORTHEAST -> Vector(x = 0, y = 1)
         }
 
-    private data class State(val tiles: Map<Vector, Tile> = emptyMap())
+    private data class State(val tiles: Map<Vector, Tile> = emptyMap()) {
+        val xRange: IntRange
+            get() = (tiles.keys.minOf { pos -> pos.x } - 1)..(tiles.keys.maxOf { pos -> pos.x } + 1)
+        val yRange: IntRange
+            get() = (tiles.keys.minOf { pos -> pos.y } - 1)..(tiles.keys.maxOf { pos -> pos.y } + 1)
+    }
 
-    private fun State.reduce(path: List<Direction>): State {
+    private fun State.addPath(path: List<Direction>): State {
         val tilePosition: Vector = path.fold(Vector(0, 0)) { acc, direction ->
             acc + direction.asVector
         }
@@ -69,22 +74,72 @@ class Day24 : Day(Year.TwentyTwenty) {
         return copy(tiles = tiles + (tilePosition to flippedTile))
     }
 
+    private val Vector.adjacent: List<Vector>
+        get() = Direction.values().map { direction ->
+            this + direction.asVector
+        }
+
+    private fun State.countAdjacentBlackTiles(vector: Vector): Int {
+        return vector.adjacent.count { adjacent ->
+            tiles.getOrElse(adjacent) { Tile() }.color == Color.BLACK
+        }
+    }
+
+    private fun State.nextDay(): State {
+        return copy(
+            tiles = yRange.flatMap { y ->
+                xRange.map { x ->
+                    val pos = Vector(x, y)
+                    val tile = tiles.getOrElse(pos) { Tile() }
+                    pos to
+                        tile.copy(
+                            color = when (tile.color) {
+                                Color.BLACK -> when (countAdjacentBlackTiles(pos)) {
+                                    1, 2 -> tile.color
+                                    else -> tile.color.flip()
+                                }
+                                Color.WHITE -> when (countAdjacentBlackTiles(pos)) {
+                                    2 -> tile.color.flip()
+                                    else -> tile.color
+                                }
+                            }
+                        )
+                }
+            }.toMap()
+        )
+    }
+
     private val tilesToFlipOver: List<List<Direction>> =
         readDayInput()
             .lines()
             .map(::readDirections)
 
+    private fun State.nthIteration(n: Int): State {
+        return (0 until n).foldIndexed(this) { i, state, _ ->
+            println("day ${i + 1}: ${state.countBlackTiles()}")
+            state.nextDay()
+        }
+    }
+
+    private fun State.countBlackTiles(): Int =
+        tiles.count { (_, tile) ->
+            tile.color == Color.BLACK
+        }
+
     fun step1(): Int {
         return tilesToFlipOver
             .fold(State()) { acc, path ->
-                acc.reduce(path)
+                acc.addPath(path)
             }
-            .tiles.count { (_, tile) ->
-                tile.color == Color.BLACK
-            }
+            .countBlackTiles()
     }
 
-    fun step2(): Long {
-        TODO()
+    fun step2(): Int {
+        return tilesToFlipOver
+            .fold(State()) { acc, path ->
+                acc.addPath(path)
+            }
+            .nthIteration(100)
+            .countBlackTiles()
     }
 }

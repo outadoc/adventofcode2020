@@ -15,6 +15,6 @@ class Day24Tests {
     @Test
     @JsName("testDay24Step2")
     fun `Test day 24 step 2`() {
-        assertEquals(null, Day24().step2())
+        assertEquals(4118, Day24().step2())
     }
 }
