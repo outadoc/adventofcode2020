@@ -26,4 +26,4 @@ jobs:
 
       - name: Run JVM tests
         run: ./gradlew jvmTest
-        timeout-minutes: 10
+        timeout-minutes: 30

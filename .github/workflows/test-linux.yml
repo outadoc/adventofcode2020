@@ -22,4 +22,4 @@ jobs:
 
       - name: Run Linux tests
         run: ./gradlew linuxX64Test
-        timeout-minutes: 10
+        timeout-minutes: 30
