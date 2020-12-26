@@ -35,12 +35,7 @@ class Day25 : Day(Year.TwentyTwenty) {
     }
 
     fun step1(): Long {
-        //val doorLoopSize = findLoopSizeForPublicKey(subject = 7, publicKey = doorPublicKey)
         val cardLoopSize = findLoopSizeForPublicKey(subject = 7, publicKey = cardPublicKey)
         return transform(subject = doorPublicKey, loopSize = cardLoopSize)
-    }
-
-    fun step2(): Long {
-        TODO()
     }
 }

@@ -11,10 +11,4 @@ class Day25Tests {
     fun `Test day 25 step 1`() {
         assertEquals(6198540, Day25().step1())
     }
-
-    @Test
-    @JsName("testDay25Step2")
-    fun `Test day 25 step 2`() {
-        assertEquals(null, Day25().step2())
-    }
 }
