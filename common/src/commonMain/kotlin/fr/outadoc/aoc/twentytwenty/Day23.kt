@@ -60,7 +60,7 @@ class Day23 : Day(Year.TwentyTwenty) {
     }
 
     private fun State.nthIteration(n: Int): State {
-        return (0 until n).foldIndexed(this) { _, state, _ ->
+        return (0 until n).fold(this) { state, _ ->
             state.next()
         }
     }

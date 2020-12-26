@@ -45,6 +45,11 @@ class Day24 : Day(Year.TwentyTwenty) {
         )
     }
 
+    private val tilesToFlipOver: List<List<Direction>> =
+        readDayInput()
+            .lines()
+            .map(::readDirections)
+
     private val Direction.asVector: Vector
         get() = when (this) {
             Direction.EAST -> Vector(x = 1, y = 0)
@@ -55,12 +60,11 @@ class Day24 : Day(Year.TwentyTwenty) {
             Direction.NORTHEAST -> Vector(x = 0, y = 1)
         }
 
-    private data class State(val tiles: Map<Vector, Tile> = emptyMap()) {
-        val xRange: IntRange
-            get() = (tiles.keys.minOf { pos -> pos.x } - 1)..(tiles.keys.maxOf { pos -> pos.x } + 1)
-        val yRange: IntRange
-            get() = (tiles.keys.minOf { pos -> pos.y } - 1)..(tiles.keys.maxOf { pos -> pos.y } + 1)
-    }
+    private data class State(
+        val tiles: Map<Vector, Tile> = emptyMap(),
+        val xRange: IntRange = IntRange.EMPTY,
+        val yRange: IntRange = IntRange.EMPTY
+    )
 
     private fun State.addPath(path: List<Direction>): State {
         val tilePosition: Vector = path.fold(Vector(0, 0)) { acc, direction ->
@@ -105,18 +109,14 @@ class Day24 : Day(Year.TwentyTwenty) {
                             }
                         )
                 }
-            }.toMap()
+            }.toMap(),
+            xRange = (xRange.first - 1)..(xRange.last + 1),
+            yRange = (yRange.first - 1)..(yRange.last + 1)
         )
     }
 
-    private val tilesToFlipOver: List<List<Direction>> =
-        readDayInput()
-            .lines()
-            .map(::readDirections)
-
     private fun State.nthIteration(n: Int): State {
-        return (0 until n).foldIndexed(this) { i, state, _ ->
-            println("day ${i + 1}: ${state.countBlackTiles()}")
+        return (0 until n).fold(this) { state, _ ->
             state.nextDay()
         }
     }
@@ -125,6 +125,13 @@ class Day24 : Day(Year.TwentyTwenty) {
         tiles.count { (_, tile) ->
             tile.color == Color.BLACK
         }
+
+    private fun State.withComputedRanges(): State {
+        return copy(
+            xRange = (tiles.keys.minOf { pos -> pos.x } - 1)..(tiles.keys.maxOf { pos -> pos.x } + 1),
+            yRange = (tiles.keys.minOf { pos -> pos.y } - 1)..(tiles.keys.maxOf { pos -> pos.y } + 1)
+        )
+    }
 
     fun step1(): Int {
         return tilesToFlipOver
@@ -139,6 +146,7 @@ class Day24 : Day(Year.TwentyTwenty) {
             .fold(State()) { acc, path ->
                 acc.addPath(path)
             }
+            .withComputedRanges()
             .nthIteration(100)
             .countBlackTiles()
     }
