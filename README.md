@@ -9,7 +9,7 @@ Obviously these aren't necessarily the optimal solutions, but they're mine. User
 
 ## Where's the code?
 
-[Here,](common/src/commonMain/kotlin/fr/outadoc/aoc) in packages split by year.
+Mostly in the `aoc-<year>` modules.
 
 The solutions are Kotlin classes that implement the `Day` abstract class.
 They expose two steps, and their result is checked from the unit tests (there's no other entry point).
