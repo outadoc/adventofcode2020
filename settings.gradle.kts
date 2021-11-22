@@ -1,10 +1,9 @@
-include(":common")
+include(":core")
 
 pluginManagement {
     repositories {
         gradlePluginPortal()
         google()
-        jcenter()
         mavenCentral()
     }
 }
