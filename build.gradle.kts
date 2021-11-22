@@ -1,24 +1,12 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-        jcenter()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30-M1")
-    }
+plugins {
+    kotlin("multiplatform") version "1.6.0" apply false
 }
 
 allprojects {
     repositories {
-        jcenter()
         mavenCentral()
-        maven {
-            url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
-        }
     }
 
     tasks.withType<Test> {

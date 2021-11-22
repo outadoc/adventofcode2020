@@ -1,5 +1,3 @@
-include(":core")
-
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -7,3 +5,7 @@ pluginManagement {
         mavenCentral()
     }
 }
+
+include(":core")
+include("aoc-2019")
+include("aoc-2020")

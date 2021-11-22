@@ -31,13 +31,13 @@ class Day06 : Day(Year.TwentyTwenty) {
     }
 
     fun step1(): Int {
-        return input.sumBy { group ->
+        return input.sumOf { group ->
             group.answeredYesByAnyone.size
         }
     }
 
     fun step2(): Int {
-        return input.sumBy { group ->
+        return input.sumOf { group ->
             group.answeredYesByEverybody.size
         }
     }

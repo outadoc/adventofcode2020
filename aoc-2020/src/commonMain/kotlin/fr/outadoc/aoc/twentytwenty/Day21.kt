@@ -47,7 +47,7 @@ class Day21 : Day(Year.TwentyTwenty) {
         return initialState.possibleAllergensPerIngredient
             .filterValues { allergens -> allergens.isEmpty() }
             .map { (ingredient, _) -> ingredient }
-            .sumBy { ingredient ->
+            .sumOf { ingredient ->
                 foodz.count { food -> ingredient in food.ingredients }
             }.toLong()
     }
