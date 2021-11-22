@@ -8,7 +8,7 @@ class Day06 : Day(Year.TwentyTwenty) {
     private val input: List<Group> =
         readDayInput().parse()
 
-    data class Person(val yesAnswers: List<Char>)
+    data class Person(val yesAnswers: Set<Char>)
 
     data class Group(val people: List<Person>) {
         val answeredYesByAnyone: Set<Char>
@@ -25,7 +25,7 @@ class Day06 : Day(Year.TwentyTwenty) {
     private fun String.parse(): List<Group> {
         return split("\n\n").map { group ->
             Group(people = group.lines().map { person ->
-                Person(yesAnswers = person.toList())
+                Person(yesAnswers = person.toSet())
             })
         }
     }

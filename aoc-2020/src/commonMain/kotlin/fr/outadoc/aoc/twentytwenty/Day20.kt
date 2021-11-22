@@ -248,6 +248,10 @@ class Day20 : Day(Year.TwentyTwenty) {
             .dropLast(seaRegexes.size - 1)
             .mapIndexed { lineIdx, line ->
                 // For each line in the picture
+                // For each next line of the monster, check if it matches the corresponding regex
+                // We've found that there might be a monster at startIdx — or at least its first line.
+                // Find occurrences of the monster's first line!
+                // Extract substrings that might match the monster in length
                 (0..(line.length - seaMonsterLength)).map { startIdx ->
                     // Extract substrings that might match the monster in length
                     startIdx to line.substring(startIdx, startIdx + seaMonsterLength)
@@ -255,17 +259,18 @@ class Day20 : Day(Year.TwentyTwenty) {
                     // Find occurrences of the monster's first line!
                     val regex = seaRegexes.first()
                     regex.matches(possibleMonsterChunk)
-                }.filter { (startIdx, _) ->
+                }.count { (startIdx, _) ->
                     // We've found that there might be a monster at startIdx — or at least its first line.
                     seaRegexes.drop(1)
                         .mapIndexed { regexIdx, regex -> regexIdx to regex }
                         .all { (regexIdx, regex) ->
                             // For each next line of the monster, check if it matches the corresponding regex
                             val nextLineIdx = lineIdx + regexIdx + 1
-                            val checkedString = content[nextLineIdx].substring(startIdx, startIdx + seaMonsterLength)
+                            val checkedString =
+                                content[nextLineIdx].substring(startIdx, startIdx + seaMonsterLength)
                             regex.matches(checkedString)
                         }
-                }.count()
+                }
             }.sum().toLong()
     }
 
@@ -275,13 +280,13 @@ class Day20 : Day(Year.TwentyTwenty) {
             .joinToString(separator = "")
             .count { it == '#' }
 
-        return possibleVariations.map { variation ->
+        return possibleVariations.sumOf { variation ->
             variation.countSeaMonsters().let { seaMonsterCount ->
                 if (seaMonsterCount > 0) {
                     totalHashes - seaMonsterHashes * seaMonsterCount
                 } else 0
             }
-        }.sum()
+        }
     }
 
     fun step1(): Long {

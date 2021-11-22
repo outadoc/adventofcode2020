@@ -19,10 +19,10 @@ class Day04 : Day(Year.TwentyTwenty) {
             .map { entry ->
                 PassportCandidate(
                     properties = entry.split(' ', '\n')
-                        .map { prop ->
+                        .associate { prop ->
                             val components = prop.split(':')
                             components[0] to components[1]
-                        }.toMap()
+                        }
                 )
             }
     }

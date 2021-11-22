@@ -11,12 +11,12 @@ class Day19 : Day(Year.TwentyTwenty) {
     private val step1Rules: Map<Int, String> =
         sections[0]
             .lines()
-            .map { line ->
+            .associate { line ->
                 line.split(": ")
                     .let { parts ->
                         parts[0].toInt() to parts[1]
                     }
-            }.toMap()
+            }
 
     private val step2Rules: Map<Int, String> =
         step1Rules.mapValues { (key, rule) ->
