@@ -1,10 +1,10 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
 import fr.outadoc.aoc.scaffold.max
+import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day23 : Day(Year.TwentyTwenty) {
+class Day23 : Day {
 
     /**
      * @param cups map of cup value to next cup value in the cyclic list

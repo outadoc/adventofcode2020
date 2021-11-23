@@ -1,14 +1,11 @@
 package fr.outadoc.aoc.twentynineteen
 
-import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
-import fr.outadoc.aoc.scaffold.max
-import fr.outadoc.aoc.scaffold.min
+import fr.outadoc.aoc.scaffold.*
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class Day03 : Day(Year.TwentyNineteen) {
+class Day03 : Day {
 
     private val input: List<String> =
         readDayInput().lines()

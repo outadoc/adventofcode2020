@@ -1,10 +1,10 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 import kotlin.math.pow
 
-class Day05 : Day(Year.TwentyTwenty) {
+class Day05 : Day {
 
     private val registeredSeats: List<Seat> =
         readDayInput()

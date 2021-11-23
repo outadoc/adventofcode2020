@@ -1,9 +1,9 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day17 : Day(Year.TwentyTwenty) {
+class Day17 : Day {
 
     companion object {
         private const val PRINT_DEBUG = false

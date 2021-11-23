@@ -1,9 +1,9 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day18 : Day(Year.TwentyTwenty) {
+class Day18 : Day {
 
     private sealed class Expression {
         data class Addition(val a: Expression, val b: Expression) : Expression() {
@@ -23,9 +23,7 @@ class Day18 : Day(Year.TwentyTwenty) {
         }
     }
 
-    private val input: Sequence<String> =
-        readDayInput()
-            .lineSequence()
+    private val input: Sequence<String> = readDayInput().lineSequence()
 
     private fun parse(rest: List<Char>, previousExpr: Expression? = null): Expression {
         if (rest.isEmpty()) return previousExpr!!

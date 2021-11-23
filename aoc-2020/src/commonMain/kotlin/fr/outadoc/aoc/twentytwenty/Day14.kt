@@ -1,9 +1,9 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day14 : Day(Year.TwentyTwenty) {
+class Day14 : Day {
 
     companion object {
         private val maskRegex = Regex("^mask = ([01X]+)$")

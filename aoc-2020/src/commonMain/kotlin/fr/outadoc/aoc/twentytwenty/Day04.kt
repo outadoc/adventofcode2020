@@ -1,16 +1,15 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day04 : Day(Year.TwentyTwenty) {
+class Day04 : Day {
 
     companion object {
         private val knownProperties = listOf("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid")
     }
 
-    private val input: List<PassportCandidate> =
-        readDayInput().parse()
+    private val input: List<PassportCandidate> = readDayInput().parse()
 
     data class PassportCandidate(val properties: Map<String, String>)
 

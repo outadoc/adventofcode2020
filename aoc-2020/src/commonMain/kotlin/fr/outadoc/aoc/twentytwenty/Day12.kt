@@ -1,10 +1,10 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 import kotlin.math.*
 
-class Day12 : Day(Year.TwentyTwenty) {
+class Day12 : Day {
 
     private sealed class Action {
         data class Add(val direction: Direction, val units: Int) : Action()

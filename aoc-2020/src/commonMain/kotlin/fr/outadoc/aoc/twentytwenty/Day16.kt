@@ -1,9 +1,9 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day16 : Day(Year.TwentyTwenty) {
+class Day16 : Day {
 
     companion object {
         private val ruleRegex = Regex("^([a-z ]+): ([0-9]+)-([0-9]+) or ([0-9]+)-([0-9]+)$")
@@ -15,8 +15,7 @@ class Day16 : Day(Year.TwentyTwenty) {
         return validRanges.any { range -> range.contains(value) }
     }
 
-    private val sections: List<String> =
-        readDayInput().split("\n\n")
+    private val sections: List<String> = readDayInput().split("\n\n")
 
     private val rules: List<Rule> =
         sections[0]

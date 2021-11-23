@@ -1,11 +1,11 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
 import fr.outadoc.aoc.scaffold.max
 import fr.outadoc.aoc.scaffold.min
+import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day10 : Day(Year.TwentyTwenty) {
+class Day10 : Day {
 
     companion object {
         const val OUTLET_JOLTS = 0L

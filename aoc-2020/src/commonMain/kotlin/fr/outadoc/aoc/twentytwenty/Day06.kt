@@ -1,12 +1,11 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day06 : Day(Year.TwentyTwenty) {
+class Day06 : Day {
 
-    private val input: List<Group> =
-        readDayInput().parse()
+    private val input: List<Group> = readDayInput().parse()
 
     data class Person(val yesAnswers: Set<Char>)
 

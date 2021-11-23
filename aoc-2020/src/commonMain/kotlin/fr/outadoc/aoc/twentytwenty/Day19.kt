@@ -1,12 +1,11 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day19 : Day(Year.TwentyTwenty) {
+class Day19 : Day {
 
-    private val sections: List<String> =
-        readDayInput().split("\n\n")
+    private val sections: List<String> = readDayInput().split("\n\n")
 
     private val step1Rules: Map<Int, String> =
         sections[0]

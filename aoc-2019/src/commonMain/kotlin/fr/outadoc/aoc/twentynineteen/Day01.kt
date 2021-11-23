@@ -1,10 +1,10 @@
 package fr.outadoc.aoc.twentynineteen
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 import kotlin.math.floor
 
-class Day01 : Day(Year.TwentyNineteen) {
+class Day01 : Day {
 
     private val masses: Sequence<Double> =
         readDayInput()

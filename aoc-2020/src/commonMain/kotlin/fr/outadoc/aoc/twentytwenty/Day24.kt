@@ -1,9 +1,9 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day24 : Day(Year.TwentyTwenty) {
+class Day24 : Day {
 
     private enum class Color { WHITE, BLACK }
 

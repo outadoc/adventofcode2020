@@ -1,15 +1,15 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day03 : Day(Year.TwentyTwenty) {
+class Day03 : Day {
 
     private val map: Array<CharArray> =
         readDayInput()
-        .lines()
-        .map { line -> line.toCharArray() }
-        .toTypedArray()
+            .lines()
+            .map { line -> line.toCharArray() }
+            .toTypedArray()
 
     private val Array<CharArray>.height: Int
         get() = size

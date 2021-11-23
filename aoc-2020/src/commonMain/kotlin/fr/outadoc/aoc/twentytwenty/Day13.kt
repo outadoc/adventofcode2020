@@ -1,12 +1,11 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day13 : Day(Year.TwentyTwenty) {
+class Day13 : Day {
 
-    private val input: List<String> =
-        readDayInput().lines()
+    private val input: List<String> = readDayInput().lines()
 
     private val earliestDepartureTime: Long =
         input.first().toLong()

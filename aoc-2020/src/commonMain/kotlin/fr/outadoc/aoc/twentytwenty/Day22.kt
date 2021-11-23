@@ -1,9 +1,9 @@
 package fr.outadoc.aoc.twentytwenty
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.Year
+import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day22 : Day(Year.TwentyTwenty) {
+class Day22 : Day {
 
     private data class Player(val name: String, val deck: List<Int>)
     private data class Round(val players: List<Player>)
