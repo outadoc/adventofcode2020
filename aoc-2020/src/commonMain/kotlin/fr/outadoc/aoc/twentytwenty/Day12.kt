@@ -4,7 +4,7 @@ import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 import kotlin.math.*
 
-class Day12 : Day {
+class Day12 : Day<Long> {
 
     private sealed class Action {
         data class Add(val direction: Direction, val units: Int) : Action()
@@ -107,7 +107,7 @@ class Day12 : Day {
         is Action.MoveForward -> copy(shipPosition = shipPosition + (waypointRelPos * action.units))
     }
 
-    fun step1(): Long {
+    override fun step1(): Long {
         val initialState = State1(
             shipPosition = Position(x = 0, y = 0),
             currentDirection = Direction.EAST
@@ -120,7 +120,7 @@ class Day12 : Day {
         return finalState.shipPosition.manhattanDistance
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         val initialState = State2(
             shipPosition = Position(x = 0, y = 0),
             waypointRelPos = Position(x = 10, y = 1)
@@ -132,4 +132,7 @@ class Day12 : Day {
 
         return finalState.shipPosition.manhattanDistance
     }
+
+    override val expectedStep1: Long = 1294
+    override val expectedStep2: Long = 20592
 }

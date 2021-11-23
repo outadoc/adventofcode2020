@@ -5,7 +5,7 @@ import fr.outadoc.aoc.scaffold.max
 import fr.outadoc.aoc.scaffold.min
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day10 : Day {
+class Day10 : Day<Long> {
 
     companion object {
         const val OUTLET_JOLTS = 0L
@@ -53,13 +53,13 @@ class Day10 : Day {
         return windowed(size = 2).count { it[1] - it[0] == n }
     }
 
-    fun step1(): Int {
-        return makeAdapterChain(adapterList).run {
-            countDifferences(1) * countDifferences(3)
-        }
+    override fun step1(): Long {
+        return makeAdapterChain(adapterList)
+            .run { countDifferences(1) * countDifferences(3) }
+            .toLong()
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         val initial = mapOf(
             OUTLET_JOLTS to 1L
         )
@@ -82,4 +82,7 @@ class Day10 : Day {
         // value in the map contains the number of possible chains.
         return res.getValue(builtInAdapterJolts)
     }
+
+    override val expectedStep1: Long = 1885
+    override val expectedStep2: Long = 2024782584832
 }

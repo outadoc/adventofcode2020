@@ -4,7 +4,7 @@ import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.max
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day23 : Day {
+class Day23 : Day<Long> {
 
     /**
      * @param cups map of cup value to next cup value in the cyclic list
@@ -79,18 +79,21 @@ class Day23 : Day {
         return cups.toList(startingCup = 1).joinToString(separator = "")
     }
 
-    fun step1(): Long {
+    override fun step1(): Long {
         return step1State
             .nthIteration(100)
             .toStateString()
             .toLong()
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         return step2State
             .nthIteration(10_000_000)
             .cups.toList(startingCup = 1)
             .take(2)
             .fold(1L) { acc, cup -> acc * cup.toLong() }
     }
+
+    override val expectedStep1: Long = 53248976
+    override val expectedStep2: Long = 418819514477
 }

@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day19 : Day {
+class Day19 : Day<Int> {
 
     private val sections: List<String> = readDayInput().split("\n\n")
 
@@ -65,17 +65,20 @@ class Day19 : Day {
         return Regex(pattern = "^$pattern$")
     }
 
-    fun step1(): Int {
+    override fun step1(): Int {
         val rule0 = step1Rules.getRule(0)
         return messages.count { message ->
             rule0.matches(message)
         }
     }
 
-    fun step2(): Int {
+    override fun step2(): Int {
         val rule0 = step2Rules.getRule(0)
         return messages.count { message ->
             rule0.matches(message)
         }
     }
+
+    override val expectedStep1: Int = 160
+    override val expectedStep2: Int = 357
 }

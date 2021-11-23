@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day25 : Day {
+class Day25 : Day<Long> {
 
     companion object {
         private const val IV = 20201227
@@ -34,8 +34,13 @@ class Day25 : Day {
         return loopSize - 1
     }
 
-    fun step1(): Long {
+    override fun step1(): Long {
         val cardLoopSize = findLoopSizeForPublicKey(subject = 7, publicKey = cardPublicKey)
         return transform(subject = doorPublicKey, loopSize = cardLoopSize)
     }
+
+    override fun step2(): Long = 0
+
+    override val expectedStep1: Long = 6198540
+    override val expectedStep2: Long = 0
 }

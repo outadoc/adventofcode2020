@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day11 : Day {
+class Day11 : Day<Int> {
 
     companion object {
         private const val SEAT_EMPTY = 'L'
@@ -126,11 +126,14 @@ class Day11 : Day {
         }
     }
 
-    fun step1() = initialState
+    override fun step1() = initialState
         .findFinalState(minOccupiedSeatsToBecomeEmpty = 4, maxDistance = 1)
         .countOccupiedSeats()
 
-    fun step2() = initialState
+    override fun step2() = initialState
         .findFinalState(minOccupiedSeatsToBecomeEmpty = 5, maxDistance = Int.MAX_VALUE)
         .countOccupiedSeats()
+
+    override val expectedStep1: Int = 2324
+    override val expectedStep2: Int = 2068
 }

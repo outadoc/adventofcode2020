@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day08 : Day {
+class Day08 : Day<Long> {
 
     private data class Instruction(val op: Operation, val arg: Int)
 
@@ -74,7 +74,7 @@ class Day08 : Day {
         }
     }
 
-    fun step1(): Long {
+    override fun step1(): Long {
         try {
             CPU(program).execute()
         } catch (e: InfiniteLoopException) {
@@ -84,7 +84,7 @@ class Day08 : Day {
         throw IllegalStateException("this should always throw an exception")
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         for (insToPatch in program) {
             val patch = program.map { currentIns ->
                 // Check if this is the instruction we want to patch (by reference)
@@ -107,4 +107,7 @@ class Day08 : Day {
 
         throw IllegalStateException("the program should return before this")
     }
+
+    override val expectedStep1: Long = 1528
+    override val expectedStep2: Long = 640
 }

@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day20 : Day {
+class Day20 : Day<Long> {
 
     companion object {
         private const val PRINT_DEBUG = false
@@ -289,7 +289,7 @@ class Day20 : Day {
         }
     }
 
-    fun step1(): Long {
+    override fun step1(): Long {
         return initialState
             .complete()
             .also { finalState ->
@@ -308,7 +308,7 @@ class Day20 : Day {
             }
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         return initialState
             .complete()
             .also { finalState ->
@@ -324,4 +324,7 @@ class Day20 : Day {
                 }
             }.getWaterRoughness()
     }
+
+    override val expectedStep1: Long = 14986175499719
+    override val expectedStep2: Long = 2161
 }

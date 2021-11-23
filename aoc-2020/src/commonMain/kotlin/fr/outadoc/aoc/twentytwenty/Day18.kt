@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day18 : Day {
+class Day18 : Day<Long> {
 
     private sealed class Expression {
         data class Addition(val a: Expression, val b: Expression) : Expression() {
@@ -107,17 +107,20 @@ class Day18 : Day {
         }
     }
 
-    fun step1(): Long {
+    override fun step1(): Long {
         return input.sumOf { expression ->
             expression.parse().solve()
         }
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         return input.sumOf { expression ->
             expression.parse()
                 .prioritizeAddition()
                 .solve()
         }
     }
+
+    override val expectedStep1: Long = 209335026987
+    override val expectedStep2: Long = 33331817392479
 }

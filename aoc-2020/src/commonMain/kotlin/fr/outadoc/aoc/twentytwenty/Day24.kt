@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day24 : Day {
+class Day24 : Day<Int> {
 
     private enum class Color { WHITE, BLACK }
 
@@ -133,7 +133,7 @@ class Day24 : Day {
         )
     }
 
-    fun step1(): Int {
+    override fun step1(): Int {
         return tilesToFlipOver
             .fold(State()) { acc, path ->
                 acc.addPath(path)
@@ -141,7 +141,7 @@ class Day24 : Day {
             .countBlackTiles()
     }
 
-    fun step2(): Int {
+    override fun step2(): Int {
         return tilesToFlipOver
             .fold(State()) { acc, path ->
                 acc.addPath(path)
@@ -150,4 +150,7 @@ class Day24 : Day {
             .nthIteration(100)
             .countBlackTiles()
     }
+
+    override val expectedStep1: Int = 488
+    override val expectedStep2: Int = 4118
 }

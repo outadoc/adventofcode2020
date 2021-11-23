@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day07 : Day {
+class Day07 : Day<Long> {
 
     private val containerRegex = Regex("^([a-z ]+) bags contain .+$")
     private val contentsRegex = Regex(" ([0-9]+) ([a-z ]+) bags?[,.]")
@@ -67,13 +67,16 @@ class Day07 : Day {
         }
     }
 
-    fun step1(): Int {
+    override fun step1(): Long {
         val target = bagByColor("shiny gold")
-        return bags.values.count { bag -> bag.contains(target) }
+        return bags.values.count { bag -> bag.contains(target) }.toLong()
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         val target = bagByColor("shiny gold")
         return target.size - 1
     }
+
+    override val expectedStep1: Long = 332
+    override val expectedStep2: Long = 10875
 }

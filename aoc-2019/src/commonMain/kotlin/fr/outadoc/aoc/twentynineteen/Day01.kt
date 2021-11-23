@@ -4,7 +4,7 @@ import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 import kotlin.math.floor
 
-class Day01 : Day {
+class Day01 : Day<Long> {
 
     private val masses: Sequence<Double> =
         readDayInput()
@@ -15,7 +15,7 @@ class Day01 : Day {
 
     private fun fuelNeededForMass(mass: Double) = floor(mass / 3) - 2
 
-    fun step1(): Long = masses
+    override fun step1(): Long = masses
         .map { mass -> fuelNeededForMass(mass) }
         .sum()
         .toLong()
@@ -30,10 +30,13 @@ class Day01 : Day {
         return fuelNeeded + fuelNeededForMassAndFuel(fuelNeeded)
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         return masses
             .map { mass -> fuelNeededForMassAndFuel(mass) }
             .sum()
             .toLong()
     }
+
+    override val expectedStep1: Long = 3512133
+    override val expectedStep2: Long = 5265294
 }

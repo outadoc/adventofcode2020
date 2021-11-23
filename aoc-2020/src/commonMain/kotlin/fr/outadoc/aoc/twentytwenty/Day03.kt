@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day03 : Day {
+class Day03 : Day<Long> {
 
     private val map: Array<CharArray> =
         readDayInput()
@@ -41,12 +41,12 @@ class Day03 : Day {
         return treeCount
     }
 
-    fun step1(): Long {
+    override fun step1(): Long {
         val slope = 3 to 1
         return map.getNumberOfTreesOnSlope(slope)
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         val slopes = listOf(
             1 to 1,
             3 to 1,
@@ -59,4 +59,7 @@ class Day03 : Day {
             acc * map.getNumberOfTreesOnSlope(slope)
         }
     }
+
+    override val expectedStep1: Long = 276
+    override val expectedStep2: Long = 7812180000
 }

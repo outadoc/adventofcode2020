@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day21 : Day {
+class Day21 : Day<String> {
 
     private data class Food(val ingredients: List<String>, val allergens: List<String>)
 
@@ -43,13 +43,14 @@ class Day21 : Day {
         val possibleAllergensPerIngredient: Map<String, Set<String>> = emptyMap()
     )
 
-    fun step1(): Long {
+    override fun step1(): String {
         return initialState.possibleAllergensPerIngredient
             .filterValues { allergens -> allergens.isEmpty() }
             .map { (ingredient, _) -> ingredient }
             .sumOf { ingredient ->
                 foodz.count { food -> ingredient in food.ingredients }
-            }.toLong()
+            }
+            .toString()
     }
 
     private tailrec fun State.findFinalState(): State {
@@ -74,7 +75,7 @@ class Day21 : Day {
         return next.findFinalState()
     }
 
-    fun step2(): String {
+    override fun step2(): String {
         return initialState
             .findFinalState()
             .possibleAllergensPerIngredient
@@ -82,4 +83,7 @@ class Day21 : Day {
             .sortedBy { (_, allergen) -> allergen }
             .joinToString(separator = ",") { (ingredient, _) -> ingredient }
     }
+
+    override val expectedStep1: String = "2573"
+    override val expectedStep2: String = "bjpkhx,nsnqf,snhph,zmfqpn,qrbnjtj,dbhfd,thn,sthnsg"
 }

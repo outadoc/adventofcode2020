@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day02 : Day {
+class Day02 : Day<Int> {
 
     private val input: Sequence<PasswordEntry> =
         readDayInput()
@@ -28,7 +28,7 @@ class Day02 : Day {
         }
     }
 
-    fun step1(): Int {
+    override fun step1(): Int {
         fun isValid(entry: PasswordEntry): Boolean {
             val letterCount = entry.password.count { c -> c == entry.policy.letter }
             return letterCount in entry.policy.first..entry.policy.second
@@ -37,7 +37,7 @@ class Day02 : Day {
         return input.count { entry -> isValid(entry) }
     }
 
-    fun step2(): Int {
+    override fun step2(): Int {
         fun isValid(entry: PasswordEntry): Boolean {
             val isFirstLetterOk = entry.password[entry.policy.first - 1] == entry.policy.letter
             val isSecondLetterOk = entry.password[entry.policy.second - 1] == entry.policy.letter
@@ -46,4 +46,7 @@ class Day02 : Day {
 
         return input.count { entry -> isValid(entry) }
     }
+
+    override val expectedStep1: Int = 591
+    override val expectedStep2: Int = 335
 }

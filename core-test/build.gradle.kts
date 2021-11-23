@@ -23,6 +23,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":core"))
+                implementation(kotlin("test-common"))
             }
         }
 
@@ -38,21 +39,13 @@ kotlin {
             dependsOn(posixMain)
         }
 
-        val commonTest by getting {
-            dependencies {
-                implementation(project(":core-test"))
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-            }
-        }
-
-        val jvmTest by getting {
+        val jvmMain by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
             }
         }
 
-        val jsTest by getting {
+        val jsMain by getting {
             dependencies {
                 implementation(kotlin("test-js"))
             }

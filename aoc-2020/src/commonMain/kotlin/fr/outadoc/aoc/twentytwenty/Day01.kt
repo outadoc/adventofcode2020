@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day01 : Day {
+class Day01 : Day<Int> {
 
     private val input: IntArray =
         readDayInput()
@@ -35,11 +35,14 @@ class Day01 : Day {
         return null
     }
 
-    fun step1(): Int {
+    override fun step1(): Int {
         return input.sortedArray().findTwoSum(2020)!!
     }
 
-    fun step2(): Int {
+    override fun step2(): Int {
         return input.sortedArray().findThreeSum(2020)!!
     }
+
+    override val expectedStep1: Int = 786811
+    override val expectedStep2: Int = 199068980
 }

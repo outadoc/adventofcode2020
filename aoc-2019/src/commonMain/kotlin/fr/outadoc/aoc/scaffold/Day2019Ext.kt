@@ -1,3 +1,3 @@
 package fr.outadoc.aoc.scaffold
 
-internal fun <T : Day> T.readDayInput() = readDayInput(year = "2019")
+internal fun <T, U : Day<T>> U.readDayInput() = readDayInput(year = "2019")

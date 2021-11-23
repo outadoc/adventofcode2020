@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day22 : Day {
+class Day22 : Day<Long> {
 
     private data class Player(val name: String, val deck: List<Int>)
     private data class Round(val players: List<Player>)
@@ -98,11 +98,14 @@ class Day22 : Day {
         println()
     }
 
-    fun step1(): Long {
+    override fun step1(): Long {
         return RoundResult(round = initialRound).findGameResult().winner!!.score
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         return RoundResult(round = initialRound).findRecursiveGameResult().winner!!.score
     }
+
+    override val expectedStep1: Long = 32598
+    override val expectedStep2: Long = 35836
 }

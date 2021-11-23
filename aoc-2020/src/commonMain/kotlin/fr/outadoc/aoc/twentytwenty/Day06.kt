@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day06 : Day {
+class Day06 : Day<Int> {
 
     private val input: List<Group> = readDayInput().parse()
 
@@ -29,15 +29,18 @@ class Day06 : Day {
         }
     }
 
-    fun step1(): Int {
+    override fun step1(): Int {
         return input.sumOf { group ->
             group.answeredYesByAnyone.size
         }
     }
 
-    fun step2(): Int {
+    override fun step2(): Int {
         return input.sumOf { group ->
             group.answeredYesByEverybody.size
         }
     }
+
+    override val expectedStep1: Int = 6273
+    override val expectedStep2: Int = 3254
 }

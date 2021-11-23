@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day16 : Day {
+class Day16 : Day<Long> {
 
     companion object {
         private val ruleRegex = Regex("^([a-z ]+): ([0-9]+)-([0-9]+) or ([0-9]+)-([0-9]+)$")
@@ -95,7 +95,7 @@ class Day16 : Day {
         )
     }
 
-    fun step1(): Long {
+    override fun step1(): Long {
         return nearbyTickets.flatMap { ticket ->
             ticket.filterNot { value ->
                 // Filter out all valid values
@@ -104,10 +104,13 @@ class Day16 : Day {
         }.sum()
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         return myTicket.parseTicket()
             .fields
             .filter { field -> field.name.startsWith("departure") }
             .fold(1) { acc, field -> acc * field.value }
     }
+
+    override val expectedStep1: Long = 20231
+    override val expectedStep2: Long = 1940065747861
 }

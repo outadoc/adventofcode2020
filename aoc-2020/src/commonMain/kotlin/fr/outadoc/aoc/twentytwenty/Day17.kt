@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day17 : Day {
+class Day17 : Day<Int> {
 
     companion object {
         private const val PRINT_DEBUG = false
@@ -136,15 +136,18 @@ class Day17 : Day {
     private val initialState: Dimension =
         Dimension(activeCubes = initialLayer)
 
-    fun step1(): Int {
+    override fun step1(): Int {
         return initialState
             .nthIteration(dimensionCount = 3, n = 6)
             .activeCubes.size
     }
 
-    fun step2(): Int {
+    override fun step2(): Int {
         return initialState
             .nthIteration(dimensionCount = 4, n = 6)
             .activeCubes.size
     }
+
+    override val expectedStep1: Int = 237
+    override val expectedStep2: Int = 2448
 }

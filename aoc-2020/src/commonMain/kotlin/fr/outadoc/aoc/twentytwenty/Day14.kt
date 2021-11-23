@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day14 : Day {
+class Day14 : Day<Long> {
 
     companion object {
         private val maskRegex = Regex("^mask = ([01X]+)$")
@@ -84,17 +84,20 @@ class Day14 : Day {
         })
     }
 
-    fun step1(): Long {
+    override fun step1(): Long {
         return actions
             .fold(State()) { acc, action -> acc.reduceV1(action) }
             .memory.values
             .sum()
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         return actions
             .fold(State()) { acc, action -> acc.reduceV2(action) }
             .memory.values
             .sum()
     }
+
+    override val expectedStep1: Long = 13556564111697
+    override val expectedStep2: Long = 4173715962894
 }

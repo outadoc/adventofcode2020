@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day13 : Day {
+class Day13 : Day<Long> {
 
     private val input: List<String> = readDayInput().lines()
 
@@ -33,7 +33,7 @@ class Day13 : Day {
     private fun Bus.doesBusPassAtTimestamp(timestamp: Long): Boolean =
         (timestamp + index) % id == 0L
 
-    fun step1(): Long {
+    override fun step1(): Long {
         val (nextBus, waitTime) = buses
             .map { bus -> bus to bus.getTimeUntilNextDeparture(earliestDepartureTime) }
             .minByOrNull { it.second }!!
@@ -41,7 +41,7 @@ class Day13 : Day {
         return nextBus.id * waitTime
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         val head = buses.first()
         return buses
             .drop(1)
@@ -54,4 +54,7 @@ class Day13 : Day {
             }
             .first
     }
+
+    override val expectedStep1: Long = 1895
+    override val expectedStep2: Long = 840493039281088
 }

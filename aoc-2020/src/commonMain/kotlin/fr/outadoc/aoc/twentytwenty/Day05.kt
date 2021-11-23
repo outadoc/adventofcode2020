@@ -4,7 +4,7 @@ import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 import kotlin.math.pow
 
-class Day05 : Day {
+class Day05 : Day<Int> {
 
     private val registeredSeats: List<Seat> =
         readDayInput()
@@ -60,11 +60,11 @@ class Day05 : Day {
         return getPositionFromCode(code.drop(1), newMin, newMax)
     }
 
-    fun step1(): Int {
+    override fun step1(): Int {
         return registeredSeats.maxOf { it.id }
     }
 
-    fun step2(): Int {
+    override fun step2(): Int {
         val allSeats = (0 until rowCount).map { row ->
             (0 until columnCount).map { col ->
                 Seat(row, col)
@@ -82,4 +82,7 @@ class Day05 : Day {
 
         return notRegistered.first().id
     }
+
+    override val expectedStep1: Int = 915
+    override val expectedStep2: Int = 699
 }

@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day04 : Day {
+class Day04 : Day<Int> {
 
     companion object {
         private val knownProperties = listOf("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid")
@@ -63,15 +63,18 @@ class Day04 : Day {
             }
         }
 
-    fun step1(): Int {
+    override fun step1(): Int {
         return input.count { candidate ->
             candidate.checkPropertiesPresent
         }
     }
 
-    fun step2(): Int {
+    override fun step2(): Int {
         return input.count { candidate ->
             candidate.checkPropertiesPresent && candidate.checkPropertiesValid
         }
     }
+
+    override val expectedStep1: Int = 260
+    override val expectedStep2: Int = 153
 }

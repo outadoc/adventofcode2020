@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentytwenty
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day15 : Day {
+class Day15 : Day<Long> {
 
     private val startingNumbers: List<Long> =
         readDayInput()
@@ -35,7 +35,9 @@ class Day15 : Day {
     private fun elementAt(pos: Int): Long =
         numberSequence.elementAt(pos - 1)
 
-    fun step1(): Long = elementAt(2020)
+    override fun step1(): Long = elementAt(2020)
+    override fun step2(): Long = elementAt(30000000)
 
-    fun step2(): Long = elementAt(30000000)
+    override val expectedStep1: Long = 1280
+    override val expectedStep2: Long = 651639
 }

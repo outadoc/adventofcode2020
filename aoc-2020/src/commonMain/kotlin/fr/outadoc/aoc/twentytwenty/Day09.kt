@@ -5,7 +5,7 @@ import fr.outadoc.aoc.scaffold.max
 import fr.outadoc.aoc.scaffold.min
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day09 : Day {
+class Day09 : Day<Long> {
 
     companion object {
         const val PREAMBLE_LENGTH = 25
@@ -42,7 +42,7 @@ class Day09 : Day {
         }
     }
 
-    fun step1(): Long {
+    override fun step1(): Long {
         return input
             .toList()
             // Reverse so that `windowed` takes the previous 25 instead of the next
@@ -54,7 +54,7 @@ class Day09 : Day {
             .first { chunk -> !checkSum(chunk) }.first()
     }
 
-    fun step2(): Long {
+    override fun step2(): Long {
         val n = 22477624L
 
         val interval = input
@@ -66,4 +66,7 @@ class Day09 : Day {
             res.min() + res.max()
         }
     }
+
+    override val expectedStep1: Long = 22477624
+    override val expectedStep2: Long = 2980044
 }

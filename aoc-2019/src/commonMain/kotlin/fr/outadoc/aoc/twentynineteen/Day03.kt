@@ -5,7 +5,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class Day03 : Day {
+class Day03 : Day<Int> {
 
     private val input: List<String> =
         readDayInput().lines()
@@ -182,7 +182,7 @@ class Day03 : Day {
         return Wire(segments)
     }
 
-    fun step1(): Int {
+    override fun step1(): Int {
         val c = Circuit(input.map { parseWire(it) })
         val intersect = c.findIntersectionsFast()
 

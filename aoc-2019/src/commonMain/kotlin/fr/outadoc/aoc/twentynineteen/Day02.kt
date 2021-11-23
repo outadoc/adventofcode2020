@@ -3,7 +3,7 @@ package fr.outadoc.aoc.twentynineteen
 import fr.outadoc.aoc.scaffold.Day
 import fr.outadoc.aoc.scaffold.readDayInput
 
-class Day02 : Day {
+class Day02 : Day<Int> {
 
     private val program: IntArray =
         readDayInput()
@@ -50,11 +50,11 @@ class Day02 : Day {
         return output[0]
     }
 
-    fun step1(): Int {
+    override fun step1(): Int {
         return run(program).first()
     }
 
-    fun step2(): Int {
+    override fun step2(): Int {
         val wanted = 19690720
 
         for (noun in 0..99) {
@@ -68,4 +68,7 @@ class Day02 : Day {
 
         return -1
     }
+
+    override val expectedStep1: Int = 4330636
+    override val expectedStep2: Int = 60086
 }
