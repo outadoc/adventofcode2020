@@ -8,5 +8,6 @@ pluginManagement {
 
 include(":core")
 include(":core-test")
-include("aoc-2019")
-include("aoc-2020")
+include(":aoc-yyyy")
+include(":aoc-2019")
+include(":aoc-2020")

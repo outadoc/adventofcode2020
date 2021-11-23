@@ -1,6 +1,9 @@
 package fr.outadoc.aoc.twentynineteen
 
-import fr.outadoc.aoc.scaffold.*
+import fr.outadoc.aoc.scaffold.Day
+import fr.outadoc.aoc.scaffold.max
+import fr.outadoc.aoc.scaffold.min
+import fr.outadoc.aoc.scaffold.readDayInput
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -192,4 +195,9 @@ class Day03 : Day<Int> {
 
         return intersect.map { p -> p.distance(Point(0, 0)) }.min()
     }
+
+    override fun step2(): Int = -1
+
+    override val expectedStep1: Int = -1
+    override val expectedStep2: Int = -1
 }
