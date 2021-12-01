@@ -1,14 +1,6 @@
 package fr.outadoc.aoc.twentytwentyone
 
 import fr.outadoc.aoc.scaffold.Day
-import fr.outadoc.aoc.scaffold.readDayInput
 import kotlin.math.*
 
-class Day12 : Day<Int> {
-
-    override fun step1(): Int = -1
-    override fun step2(): Int = -1
-
-    override val expectedStep1: Int = -1
-    override val expectedStep2: Int = -1
-}
+class Day12 : Day<Int>
