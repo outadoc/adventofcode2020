@@ -17,8 +17,8 @@ jobs:
     steps:
       - uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
-          java-version: '16'
+          distribution: 'temurin'
+          java-version: '17'
 
       - uses: actions/checkout@v2
 
