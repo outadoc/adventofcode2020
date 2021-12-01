@@ -20,6 +20,6 @@ class Day01 : Day<Int> {
 
     override fun step2(): Int = -1
 
-    override val expectedStep1: Int = -1
+    override val expectedStep1: Int = 1451
     override val expectedStep2: Int = -1
 }
