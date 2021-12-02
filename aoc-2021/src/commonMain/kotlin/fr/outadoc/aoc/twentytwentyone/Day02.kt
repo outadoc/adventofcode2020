@@ -18,14 +18,11 @@ class Day02 : Day<Int> {
     }
 
     private fun String.parse(): Action {
-        val parts = split(' ')
-        val action = parts[0]
-        val params = parts.drop(1).map { it.toInt() }
-
+        val (action, param) = split(' ')
         return when (action) {
-            "up" -> Action.Up(count = params[0])
-            "down" -> Action.Down(count = params[0])
-            "forward" -> Action.Forward(count = params[0])
+            "up" -> Action.Up(count = param.toInt())
+            "down" -> Action.Down(count = param.toInt())
+            "forward" -> Action.Forward(count = param.toInt())
             else -> throw IllegalArgumentException("unknown action $action")
         }
     }

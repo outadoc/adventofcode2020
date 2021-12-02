@@ -11,7 +11,6 @@ class Day01 : Day<Int> {
 
     override fun step1() = input
         .windowed(size = 2, step = 1)
-        .map { it[0] to it[1] }
         .fold(0) { acc, (prev, current) ->
             if (current > prev) acc + 1 else acc
         }
@@ -20,11 +19,10 @@ class Day01 : Day<Int> {
         .windowed(size = 3, step = 1)
         .map { it.sum() }
         .windowed(size = 2, step = 1)
-        .map { it[0] to it[1] }
         .fold(0) { acc, (prev, current) ->
             if (current > prev) acc + 1 else acc
         }
 
-    override val expectedStep1: Int = 1451
-    override val expectedStep2: Int = 1395
+    override val expectedStep1 = 1451
+    override val expectedStep2 = 1395
 }
