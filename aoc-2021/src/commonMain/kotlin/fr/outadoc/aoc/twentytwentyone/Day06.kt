@@ -40,6 +40,6 @@ class Day06 : Day<Long> {
     override fun step1() = initialState.reduceUntil(day = 80).totalFishCount
     override fun step2() = initialState.reduceUntil(day = 256).totalFishCount
 
-    override val expectedStep1 = 380612L
-    override val expectedStep2 = 1710166656900L
+    override val expectedStep1 = 380_612L
+    override val expectedStep2 = 1_710_166_656_900L
 }
