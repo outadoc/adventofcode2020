@@ -1,6 +1,7 @@
 package fr.outadoc.aoc.twentytwentyone
 
 import fr.outadoc.aoc.scaffold.Day
+import fr.outadoc.aoc.scaffold.median
 import fr.outadoc.aoc.scaffold.readDayInput
 import kotlin.math.abs
 
@@ -10,8 +11,6 @@ class Day07 : Day<Int> {
         .split(',')
         .map { it.toInt() }
         .sorted()
-
-    private fun List<Int>.median() = (this[size / 2] + this[(size - 1) / 2]) / 2
 
     override fun step1(): Int {
         val targetPos = input.median()
