@@ -41,7 +41,6 @@ class Day10 : Day<Long> {
             acc + c.matchingClosing
         }
 
-        println("$this was missing $missing")
 
         return this + missing
     }
