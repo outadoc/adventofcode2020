@@ -18,8 +18,6 @@ class Day11 : Day<Int> {
             }
         }.toSet()
 
-    private operator fun List<List<Int>>.get(pos: Position): Int? = getOrNull(pos.y)?.getOrNull(pos.x)
-
     private val List<List<Int>>.flashingOctopusCount: Int
         get() = sumOf { line -> line.count { it == 0 } }
 
