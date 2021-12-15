@@ -17,15 +17,12 @@ class Day15 : Day<Int> {
             other as Node
 
             if (position != other.position) return false
-            if (risk != other.risk) return false
 
             return true
         }
 
         override fun hashCode(): Int {
-            var result = position.hashCode()
-            result = 31 * result + risk
-            return result
+            return position.hashCode()
         }
 
         override fun toString(): String =
@@ -129,8 +126,36 @@ class Day15 : Day<Int> {
         return findDestination(listOf(parent) + acc, tentativeRisks)
     }
 
+    private fun List<List<Int>>.expand(times: Int): List<List<Int>> {
+        return (0 until times).flatMap { i ->
+            map { line ->
+                (0 until times).flatMap { j ->
+                    line.map { c ->
+                        val inc = c + i + j
+                        if (inc > 9) inc % 10 + 1
+                        else inc
+                    }
+                }
+            }
+        }
+    }
+
     override fun step1(): Int {
         val nodes = riskMap.toNodes()
+
+        val shortestPath = dijkstra(
+            currentNode = nodes.findStart(),
+            destination = nodes.findDestination(),
+            unvisitedNodes = nodes
+        )
+
+        return shortestPath
+            .drop(1)
+            .sumOf { node -> node.risk }
+    }
+
+    override fun step2(): Int {
+        val nodes = riskMap.expand(times = 5).toNodes()
 
         val shortestPath = dijkstra(
             currentNode = nodes.findStart(),
