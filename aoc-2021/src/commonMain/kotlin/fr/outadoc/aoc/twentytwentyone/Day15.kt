@@ -89,7 +89,7 @@ class Day15 : Day<Int> {
 
     private val nodes: Set<Node> = buildNodes()
 
-    private fun dijkstra(
+    private tailrec fun dijkstra(
         currentNode: Node,
         destination: Node,
         unvisitedNodes: Set<Node>,
@@ -144,4 +144,6 @@ class Day15 : Day<Int> {
 
         return shortestPath.drop(1).sumOf { node -> node.risk }
     }
+
+    override val expectedStep1 = 656
 }
