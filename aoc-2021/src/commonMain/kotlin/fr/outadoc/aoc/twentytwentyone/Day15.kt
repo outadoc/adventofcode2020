@@ -91,10 +91,11 @@ class Day15 : Day<Int> {
         unvisitedNodes: Set<Node>,
         tentativeRisks: Map<Node, Pair<Node?, Int>> = mapOf(currentNode to (null to 0))
     ): List<Node> {
+        val nextUnvisitedNodes = unvisitedNodes - currentNode
         val currentNodeRisk = tentativeRisks.getOrElse(currentNode) { null to Int.MAX_VALUE }.second
 
         val currentNeighborRisks = currentNode.neighbors
-            .filter { neighbor -> neighbor in unvisitedNodes }
+            .filter { neighbor -> neighbor in nextUnvisitedNodes }
             .associateWith { neighbor ->
                 val existingRisk = tentativeRisks.getOrElse(neighbor) { null to Int.MAX_VALUE }
                 val newRisk = currentNodeRisk + neighbor.risk
@@ -104,7 +105,7 @@ class Day15 : Day<Int> {
 
         val nextRisks = tentativeRisks + currentNeighborRisks
         val nextNode = nextRisks
-            .filterKeys { node -> node in unvisitedNodes }
+            .filterKeys { node -> node in nextUnvisitedNodes }
             .minByOrNull { (_, risk) -> risk.second }!!.key
 
         if (nextNode == destination) {
@@ -114,7 +115,7 @@ class Day15 : Day<Int> {
         return dijkstra(
             currentNode = nextNode,
             destination = destination,
-            unvisitedNodes = unvisitedNodes - currentNode,
+            unvisitedNodes = nextUnvisitedNodes,
             tentativeRisks = nextRisks
         )
     }
@@ -131,16 +132,15 @@ class Day15 : Day<Int> {
     override fun step1(): Int {
         val nodes = riskMap.toNodes()
 
-        val startNode = nodes.findStart()
-        val destinationNode = nodes.findDestination()
-
         val shortestPath = dijkstra(
-            currentNode = startNode,
-            destination = destinationNode,
-            unvisitedNodes = nodes - startNode
+            currentNode = nodes.findStart(),
+            destination = nodes.findDestination(),
+            unvisitedNodes = nodes
         )
 
-        return shortestPath.drop(1).sumOf { node -> node.risk }
+        return shortestPath
+            .drop(1)
+            .sumOf { node -> node.risk }
     }
 
     override val expectedStep1 = 656
