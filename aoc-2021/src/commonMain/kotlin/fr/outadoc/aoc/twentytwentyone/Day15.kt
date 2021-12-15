@@ -51,27 +51,25 @@ class Day15 : Day<Int> {
                 }
             }
 
-    private val height = riskMap.size
-    private val width = riskMap.first().size
+    private fun Set<Node>.findStart(): Node =
+        first { it.position == Position(x = 0, y = 0) }
 
-    private val Node.isStart: Boolean
-        get() = position == Position(x = 0, y = 0)
+    private fun Set<Node>.findDestination(): Node {
+        val xMax = maxOf { it.position.x }
+        val yMax = maxOf { it.position.y }
+        return first { it.position == Position(x = xMax, y = yMax) }
+    }
 
-    private val Node.isEnd: Boolean
-        get() = position == Position(x = width - 1, y = height - 1)
-
-    private fun buildNodes(): Set<Node> {
-        val nodes = riskMap
-            .flatMapIndexed { y, line ->
-                line.mapIndexed { x, risk ->
-                    Node(
-                        position = Position(x = x, y = y),
-                        risk = risk,
-                        neighbors = mutableSetOf()
-                    )
-                }
+    private fun List<List<Int>>.toNodes(): Set<Node> {
+        val nodes = flatMapIndexed { y, line ->
+            line.mapIndexed { x, risk ->
+                Node(
+                    position = Position(x = x, y = y),
+                    risk = risk,
+                    neighbors = mutableSetOf()
+                )
             }
-            .toSet()
+        }.toSet()
 
         return nodes.onEach { node ->
             node.neighbors.addAll(
@@ -86,8 +84,6 @@ class Day15 : Day<Int> {
 
     private fun Set<Node>.getNodeByPos(position: Position): Node? =
         firstOrNull { node -> node.position == position }
-
-    private val nodes: Set<Node> = buildNodes()
 
     private tailrec fun dijkstra(
         currentNode: Node,
@@ -133,8 +129,10 @@ class Day15 : Day<Int> {
     }
 
     override fun step1(): Int {
-        val startNode = nodes.first { it.isStart }
-        val destinationNode = nodes.first { it.isEnd }
+        val nodes = riskMap.toNodes()
+
+        val startNode = nodes.findStart()
+        val destinationNode = nodes.findDestination()
 
         val shortestPath = dijkstra(
             currentNode = startNode,
