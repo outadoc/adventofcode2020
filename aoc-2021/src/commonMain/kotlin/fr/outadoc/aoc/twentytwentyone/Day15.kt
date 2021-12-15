@@ -120,7 +120,7 @@ class Day15 : Day<Int> {
         )
     }
 
-    private fun findDestination(
+    private tailrec fun findDestination(
         acc: List<Node>,
         tentativeRisks: Map<Node, Pair<Node?, Int>>
     ): List<Node> {
