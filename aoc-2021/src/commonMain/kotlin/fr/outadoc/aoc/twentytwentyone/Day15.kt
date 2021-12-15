@@ -29,7 +29,7 @@ class Day15 : Day<Int> {
         }
 
         override fun toString(): String =
-            "Node(position=$position, risk=$risk, neighbors=[${neighbors.joinToString { position.toString() }}])"
+            "Node(position=$position, risk=$risk, neighbors=[${neighbors.joinToString { it.position.toString() }}])"
     }
 
     private data class Position(val x: Int, val y: Int)
@@ -75,21 +75,73 @@ class Day15 : Day<Int> {
 
         return nodes.onEach { node ->
             node.neighbors.addAll(
-                node.position.surrounding.mapNotNull { neighborPos ->
-                    nodes.firstOrNull { neighbor ->
-                        neighbor.position == neighborPos
+                node.position
+                    .surrounding
+                    .mapNotNull { neighborPos ->
+                        nodes.getNodeByPos(neighborPos)
                     }
-                }
             )
         }
     }
 
+    private fun Set<Node>.getNodeByPos(position: Position): Node? =
+        firstOrNull { node -> node.position == position }
+
     private val nodes: Set<Node> = buildNodes()
 
-    override fun step1(): Int {
-        nodes.forEach { node ->
-            println(node)
+    private fun dijkstra(
+        currentNode: Node,
+        destination: Node,
+        unvisitedNodes: Set<Node>,
+        tentativeRisks: Map<Node, Pair<Node?, Int>> = mapOf(currentNode to (null to 0))
+    ): List<Node> {
+        val currentNodeRisk = tentativeRisks.getOrElse(currentNode) { null to Int.MAX_VALUE }.second
+
+        val currentNeighborRisks = currentNode.neighbors
+            .filter { neighbor -> neighbor in unvisitedNodes }
+            .associateWith { neighbor ->
+                val existingRisk = tentativeRisks.getOrElse(neighbor) { null to Int.MAX_VALUE }
+                val newRisk = currentNodeRisk + neighbor.risk
+                if (newRisk < existingRisk.second) currentNode to newRisk
+                else existingRisk
+            }
+
+        val nextRisks = tentativeRisks + currentNeighborRisks
+        val nextNode = nextRisks
+            .filterKeys { node -> node in unvisitedNodes }
+            .minByOrNull { (_, risk) -> risk.second }!!.key
+
+        if (nextNode == destination) {
+            return findDestination(listOf(destination), nextRisks)
         }
-        return -1
+
+        return dijkstra(
+            currentNode = nextNode,
+            destination = destination,
+            unvisitedNodes = unvisitedNodes - currentNode,
+            tentativeRisks = nextRisks
+        )
+    }
+
+    private fun findDestination(
+        acc: List<Node>,
+        tentativeRisks: Map<Node, Pair<Node?, Int>>
+    ): List<Node> {
+        val current = acc.first()
+        val parent = tentativeRisks.getValue(current).first ?: return acc
+        return findDestination(listOf(parent) + acc, tentativeRisks)
+    }
+
+    override fun step1(): Int {
+        val startNode = nodes.first { it.isStart }
+        val destinationNode = nodes.first { it.isEnd }
+
+        val shortestPath = dijkstra(
+            currentNode = startNode,
+            destination = destinationNode,
+            unvisitedNodes = nodes - startNode
+        )
+
+        return shortestPath.drop(1).sumOf { node -> node.risk }
     }
 }
