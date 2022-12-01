@@ -1,4 +1,4 @@
-package fr.outadoc.aoc.yyyy
+package fr.outadoc.aoc.twentytwentytwo
 
 import fr.outadoc.aoc.scaffold.testStep1
 import fr.outadoc.aoc.scaffold.testStep2
