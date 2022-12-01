@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
-    kotlin("multiplatform") version "1.6.0" apply false
+    kotlin("multiplatform") version "1.7.21" apply false
 }
 
 allprojects {
