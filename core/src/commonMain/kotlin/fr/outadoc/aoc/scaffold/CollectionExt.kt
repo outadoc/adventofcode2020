@@ -19,3 +19,5 @@ fun Iterable<Long>.product() = fold(1L) { acc, i -> acc * i }
 
 fun List<Int>.median() = (this[size / 2] + this[(size - 1) / 2]) / 2
 fun List<Long>.median() = (this[size / 2] + this[(size - 1) / 2]) / 2
+
+fun <T> Iterable<Set<T>>.intersectAll() = reduce { acc, current -> acc.intersect(current) }
