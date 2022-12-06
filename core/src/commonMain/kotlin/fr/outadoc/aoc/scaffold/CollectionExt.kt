@@ -21,3 +21,6 @@ fun List<Int>.median() = (this[size / 2] + this[(size - 1) / 2]) / 2
 fun List<Long>.median() = (this[size / 2] + this[(size - 1) / 2]) / 2
 
 fun <T> Iterable<Set<T>>.intersectAll() = reduce { acc, current -> acc.intersect(current) }
+
+fun <T> List<T>.head() = first() to drop(1)
+fun <T> List<T>.tail() = last() to dropLast(1)
