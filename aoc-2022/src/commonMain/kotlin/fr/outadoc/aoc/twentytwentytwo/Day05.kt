@@ -102,12 +102,8 @@ class Day05 : Day<String> {
     override fun step2(): String {
         val finalState: State =
             instructions.fold(initialState) { acc, instruction ->
-                acc.print()
-                println(instruction)
                 acc.reduce(instruction)
             }
-
-        finalState.print()
 
         return finalState.stacks
             .map { stack -> stack.last() }
